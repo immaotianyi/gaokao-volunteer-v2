@@ -1,0 +1,16 @@
+{
+  "stats": {
+    "total_rules": 60,
+    "total_majors": 213,
+    "passed": 147,
+    "errors": 0,
+    "warnings": 4
+  },
+  "errors": [],
+  "warnings": [
+    "[中国政法大学/第二十六条 法律英语、英语和翻译专业] language_restriction 值不常见: '仅限英语语种'",
+    "[中国政法大学/德语专业] language_restriction 值不常见: '仅限德语、英语语种'",
+    "[北京邮电大学/英语专业] language_restriction 值不常见: '仅限英语语种'",
+    "[淮南师范学院/英语、商务英语专业] language_restriction 值不常见: '仅限英语语种'"
+  ]
+}

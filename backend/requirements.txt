@@ -1,0 +1,20 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+gunicorn==22.0.0
+sqlalchemy[asyncio]==2.0.36
+pydantic==2.10.3
+pandas==2.2.3
+openpyxl==3.1.5
+httpx==0.28.1
+
+# ── 异步 PostgreSQL 驱动 ───────────────────────────────
+asyncpg==0.30.0
+
+# ── Redis 异步客户端 ──────────────────────────────────
+redis==5.2.1
+
+# ── SSE 生产级实现（可选替代手写 StreamingResponse） ──
+sse-starlette==2.2.1
+
+# ── 微信支付 V3 (签名/验签/AES-GCM解密) ──────────────
+cryptography==43.0.3

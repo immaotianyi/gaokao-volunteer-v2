@@ -1,0 +1,60 @@
+# 高考志愿狙击手 — .gitignore
+
+# ── 密钥与敏感配置 ──
+*.env
+!*.env.example
+
+# ── Python ──
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# ── 数据库 ──
+*.db
+*.sqlite3
+
+# ── Node ──
+frontend/node_modules/
+frontend/dist/
+
+# ── IDE / OS ──
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+.codebuddy/
+.cursor/
+
+# ── 运行时日志 ──
+*.log
+nohup.out
+
+# ── 数据原始文件（体积大, 不随代码提交） ──
+backend/data/raw/
+backend/data/zszc/
+
+# ── Docker ──
+docker-compose.override.yml
+
+# ── 视频与大文件 ──
+*.mp4
+*.mov
+*.avi
+frontend/public/models/armor.glb
+
+# ── 临时/备份文件 ──
+*.backup
+*.bak
+*.tmp
+
+# ── 产品文档（可选，如需排除请取消注释）──
+# 报名创意方案.html
+# 产品解说.html
+
+# ── 敏感文件 ──
+.cursor/
+CLAUDE.md

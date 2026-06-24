@@ -1,0 +1,52 @@
+{
+  "empty_source_files": {
+    "count": 0,
+    "universities": [],
+    "note": "这些是手写规则或历史规则，需要优先补抓章程 TXT"
+  },
+  "no_effective_rules": {
+    "count": 18,
+    "universities": [
+      "安徽农业大学",
+      "江汉大学",
+      "上海交通大学",
+      "北京理工大学",
+      "南方科技大学",
+      "哈尔滨工业大学",
+      "东南大学",
+      "中央财经大学",
+      "北京中医药大学",
+      "北京体育大学",
+      "北京化工大学",
+      "北京师范大学",
+      "北京科技大学",
+      "哈尔滨工程大学",
+      "宁夏大学",
+      "新疆大学",
+      "西北农林科技大学",
+      "西南大学"
+    ],
+    "note": "这些大学实际没有提取到有效规则"
+  },
+  "invalid_patterns": {
+    "count": 0,
+    "details": []
+  },
+  "txt_coverage": {
+    "txt_total": 133,
+    "rules_total": 135,
+    "matched": 131,
+    "only_in_txt": 2,
+    "only_in_rules": 4
+  },
+  "year_distribution": {
+    "2026": 132,
+    "2025": 3
+  },
+  "fineness": {
+    "total_majors": 690,
+    "wildcard_majors": 114,
+    "specific_majors": 576,
+    "fineness_rate": "83.5%"
+  }
+}

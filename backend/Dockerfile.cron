@@ -1,0 +1,32 @@
+FROM python:3.11-slim
+
+# 安装 cron
+RUN apt-get update && apt-get install -y cron && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# 安装 Python 依赖
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制脚本
+COPY scripts/daily_update.py /app/scripts/daily_update.py
+COPY services/ /app/services/
+COPY schemas.py /app/schemas.py
+COPY models.py /app/models.py
+COPY database.py /app/database.py
+COPY routers/ /app/routers/
+
+# 复制数据目录（挂载 volume 会在运行时覆盖）
+COPY data/ /app/data/
+
+# 创建日志目录
+RUN mkdir -p /app/logs
+
+# 设置 cron job（每天北京时间 07:00 执行 = UTC 23:00）
+RUN echo "0 23 * * * cd /app && python scripts/daily_update.py >> /app/logs/daily_update.log 2>&1" > /etc/cron.d/gaokao-cron
+RUN chmod 0644 /etc/cron.d/gaokao-cron
+RUN crontab /etc/cron.d/gaokao-cron
+
+# 启动 cron 前台运行
+CMD ["cron", "-f"]

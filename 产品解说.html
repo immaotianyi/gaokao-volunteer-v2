@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高考志愿狙击手 — 视频插画素材</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #020617;
+    --cyan: #38bdf8;
+    --purple: #818cf8;
+    --gold: #fbbf24;
+    --red: #f87171;
+    --green: #4ade80;
+    --pink: #f472b6;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --surface: rgba(15,23,42,0.9);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+    width: 100vw; height: 100vh; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none;
+  }
+
+  .stage {
+    position: relative; width: 100%; height: 100%;
+    max-width: 1280px; max-height: 720px; overflow: hidden;
+  }
+
+  /* ── 背景 ── */
+  .grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(56,189,248,0.025) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(56,189,248,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask: radial-gradient(ellipse 65% 65% at 50% 50%, black 25%, transparent 75%);
+  }
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg,transparent,var(--cyan),transparent);
+    top: -10px; opacity: 0;
+    animation: scanDown 4.5s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  .scan-line.running { animation-play-state: running; }
+  @keyframes scanDown {
+    0% { top: -2px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  .corner-logo {
+    position: absolute; top: 20px; left: 24px;
+    font-size: 12px; font-weight: 900; color: rgba(255,255,255,0.18); letter-spacing: 1px; z-index: 10;
+  }
+
+  /* ── 场景容器 ── */
+  .scene {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+  }
+  .scene.active { opacity: 1; }
+
+  /* ── 进度点 ── */
+  .prg { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+  .prg-d { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.12); transition: all 0.4s; }
+  .prg-d.on { background: var(--cyan); box-shadow: 0 0 10px rgba(56,189,248,0.5); width: 20px; border-radius: 3px; }
+
+  /* ── SCENE 0: 标题 ── */
+  .s0-badge { padding: 5px 18px; border: 1px solid rgba(56,189,248,0.28); border-radius: 24px; font-size: 12px; color: var(--cyan); letter-spacing: 3px; margin-bottom: 24px; opacity: 0; }
+  .s0-main { font-size: 60px; font-weight: 900; letter-spacing: -3px; opacity: 0; }
+  .s0-accent { background: linear-gradient(135deg,var(--cyan),var(--purple)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .s0-sub { font-size: 16px; color: var(--muted); margin-top: 14px; letter-spacing: 4px; opacity: 0; }
+
+  /* ── SCENE 1: 30万退档 ── */
+  .s1-big { font-size: 120px; font-weight: 900; letter-spacing: -5px; opacity: 0; }
+  .s1-big .red { color: var(--red); }
+  .s1-caption { font-size: 20px; color: var(--muted); margin-top: 12px; opacity: 0; }
+  .s1-detail { font-size: 16px; color: var(--pink); margin-top: 18px; opacity: 0; font-weight: 600; }
+
+  /* ── SCENE 2: 个人数据 ── */
+  .s2-row { display: flex; gap: 64px; }
+  .s2-card { text-align: center; opacity: 0; transform: translateY(20px); }
+  .s2-val { font-size: 90px; font-weight: 900; letter-spacing: -3px; }
+  .s2-val.gd { color: var(--gold); }
+  .s2-val.rd { color: var(--red); }
+  .s2-lbl { font-size: 16px; color: var(--muted); margin-top: 6px; letter-spacing: 2px; }
+  .s2-strike { font-size: 28px; color: var(--red); text-decoration: line-through 3px; opacity: 0; margin-top: 28px; }
+  .s2-success { font-size: 30px; color: var(--green); font-weight: 800; opacity: 0; margin-top: 12px; }
+
+  /* ── SCENE 3: 专业更迭 ── */
+  .s3-row { display: flex; gap: 80px; align-items: stretch; }
+  .s3-col { text-align: center; opacity: 0; }
+  .s3-col-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+  .s3-col-title.out { color: var(--red); }
+  .s3-col-title.in { color: var(--green); }
+  .s3-major {
+    padding: 14px 24px; border: 1px solid; border-radius: 10px;
+    font-size: 18px; font-weight: 700; margin-bottom: 8px;
+  }
+  .s3-major.out {
+    background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.2);
+    color: #fca5a5;
+  }
+  .s3-major.in {
+    background: rgba(74,222,128,0.06); border-color: rgba(74,222,128,0.2);
+    color: #86efac;
+  }
+  .s3-count {
+    font-size: 42px; font-weight: 900;
+  }
+  .s3-count.rd { color: var(--red); }
+  .s3-count.gn { color: var(--green); }
+  .s3-count-sm { font-size: 16px; color: var(--muted); }
+  .s3-insight { font-size: 22px; color: var(--gold); font-weight: 800; opacity: 0; margin-top: 30px; }
+
+  /* ── SCENE 4: 年份时间线 ── */
+  .s4-row { display: flex; gap: 36px; align-items: flex-end; }
+  .s4-year { text-align: center; opacity: 0; transform: translateY(30px); }
+  .s4-yr { font-size: 44px; font-weight: 900; letter-spacing: -1px; }
+  .s4-yr.future { color: var(--gold); position: relative; }
+  .s4-yr.future::after {
+    content: "即将装载"; position: absolute; bottom: -24px; left: 50%;
+    transform: translateX(-50%); font-size: 10px; font-weight: 700; color: var(--gold);
+    background: rgba(251,191,36,0.1); padding: 2px 10px; border-radius: 10px;
+    border: 1px solid rgba(251,191,36,0.2); white-space: nowrap;
+  }
+  .s4-bar { width: 50px; height: 3px; margin: 10px auto 0; background: var(--cyan); border-radius: 2px; }
+  .s4-lbl { font-size: 11px; color: var(--muted); margin-top: 6px; letter-spacing: 1px; }
+  .s4-arr { font-size: 24px; color: var(--muted); opacity: 0; align-self: center; margin-bottom: 20px; }
+  .s4-annotate { font-size: 18px; color: var(--muted); opacity: 0; margin-top: 30px; }
+
+  /* ── SCENE 5: 六维评分 ── */
+  .s5-title { font-size: 20px; font-weight: 800; margin-bottom: 24px; opacity: 0; }
+  .s5-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; width: 80%; }
+  .s5-card { padding: 18px 14px; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; background: rgba(15,23,42,0.7); text-align: center; opacity: 0; transform: translateY(15px); }
+  .s5-num { width: 30px; height: 30px; border-radius: 8px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; background: rgba(129,140,248,0.2); color: var(--purple); }
+  .s5-label { font-size: 14px; font-weight: 700; }
+  .s5-plus { font-size: 12px; color: var(--green); margin-top: 4px; font-weight: 600; }
+
+  /* ── SCENE 6: 实时热度 ── */
+  .s6-title { font-size: 22px; font-weight: 800; opacity: 0; margin-bottom: 28px; }
+  .s6-numbers { display: flex; gap: 56px; }
+  .s6-num-card { text-align: center; opacity: 0; }
+  .s6-num-val { font-size: 72px; font-weight: 900; letter-spacing: -3px; color: var(--cyan); }
+  .s6-num-lbl { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  .s6-note { font-size: 17px; color: var(--gold); font-weight: 700; opacity: 0; margin-top: 28px; }
+
+  /* ── SCENE 7: 雪峰Agent ── */
+  .s7-title { font-size: 22px; font-weight: 800; margin-bottom: 30px; opacity: 0; }
+  .s7-flow { display: flex; gap: 20px; align-items: center; }
+  .s7-block { padding: 22px 24px; border-radius: 12px; text-align: center; opacity: 0; transform: translateX(-30px); }
+  .s7-block.gd { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.18); }
+  .s7-block.cy { background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.18); }
+  .s7-block.pr { background: rgba(129,140,248,0.07); border: 1px solid rgba(129,140,248,0.18); }
+  .s7-num { font-size: 38px; font-weight: 900; letter-spacing: -1px; }
+  .s7-num.gd { color: var(--gold); }
+  .s7-num.cy { color: var(--cyan); }
+  .s7-num.pr { color: var(--purple); }
+  .s7-lbl { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .s7-arr { font-size: 24px; color: var(--muted); opacity: 0; }
+  .s7-merge { font-size: 18px; font-weight: 800; color: var(--green); padding: 14px 28px; border: 2px dashed rgba(74,222,128,0.25); border-radius: 14px; background: rgba(74,222,128,0.04); opacity: 0; margin-top: 24px; }
+  .s7-marathon { font-size: 16px; color: var(--gold); font-weight: 700; opacity: 0; margin-top: 12px; }
+
+  /* ── SCENE 8: 三件套 ── */
+  .s8-row { display: flex; gap: 36px; }
+  .s8-item { text-align: center; opacity: 0; transform: translateY(20px); }
+  .s8-icon { font-size: 52px; margin-bottom: 8px; }
+  .s8-name { font-size: 18px; font-weight: 800; }
+  .s8-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .s8-plus { font-size: 22px; color: var(--muted); opacity: 0; align-self: center; margin-top: -24px; }
+  .s8-eq { font-size: 44px; font-weight: 900; color: var(--green); opacity: 0; margin-top: 32px; }
+
+  /* ── SCENE 9: 结尾 ── */
+  .s9-text { font-size: 34px; font-weight: 800; text-align: center; line-height: 1.6; opacity: 0; }
+  .s9-emoji { font-size: 60px; opacity: 0; margin-top: 14px; }
+
+  /* ── 通用 ── */
+  .in { animation: in 0.65s cubic-bezier(0.25,0.8,0.25,1) both; }
+  @keyframes in {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .in-scl { animation: in-scl 0.55s ease both; }
+  @keyframes in-scl {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .in-l { animation: in-l 0.6s ease both; }
+  @keyframes in-l {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="st">
+
+  <div class="grid"></div>
+  <div class="scan-line" id="sl"></div>
+  <div class="corner-logo">GAOKAO·SNIPER</div>
+
+  <!-- ══ SCENE 0: 标题 ══ -->
+  <div class="scene active" id="s0">
+    <div class="s0-badge" id="e0a">捡漏雷达 · 功能解说</div>
+    <div class="s0-main" id="e0b"><span style="color:#f1f5f9;">高考志愿</span><span class="s0-accent">狙击手</span></div>
+    <div class="s0-sub" id="e0c">全 网 首 个 多 维 捡 漏 发 现 引 擎</div>
+  </div>
+
+  <!-- ══ SCENE 1: 30万退档 ══ -->
+  <div class="scene" id="s1">
+    <div class="s1-big" id="e1a">每年 <span class="red">30 万+</span></div>
+    <div class="s1-caption" id="e1b">考生因志愿填报遗漏规则被退档</div>
+    <div class="s1-detail" id="e1c">三年努力 · 毁于一个细节</div>
+  </div>
+
+  <!-- ══ SCENE 2: 个人数据 ══ -->
+  <div class="scene" id="s2">
+    <div class="s2-row">
+      <div class="s2-card" id="e2a"><div class="s2-val gd">565</div><div class="s2-lbl">高考分数</div></div>
+      <div class="s2-card" id="e2b"><div class="s2-val rd">5万+</div><div class="s2-lbl">省排名</div></div>
+    </div>
+    <div class="s2-strike" id="e2c">× 211 没戏</div>
+    <div class="s2-success" id="e2d">✓ 上岸 211</div>
+  </div>
+
+  <!-- ══ SCENE 3: 专业更迭 ══ -->
+  <div class="scene" id="s3">
+    <div class="s3-row">
+      <div class="s3-col" id="e3a">
+        <div class="s3-col-title out">◀ 撤销专业</div>
+        <div class="s3-major out">信息管理与信息系统</div>
+        <div class="s3-major out">公共事业管理</div>
+        <div class="s3-major out">服装与服饰设计</div>
+        <div style="margin-top:16px;"><span class="s3-count rd">120+</span><span class="s3-count-sm"> 专业被撤</span></div>
+      </div>
+      <div class="s3-col" id="e3b">
+        <div class="s3-col-title in">新增专业 ▶</div>
+        <div class="s3-major in">智能科学与技术</div>
+        <div class="s3-major in">数据科学与大数据</div>
+        <div class="s3-major in">人工智能</div>
+        <div style="margin-top:16px;"><span class="s3-count gn">180+</span><span class="s3-count-sm"> 专业新增</span></div>
+      </div>
+    </div>
+    <div class="s3-insight" id="e3c">新增专业 · 第一年招生 · 无人敢报 = 信息差</div>
+  </div>
+
+  <!-- ══ SCENE 4: 年份时间线 ══ -->
+  <div class="scene" id="s4">
+    <div class="s4-row">
+      <div class="s4-year" id="e4a"><div class="s4-yr">2023</div><div class="s4-bar"></div><div class="s4-lbl">历史数据</div></div>
+      <div class="s4-arr" id="e4a1">→</div>
+      <div class="s4-year" id="e4b"><div class="s4-yr">2024</div><div class="s4-bar"></div><div class="s4-lbl">历史数据</div></div>
+      <div class="s4-arr" id="e4b1">→</div>
+      <div class="s4-year" id="e4c"><div class="s4-yr">2025</div><div class="s4-bar"></div><div class="s4-lbl">历史数据</div></div>
+      <div class="s4-arr" id="e4c1">→</div>
+      <div class="s4-year" id="e4d"><div class="s4-yr future">2026</div><div class="s4-bar" style="background:var(--gold);"></div><div class="s4-lbl" style="color:var(--gold);">分数线一出即装载</div></div>
+    </div>
+    <div class="s4-annotate" id="e4n"><span style="color:var(--cyan);">年际对比引擎</span> &nbsp;自动发现专业组新增 & 扩招变化</div>
+  </div>
+
+  <!-- ══ SCENE 5: 六维评分 ══ -->
+  <div class="scene" id="s5">
+    <div class="s5-title" id="e5t"><span style="color:var(--gold);">六维评分</span>系统 · 自动打分</div>
+    <div class="s5-grid">
+      <div class="s5-card" id="e5a"><div class="s5-num">1</div><div class="s5-label">新增专业</div><div class="s5-plus">+20 分</div></div>
+      <div class="s5-card" id="e5b"><div class="s5-num">2</div><div class="s5-label">扩招幅度</div><div class="s5-plus">+25 分</div></div>
+      <div class="s5-card" id="e5c"><div class="s5-num">3</div><div class="s5-label">新校区首招</div><div class="s5-plus">+20 分</div></div>
+      <div class="s5-card" id="e5d"><div class="s5-num">4</div><div class="s5-label">中外合作</div><div class="s5-plus">+15 分</div></div>
+      <div class="s5-card" id="e5e"><div class="s5-num">5</div><div class="s5-label">选科稀缺</div><div class="s5-plus">+10 分</div></div>
+      <div class="s5-card" id="e5f"><div class="s5-num">6</div><div class="s5-label">分数匹配</div><div class="s5-plus" style="color:var(--gold);">+30 分</div></div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 6: 实时热度 ══ -->
+  <div class="scene" id="s6">
+    <div class="s6-title" id="e6t"><span style="color:var(--green);">实时</span> 热度追踪</div>
+    <div class="s6-numbers">
+      <div class="s6-num-card" id="e6a">
+        <div class="s6-num-val">12,847</div>
+        <div class="s6-num-lbl">浏览人数</div>
+      </div>
+      <div class="s6-num-card" id="e6b">
+        <div class="s6-num-val">38,221</div>
+        <div class="s6-num-lbl">浏览次数</div>
+      </div>
+      <div class="s6-num-card" id="e6c">
+        <div class="s6-num-val" style="color:var(--green);">每日更新</div>
+        <div class="s6-num-lbl">数据刷新</div>
+      </div>
+    </div>
+    <div class="s6-note" id="e6n">你能看到 · 有多少人在盯同一个机会</div>
+  </div>
+
+  <!-- ══ SCENE 7: 雪峰Agent ══ -->
+  <div class="scene" id="s7">
+    <div class="s7-title" id="e7t">满血版 <span style="color:var(--gold);">雪峰老师</span> Agent</div>
+    <div class="s7-flow">
+      <div class="s7-block gd" id="e7a"><div class="s7-num gd">8</div><div class="s7-lbl">本著作</div></div>
+      <div class="s7-block gd" id="e7b"><div class="s7-num gd">61</div><div class="s7-lbl">节课程</div></div>
+      <div class="s7-arr" id="e7a1">+</div>
+      <div class="s7-block cy" id="e7c"><div class="s7-num cy">100+</div><div class="s7-lbl">高校章程库</div></div>
+      <div class="s7-arr" id="e7b1">+</div>
+      <div class="s7-block pr" id="e7d"><div class="s7-num pr">Tavily</div><div class="s7-lbl">联网搜索</div></div>
+    </div>
+    <div class="s7-merge" id="e7e">数据打通 · 持续学习</div>
+    <div class="s7-marathon" id="e7f">从跑步机 → 马拉松赛道</div>
+  </div>
+
+  <!-- ══ SCENE 8: 三件套 ══ -->
+  <div class="scene" id="s8">
+    <div class="s8-row">
+      <div class="s8-item" id="e8a"><div class="s8-icon">🛡</div><div class="s8-name">探雷器</div><div class="s8-desc">帮你排雷</div></div>
+      <div class="s8-plus" id="e8a1">+</div>
+      <div class="s8-item" id="e8b"><div class="s8-icon">📡</div><div class="s8-name">捡漏雷达</div><div class="s8-desc">帮你找机会</div></div>
+      <div class="s8-plus" id="e8b1">+</div>
+      <div class="s8-item" id="e8c"><div class="s8-icon">🤖</div><div class="s8-name">雪峰 Agent</div><div class="s8-desc">帮你答疑</div></div>
+    </div>
+    <div class="s8-eq" id="e8e">= 三件套</div>
+  </div>
+
+  <!-- ══ SCENE 9: 结尾 ══ -->
+  <div class="scene" id="s9">
+    <div class="s9-text" id="e9a">祝愿广大学子<br>成功去到自己心仪的大学</div>
+    <div class="s9-emoji" id="e9b">🎓</div>
+  </div>
+
+  <!-- 进度点 -->
+  <div class="prg">
+    <div class="prg-d on" id="pi0"></div><div class="prg-d" id="pi1"></div><div class="prg-d" id="pi2"></div><div class="prg-d" id="pi3"></div><div class="prg-d" id="pi4"></div><div class="prg-d" id="pi5"></div><div class="prg-d" id="pi6"></div><div class="prg-d" id="pi7"></div><div class="prg-d" id="pi8"></div><div class="prg-d" id="pi9"></div>
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const a = (el,cls,d=0)=>{ if(!el)return; setTimeout(()=>{el.classList.add(cls);el.style.opacity='1';el.style.transform='none';},d); };
+let N=10, m=-1;
+
+function go(i) {
+  document.querySelectorAll('.scene').forEach((s,j)=>s.classList.toggle('active',j===i));
+  document.querySelectorAll('.prg-d').forEach((d,j)=>d.classList.toggle('on',j===i));
+}
+
+const A = {
+ 0:()=>{ a($('e0a'),'in',0); a($('e0b'),'in',300); a($('e0c'),'in',600); },
+ 1:()=>{ a($('e1a'),'in-scl',0); a($('e1b'),'in',400); a($('e1c'),'in',800); },
+ 2:()=>{ a($('e2a'),'in',0); a($('e2b'),'in',300); a($('e2c'),'in',800); a($('e2d'),'in',1400); },
+ 3:()=>{ a($('e3a'),'in',0); a($('e3b'),'in',300); a($('e3c'),'in',900); },
+ 4:()=>{ a($('e4a'),'in',0); a($('e4a1'),'in',200); a($('e4b'),'in',400); a($('e4b1'),'in',600); a($('e4c'),'in',800); a($('e4c1'),'in',1000); a($('e4d'),'in',1200); a($('e4n'),'in',1800); },
+ 5:()=>{ a($('e5t'),'in',0); ['e5a','e5b','e5c','e5d','e5e','e5f'].forEach((id,i)=>a($(id),'in',(i+1)*200)); },
+ 6:()=>{ a($('e6t'),'in',0); a($('e6a'),'in',300); a($('e6b'),'in',600); a($('e6c'),'in',900); a($('e6n'),'in',1500); },
+ 7:()=>{ a($('e7t'),'in',0); a($('e7a'),'in',200); a($('e7b'),'in',400); a($('e7a1'),'in',600); a($('e7c'),'in',800); a($('e7b1'),'in',1000); a($('e7d'),'in',1200); a($('e7e'),'in',1700); a($('e7f'),'in',2100); },
+ 8:()=>{ a($('e8a'),'in',0); a($('e8a1'),'in',250); a($('e8b'),'in',500); a($('e8b1'),'in',750); a($('e8c'),'in',1000); a($('e8e'),'in',1500); },
+ 9:()=>{ a($('e9a'),'in',0); a($('e9b'),'in',500); },
+};
+
+// 自动播放
+setTimeout(() => $('sl').classList.add('running'), 500);
+setTimeout(() => { go(0); A[0](); }, 100);
+setTimeout(() => { go(1); A[1](); }, 2500);
+setTimeout(() => { go(2); A[2](); }, 6000);
+setTimeout(() => { go(3); A[3](); }, 10500);
+setTimeout(() => { go(4); A[4](); }, 15000);
+setTimeout(() => { go(5); A[5](); }, 20000);
+setTimeout(() => { go(6); A[6](); }, 26000);
+setTimeout(() => { go(7); A[7](); }, 32000);
+setTimeout(() => { go(8); A[8](); }, 39000);
+setTimeout(() => { go(9); A[9](); }, 46000);
+
+// 键盘控制
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); m=Math.min(m+1,N-1); go(m); A[m](); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); m=Math.max(m-1,0); go(m); A[m](); }
+  if (e.key === 'r') { m=0; go(0); A[0](); }
+});
+
+console.log('🎬 10个场景就绪 → 键切换 | 空格切换 | R重置');
+</script>
+</body>
+</html>

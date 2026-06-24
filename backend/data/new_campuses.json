@@ -1,0 +1,44 @@
+[
+    {
+        "campus": "华南师范大学（汕尾校区）",
+        "parent": "华南师范大学",
+        "first_year": 2026,
+        "discount_ratio": 0.85
+    },
+    {
+        "campus": "北京师范大学（珠海校区）",
+        "parent": "北京师范大学",
+        "first_year": 2025,
+        "discount_ratio": 0.88
+    },
+    {
+        "campus": "哈尔滨工业大学（深圳）",
+        "parent": "哈尔滨工业大学",
+        "first_year": 2024,
+        "discount_ratio": 0.95
+    },
+    {
+        "campus": "南京大学（苏州校区）",
+        "parent": "南京大学",
+        "first_year": 2025,
+        "discount_ratio": 0.92
+    },
+    {
+        "campus": "中国人民大学（苏州校区）",
+        "parent": "中国人民大学",
+        "first_year": 2024,
+        "discount_ratio": 0.93
+    },
+    {
+        "campus": "山东大学（威海）",
+        "parent": "山东大学",
+        "first_year": 2023,
+        "discount_ratio": 0.90
+    },
+    {
+        "campus": "中国石油大学（克拉玛依校区）",
+        "parent": "中国石油大学",
+        "first_year": 2023,
+        "discount_ratio": 0.78
+    }
+]

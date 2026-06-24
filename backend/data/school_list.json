@@ -1,0 +1,2282 @@
+[
+  {
+    "schId": "10001",
+    "name": "北京大学",
+    "type": "985",
+    "province": "北京"
+  },
+  {
+    "schId": "10002",
+    "name": "中国人民大学",
+    "type": "985",
+    "province": "北京"
+  },
+  {
+    "schId": "10003",
+    "name": "清华大学",
+    "type": "985",
+    "province": "北京"
+  },
+  {
+    "schId": "10004",
+    "name": "北京交通大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10005",
+    "name": "北京工业大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10006",
+    "name": "北京航空航天大学",
+    "type": "985",
+    "province": "北京"
+  },
+  {
+    "schId": "10007",
+    "name": "北京理工大学",
+    "type": "985",
+    "province": "北京"
+  },
+  {
+    "schId": "10008",
+    "name": "北京科技大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10009",
+    "name": "北方工业大学",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10010",
+    "name": "北京化工大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10011",
+    "name": "北京工商大学",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10012",
+    "name": "北京服装学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10013",
+    "name": "北京邮电大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10014",
+    "name": "北京印刷学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10015",
+    "name": "北京建筑大学",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10016",
+    "name": "北京石油化工学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10017",
+    "name": "北京电子科技学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10018",
+    "name": "中国农业大学",
+    "type": "985",
+    "province": "北京"
+  },
+  {
+    "schId": "10019",
+    "name": "北京农学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10020",
+    "name": "北京林业大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10021",
+    "name": "北京协和医学院",
+    "type": "双一流",
+    "province": "北京"
+  },
+  {
+    "schId": "10022",
+    "name": "首都医科大学",
+    "type": "省属重点",
+    "province": "北京"
+  },
+  {
+    "schId": "10023",
+    "name": "北京中医药大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10024",
+    "name": "北京师范大学",
+    "type": "985",
+    "province": "北京"
+  },
+  {
+    "schId": "10025",
+    "name": "首都师范大学",
+    "type": "双一流",
+    "province": "北京"
+  },
+  {
+    "schId": "10026",
+    "name": "北京外国语大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10027",
+    "name": "北京第二外国语学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10028",
+    "name": "北京语言大学",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10029",
+    "name": "中国传媒大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10030",
+    "name": "中央财经大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10031",
+    "name": "对外经济贸易大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10032",
+    "name": "北京物资学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10033",
+    "name": "首都经济贸易大学",
+    "type": "省属重点",
+    "province": "北京"
+  },
+  {
+    "schId": "10034",
+    "name": "外交学院",
+    "type": "双一流",
+    "province": "北京"
+  },
+  {
+    "schId": "10035",
+    "name": "中国人民公安大学",
+    "type": "双一流",
+    "province": "北京"
+  },
+  {
+    "schId": "10036",
+    "name": "国际关系学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10037",
+    "name": "北京体育大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10038",
+    "name": "中央音乐学院",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10039",
+    "name": "中国音乐学院",
+    "type": "双一流",
+    "province": "北京"
+  },
+  {
+    "schId": "10040",
+    "name": "中央美术学院",
+    "type": "双一流",
+    "province": "北京"
+  },
+  {
+    "schId": "10041",
+    "name": "中央戏剧学院",
+    "type": "双一流",
+    "province": "北京"
+  },
+  {
+    "schId": "10042",
+    "name": "中国戏曲学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10043",
+    "name": "北京电影学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10044",
+    "name": "北京舞蹈学院",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10045",
+    "name": "中央民族大学",
+    "type": "985",
+    "province": "北京"
+  },
+  {
+    "schId": "10046",
+    "name": "中国政法大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10047",
+    "name": "华北电力大学",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10048",
+    "name": "中国矿业大学（北京）",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10049",
+    "name": "中国石油大学（北京）",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10050",
+    "name": "中国地质大学（北京）",
+    "type": "211",
+    "province": "北京"
+  },
+  {
+    "schId": "10051",
+    "name": "北京联合大学",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10052",
+    "name": "中国科学院大学",
+    "type": "双一流",
+    "province": "北京"
+  },
+  {
+    "schId": "10053",
+    "name": "中国社会科学院大学",
+    "type": "普通本科",
+    "province": "北京"
+  },
+  {
+    "schId": "10055",
+    "name": "南开大学",
+    "type": "985",
+    "province": "天津"
+  },
+  {
+    "schId": "10056",
+    "name": "天津大学",
+    "type": "985",
+    "province": "天津"
+  },
+  {
+    "schId": "10057",
+    "name": "天津科技大学",
+    "type": "省属重点",
+    "province": "天津"
+  },
+  {
+    "schId": "10058",
+    "name": "天津工业大学",
+    "type": "双一流",
+    "province": "天津"
+  },
+  {
+    "schId": "10059",
+    "name": "中国民航大学",
+    "type": "省属重点",
+    "province": "天津"
+  },
+  {
+    "schId": "10060",
+    "name": "天津理工大学",
+    "type": "普通本科",
+    "province": "天津"
+  },
+  {
+    "schId": "10061",
+    "name": "天津农学院",
+    "type": "普通本科",
+    "province": "天津"
+  },
+  {
+    "schId": "10062",
+    "name": "天津医科大学",
+    "type": "211",
+    "province": "天津"
+  },
+  {
+    "schId": "10063",
+    "name": "天津中医药大学",
+    "type": "双一流",
+    "province": "天津"
+  },
+  {
+    "schId": "10064",
+    "name": "天津师范大学",
+    "type": "省属重点",
+    "province": "天津"
+  },
+  {
+    "schId": "10065",
+    "name": "天津外国语大学",
+    "type": "普通本科",
+    "province": "天津"
+  },
+  {
+    "schId": "10066",
+    "name": "天津商业大学",
+    "type": "普通本科",
+    "province": "天津"
+  },
+  {
+    "schId": "10067",
+    "name": "天津财经大学",
+    "type": "省属重点",
+    "province": "天津"
+  },
+  {
+    "schId": "10068",
+    "name": "天津体育学院",
+    "type": "普通本科",
+    "province": "天津"
+  },
+  {
+    "schId": "10069",
+    "name": "天津音乐学院",
+    "type": "普通本科",
+    "province": "天津"
+  },
+  {
+    "schId": "10070",
+    "name": "天津美术学院",
+    "type": "普通本科",
+    "province": "天津"
+  },
+  {
+    "schId": "10075",
+    "name": "河北大学",
+    "type": "省属重点",
+    "province": "河北"
+  },
+  {
+    "schId": "10076",
+    "name": "河北工程大学",
+    "type": "普通本科",
+    "province": "河北"
+  },
+  {
+    "schId": "10077",
+    "name": "河北地质大学",
+    "type": "普通本科",
+    "province": "河北"
+  },
+  {
+    "schId": "10078",
+    "name": "华北水利水电大学",
+    "type": "省属重点",
+    "province": "河南"
+  },
+  {
+    "schId": "10079",
+    "name": "华北电力大学（保定）",
+    "type": "211",
+    "province": "河北"
+  },
+  {
+    "schId": "10080",
+    "name": "河北工业大学",
+    "type": "211",
+    "province": "天津"
+  },
+  {
+    "schId": "10081",
+    "name": "华北理工大学",
+    "type": "省属重点",
+    "province": "河北"
+  },
+  {
+    "schId": "10082",
+    "name": "河北科技大学",
+    "type": "普通本科",
+    "province": "河北"
+  },
+  {
+    "schId": "10083",
+    "name": "河北农业大学",
+    "type": "省属重点",
+    "province": "河北"
+  },
+  {
+    "schId": "10084",
+    "name": "河北医科大学",
+    "type": "省属重点",
+    "province": "河北"
+  },
+  {
+    "schId": "10085",
+    "name": "河北师范大学",
+    "type": "省属重点",
+    "province": "河北"
+  },
+  {
+    "schId": "10086",
+    "name": "石家庄铁道大学",
+    "type": "省属重点",
+    "province": "河北"
+  },
+  {
+    "schId": "10087",
+    "name": "燕山大学",
+    "type": "省属重点",
+    "province": "河北"
+  },
+  {
+    "schId": "10108",
+    "name": "山西大学",
+    "type": "双一流",
+    "province": "山西"
+  },
+  {
+    "schId": "10109",
+    "name": "太原科技大学",
+    "type": "普通本科",
+    "province": "山西"
+  },
+  {
+    "schId": "10110",
+    "name": "中北大学",
+    "type": "省属重点",
+    "province": "山西"
+  },
+  {
+    "schId": "10111",
+    "name": "太原理工大学",
+    "type": "211",
+    "province": "山西"
+  },
+  {
+    "schId": "10112",
+    "name": "山西农业大学",
+    "type": "省属重点",
+    "province": "山西"
+  },
+  {
+    "schId": "10113",
+    "name": "山西医科大学",
+    "type": "省属重点",
+    "province": "山西"
+  },
+  {
+    "schId": "10114",
+    "name": "山西师范大学",
+    "type": "省属重点",
+    "province": "山西"
+  },
+  {
+    "schId": "10115",
+    "name": "山西财经大学",
+    "type": "普通本科",
+    "province": "山西"
+  },
+  {
+    "schId": "10126",
+    "name": "内蒙古大学",
+    "type": "211",
+    "province": "内蒙古"
+  },
+  {
+    "schId": "10127",
+    "name": "内蒙古科技大学",
+    "type": "普通本科",
+    "province": "内蒙古"
+  },
+  {
+    "schId": "10128",
+    "name": "内蒙古工业大学",
+    "type": "普通本科",
+    "province": "内蒙古"
+  },
+  {
+    "schId": "10129",
+    "name": "内蒙古农业大学",
+    "type": "普通本科",
+    "province": "内蒙古"
+  },
+  {
+    "schId": "10140",
+    "name": "辽宁大学",
+    "type": "211",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10141",
+    "name": "大连理工大学",
+    "type": "985",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10142",
+    "name": "沈阳工业大学",
+    "type": "省属重点",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10143",
+    "name": "沈阳航空航天大学",
+    "type": "普通本科",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10144",
+    "name": "沈阳理工大学",
+    "type": "普通本科",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10145",
+    "name": "东北大学",
+    "type": "985",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10146",
+    "name": "辽宁科技大学",
+    "type": "普通本科",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10147",
+    "name": "辽宁工程技术大学",
+    "type": "省属重点",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10148",
+    "name": "辽宁石油化工大学",
+    "type": "普通本科",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10149",
+    "name": "沈阳化工大学",
+    "type": "普通本科",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10150",
+    "name": "大连交通大学",
+    "type": "省属重点",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10151",
+    "name": "大连海事大学",
+    "type": "211",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10152",
+    "name": "大连工业大学",
+    "type": "普通本科",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10153",
+    "name": "沈阳建筑大学",
+    "type": "省属重点",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10154",
+    "name": "沈阳农业大学",
+    "type": "省属重点",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10155",
+    "name": "大连海洋大学",
+    "type": "普通本科",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10156",
+    "name": "中国医科大学",
+    "type": "省属重点",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10157",
+    "name": "沈阳药科大学",
+    "type": "省属重点",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10158",
+    "name": "东北财经大学",
+    "type": "省属重点",
+    "province": "辽宁"
+  },
+  {
+    "schId": "10183",
+    "name": "吉林大学",
+    "type": "985",
+    "province": "吉林"
+  },
+  {
+    "schId": "10184",
+    "name": "延边大学",
+    "type": "211",
+    "province": "吉林"
+  },
+  {
+    "schId": "10185",
+    "name": "长春理工大学",
+    "type": "省属重点",
+    "province": "吉林"
+  },
+  {
+    "schId": "10186",
+    "name": "东北电力大学",
+    "type": "省属重点",
+    "province": "吉林"
+  },
+  {
+    "schId": "10187",
+    "name": "吉林化工学院",
+    "type": "普通本科",
+    "province": "吉林"
+  },
+  {
+    "schId": "10188",
+    "name": "东北师范大学",
+    "type": "211",
+    "province": "吉林"
+  },
+  {
+    "schId": "10189",
+    "name": "吉林财经大学",
+    "type": "普通本科",
+    "province": "吉林"
+  },
+  {
+    "schId": "10212",
+    "name": "黑龙江大学",
+    "type": "省属重点",
+    "province": "黑龙江"
+  },
+  {
+    "schId": "10213",
+    "name": "哈尔滨工业大学",
+    "type": "985",
+    "province": "黑龙江"
+  },
+  {
+    "schId": "10214",
+    "name": "哈尔滨理工大学",
+    "type": "省属重点",
+    "province": "黑龙江"
+  },
+  {
+    "schId": "10215",
+    "name": "哈尔滨工程大学",
+    "type": "211",
+    "province": "黑龙江"
+  },
+  {
+    "schId": "10216",
+    "name": "东北石油大学",
+    "type": "省属重点",
+    "province": "黑龙江"
+  },
+  {
+    "schId": "10217",
+    "name": "东北农业大学",
+    "type": "211",
+    "province": "黑龙江"
+  },
+  {
+    "schId": "10218",
+    "name": "东北林业大学",
+    "type": "211",
+    "province": "黑龙江"
+  },
+  {
+    "schId": "10219",
+    "name": "哈尔滨医科大学",
+    "type": "省属重点",
+    "province": "黑龙江"
+  },
+  {
+    "schId": "10246",
+    "name": "复旦大学",
+    "type": "985",
+    "province": "上海"
+  },
+  {
+    "schId": "10247",
+    "name": "同济大学",
+    "type": "985",
+    "province": "上海"
+  },
+  {
+    "schId": "10248",
+    "name": "上海交通大学",
+    "type": "985",
+    "province": "上海"
+  },
+  {
+    "schId": "10249",
+    "name": "华东理工大学",
+    "type": "211",
+    "province": "上海"
+  },
+  {
+    "schId": "10250",
+    "name": "上海理工大学",
+    "type": "省属重点",
+    "province": "上海"
+  },
+  {
+    "schId": "10251",
+    "name": "上海海事大学",
+    "type": "省属重点",
+    "province": "上海"
+  },
+  {
+    "schId": "10252",
+    "name": "东华大学",
+    "type": "211",
+    "province": "上海"
+  },
+  {
+    "schId": "10253",
+    "name": "上海电力大学",
+    "type": "普通本科",
+    "province": "上海"
+  },
+  {
+    "schId": "10254",
+    "name": "上海应用技术大学",
+    "type": "普通本科",
+    "province": "上海"
+  },
+  {
+    "schId": "10255",
+    "name": "上海健康医学院",
+    "type": "普通本科",
+    "province": "上海"
+  },
+  {
+    "schId": "10256",
+    "name": "华东师范大学",
+    "type": "985",
+    "province": "上海"
+  },
+  {
+    "schId": "10257",
+    "name": "上海师范大学",
+    "type": "省属重点",
+    "province": "上海"
+  },
+  {
+    "schId": "10258",
+    "name": "上海外国语大学",
+    "type": "211",
+    "province": "上海"
+  },
+  {
+    "schId": "10259",
+    "name": "上海财经大学",
+    "type": "211",
+    "province": "上海"
+  },
+  {
+    "schId": "10260",
+    "name": "上海对外经贸大学",
+    "type": "普通本科",
+    "province": "上海"
+  },
+  {
+    "schId": "10261",
+    "name": "华东政法大学",
+    "type": "省属重点",
+    "province": "上海"
+  },
+  {
+    "schId": "10262",
+    "name": "上海体育大学",
+    "type": "双一流",
+    "province": "上海"
+  },
+  {
+    "schId": "10263",
+    "name": "上海音乐学院",
+    "type": "双一流",
+    "province": "上海"
+  },
+  {
+    "schId": "10264",
+    "name": "上海大学",
+    "type": "211",
+    "province": "上海"
+  },
+  {
+    "schId": "10265",
+    "name": "上海科技大学",
+    "type": "双一流",
+    "province": "上海"
+  },
+  {
+    "schId": "10284",
+    "name": "南京大学",
+    "type": "985",
+    "province": "江苏"
+  },
+  {
+    "schId": "10285",
+    "name": "苏州大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10286",
+    "name": "东南大学",
+    "type": "985",
+    "province": "江苏"
+  },
+  {
+    "schId": "10287",
+    "name": "南京航空航天大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10288",
+    "name": "南京理工大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10289",
+    "name": "江苏科技大学",
+    "type": "省属重点",
+    "province": "江苏"
+  },
+  {
+    "schId": "10290",
+    "name": "中国矿业大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10291",
+    "name": "南京工业大学",
+    "type": "省属重点",
+    "province": "江苏"
+  },
+  {
+    "schId": "10292",
+    "name": "常州大学",
+    "type": "普通本科",
+    "province": "江苏"
+  },
+  {
+    "schId": "10293",
+    "name": "南京邮电大学",
+    "type": "双一流",
+    "province": "江苏"
+  },
+  {
+    "schId": "10294",
+    "name": "河海大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10295",
+    "name": "江南大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10296",
+    "name": "南京林业大学",
+    "type": "双一流",
+    "province": "江苏"
+  },
+  {
+    "schId": "10297",
+    "name": "江苏大学",
+    "type": "省属重点",
+    "province": "江苏"
+  },
+  {
+    "schId": "10298",
+    "name": "南京信息工程大学",
+    "type": "双一流",
+    "province": "江苏"
+  },
+  {
+    "schId": "10299",
+    "name": "南通大学",
+    "type": "省属重点",
+    "province": "江苏"
+  },
+  {
+    "schId": "10300",
+    "name": "南京农业大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10301",
+    "name": "南京医科大学",
+    "type": "双一流",
+    "province": "江苏"
+  },
+  {
+    "schId": "10302",
+    "name": "南京中医药大学",
+    "type": "双一流",
+    "province": "江苏"
+  },
+  {
+    "schId": "10303",
+    "name": "中国药科大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10304",
+    "name": "南京师范大学",
+    "type": "211",
+    "province": "江苏"
+  },
+  {
+    "schId": "10305",
+    "name": "扬州大学",
+    "type": "省属重点",
+    "province": "江苏"
+  },
+  {
+    "schId": "10335",
+    "name": "浙江大学",
+    "type": "985",
+    "province": "浙江"
+  },
+  {
+    "schId": "10336",
+    "name": "杭州电子科技大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10337",
+    "name": "浙江工业大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10338",
+    "name": "浙江理工大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10339",
+    "name": "浙江海洋大学",
+    "type": "普通本科",
+    "province": "浙江"
+  },
+  {
+    "schId": "10340",
+    "name": "浙江农林大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10341",
+    "name": "温州医科大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10342",
+    "name": "浙江中医药大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10343",
+    "name": "浙江师范大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10344",
+    "name": "杭州师范大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10345",
+    "name": "宁波大学",
+    "type": "双一流",
+    "province": "浙江"
+  },
+  {
+    "schId": "10346",
+    "name": "中国美术学院",
+    "type": "双一流",
+    "province": "浙江"
+  },
+  {
+    "schId": "10347",
+    "name": "浙江工商大学",
+    "type": "省属重点",
+    "province": "浙江"
+  },
+  {
+    "schId": "10357",
+    "name": "安徽大学",
+    "type": "211",
+    "province": "安徽"
+  },
+  {
+    "schId": "10358",
+    "name": "中国科学技术大学",
+    "type": "985",
+    "province": "安徽"
+  },
+  {
+    "schId": "10359",
+    "name": "合肥工业大学",
+    "type": "211",
+    "province": "安徽"
+  },
+  {
+    "schId": "10360",
+    "name": "安徽工业大学",
+    "type": "省属重点",
+    "province": "安徽"
+  },
+  {
+    "schId": "10361",
+    "name": "安徽理工大学",
+    "type": "省属重点",
+    "province": "安徽"
+  },
+  {
+    "schId": "10362",
+    "name": "安徽农业大学",
+    "type": "省属重点",
+    "province": "安徽"
+  },
+  {
+    "schId": "10363",
+    "name": "安徽医科大学",
+    "type": "省属重点",
+    "province": "安徽"
+  },
+  {
+    "schId": "10364",
+    "name": "安徽师范大学",
+    "type": "省属重点",
+    "province": "安徽"
+  },
+  {
+    "schId": "10384",
+    "name": "厦门大学",
+    "type": "985",
+    "province": "福建"
+  },
+  {
+    "schId": "10385",
+    "name": "华侨大学",
+    "type": "省属重点",
+    "province": "福建"
+  },
+  {
+    "schId": "10386",
+    "name": "福州大学",
+    "type": "211",
+    "province": "福建"
+  },
+  {
+    "schId": "10387",
+    "name": "福建理工大学",
+    "type": "普通本科",
+    "province": "福建"
+  },
+  {
+    "schId": "10388",
+    "name": "福建农林大学",
+    "type": "省属重点",
+    "province": "福建"
+  },
+  {
+    "schId": "10389",
+    "name": "集美大学",
+    "type": "省属重点",
+    "province": "福建"
+  },
+  {
+    "schId": "10390",
+    "name": "福建医科大学",
+    "type": "省属重点",
+    "province": "福建"
+  },
+  {
+    "schId": "10391",
+    "name": "福建师范大学",
+    "type": "省属重点",
+    "province": "福建"
+  },
+  {
+    "schId": "10403",
+    "name": "南昌大学",
+    "type": "211",
+    "province": "江西"
+  },
+  {
+    "schId": "10404",
+    "name": "华东交通大学",
+    "type": "省属重点",
+    "province": "江西"
+  },
+  {
+    "schId": "10405",
+    "name": "东华理工大学",
+    "type": "省属重点",
+    "province": "江西"
+  },
+  {
+    "schId": "10406",
+    "name": "南昌航空大学",
+    "type": "省属重点",
+    "province": "江西"
+  },
+  {
+    "schId": "10407",
+    "name": "江西理工大学",
+    "type": "省属重点",
+    "province": "江西"
+  },
+  {
+    "schId": "10408",
+    "name": "景德镇陶瓷大学",
+    "type": "普通本科",
+    "province": "江西"
+  },
+  {
+    "schId": "10409",
+    "name": "江西农业大学",
+    "type": "省属重点",
+    "province": "江西"
+  },
+  {
+    "schId": "10410",
+    "name": "江西师范大学",
+    "type": "省属重点",
+    "province": "江西"
+  },
+  {
+    "schId": "10411",
+    "name": "江西财经大学",
+    "type": "省属重点",
+    "province": "江西"
+  },
+  {
+    "schId": "10422",
+    "name": "山东大学",
+    "type": "985",
+    "province": "山东"
+  },
+  {
+    "schId": "10423",
+    "name": "中国海洋大学",
+    "type": "985",
+    "province": "山东"
+  },
+  {
+    "schId": "10424",
+    "name": "山东科技大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10425",
+    "name": "中国石油大学（华东）",
+    "type": "211",
+    "province": "山东"
+  },
+  {
+    "schId": "10426",
+    "name": "青岛科技大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10427",
+    "name": "济南大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10428",
+    "name": "青岛理工大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10429",
+    "name": "山东建筑大学",
+    "type": "普通本科",
+    "province": "山东"
+  },
+  {
+    "schId": "10430",
+    "name": "齐鲁工业大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10431",
+    "name": "山东农业大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10432",
+    "name": "青岛农业大学",
+    "type": "普通本科",
+    "province": "山东"
+  },
+  {
+    "schId": "10433",
+    "name": "山东第一医科大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10434",
+    "name": "山东中医药大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10435",
+    "name": "山东师范大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10436",
+    "name": "曲阜师范大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10437",
+    "name": "烟台大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10438",
+    "name": "青岛大学",
+    "type": "省属重点",
+    "province": "山东"
+  },
+  {
+    "schId": "10459",
+    "name": "郑州大学",
+    "type": "211",
+    "province": "河南"
+  },
+  {
+    "schId": "10460",
+    "name": "河南理工大学",
+    "type": "省属重点",
+    "province": "河南"
+  },
+  {
+    "schId": "10461",
+    "name": "郑州轻工业大学",
+    "type": "普通本科",
+    "province": "河南"
+  },
+  {
+    "schId": "10462",
+    "name": "河南工业大学",
+    "type": "省属重点",
+    "province": "河南"
+  },
+  {
+    "schId": "10463",
+    "name": "河南科技大学",
+    "type": "省属重点",
+    "province": "河南"
+  },
+  {
+    "schId": "10464",
+    "name": "河南农业大学",
+    "type": "省属重点",
+    "province": "河南"
+  },
+  {
+    "schId": "10465",
+    "name": "河南科技学院",
+    "type": "普通本科",
+    "province": "河南"
+  },
+  {
+    "schId": "10466",
+    "name": "河南中医药大学",
+    "type": "省属重点",
+    "province": "河南"
+  },
+  {
+    "schId": "10467",
+    "name": "河南大学",
+    "type": "双一流",
+    "province": "河南"
+  },
+  {
+    "schId": "10468",
+    "name": "河南师范大学",
+    "type": "省属重点",
+    "province": "河南"
+  },
+  {
+    "schId": "10469",
+    "name": "信阳师范大学",
+    "type": "普通本科",
+    "province": "河南"
+  },
+  {
+    "schId": "10470",
+    "name": "河南财经政法大学",
+    "type": "普通本科",
+    "province": "河南"
+  },
+  {
+    "schId": "10486",
+    "name": "武汉大学",
+    "type": "985",
+    "province": "湖北"
+  },
+  {
+    "schId": "10487",
+    "name": "华中科技大学",
+    "type": "985",
+    "province": "湖北"
+  },
+  {
+    "schId": "10488",
+    "name": "武汉科技大学",
+    "type": "省属重点",
+    "province": "湖北"
+  },
+  {
+    "schId": "10489",
+    "name": "长江大学",
+    "type": "省属重点",
+    "province": "湖北"
+  },
+  {
+    "schId": "10490",
+    "name": "武汉工程大学",
+    "type": "省属重点",
+    "province": "湖北"
+  },
+  {
+    "schId": "10491",
+    "name": "中国地质大学（武汉）",
+    "type": "211",
+    "province": "湖北"
+  },
+  {
+    "schId": "10492",
+    "name": "武汉纺织大学",
+    "type": "普通本科",
+    "province": "湖北"
+  },
+  {
+    "schId": "10493",
+    "name": "武汉轻工大学",
+    "type": "普通本科",
+    "province": "湖北"
+  },
+  {
+    "schId": "10494",
+    "name": "武汉理工大学",
+    "type": "211",
+    "province": "湖北"
+  },
+  {
+    "schId": "10495",
+    "name": "湖北工业大学",
+    "type": "省属重点",
+    "province": "湖北"
+  },
+  {
+    "schId": "10496",
+    "name": "华中农业大学",
+    "type": "211",
+    "province": "湖北"
+  },
+  {
+    "schId": "10497",
+    "name": "湖北中医药大学",
+    "type": "省属重点",
+    "province": "湖北"
+  },
+  {
+    "schId": "10498",
+    "name": "华中师范大学",
+    "type": "211",
+    "province": "湖北"
+  },
+  {
+    "schId": "10499",
+    "name": "湖北大学",
+    "type": "省属重点",
+    "province": "湖北"
+  },
+  {
+    "schId": "10500",
+    "name": "中南财经政法大学",
+    "type": "211",
+    "province": "湖北"
+  },
+  {
+    "schId": "10501",
+    "name": "中南民族大学",
+    "type": "省属重点",
+    "province": "湖北"
+  },
+  {
+    "schId": "10502",
+    "name": "三峡大学",
+    "type": "省属重点",
+    "province": "湖北"
+  },
+  {
+    "schId": "10532",
+    "name": "湘潭大学",
+    "type": "双一流",
+    "province": "湖南"
+  },
+  {
+    "schId": "10533",
+    "name": "湖南大学",
+    "type": "985",
+    "province": "湖南"
+  },
+  {
+    "schId": "10534",
+    "name": "中南大学",
+    "type": "985",
+    "province": "湖南"
+  },
+  {
+    "schId": "10535",
+    "name": "湖南科技大学",
+    "type": "省属重点",
+    "province": "湖南"
+  },
+  {
+    "schId": "10536",
+    "name": "长沙理工大学",
+    "type": "省属重点",
+    "province": "湖南"
+  },
+  {
+    "schId": "10537",
+    "name": "湖南农业大学",
+    "type": "省属重点",
+    "province": "湖南"
+  },
+  {
+    "schId": "10538",
+    "name": "中南林业科技大学",
+    "type": "省属重点",
+    "province": "湖南"
+  },
+  {
+    "schId": "10539",
+    "name": "湖南中医药大学",
+    "type": "省属重点",
+    "province": "湖南"
+  },
+  {
+    "schId": "10540",
+    "name": "湖南师范大学",
+    "type": "211",
+    "province": "湖南"
+  },
+  {
+    "schId": "10541",
+    "name": "南华大学",
+    "type": "省属重点",
+    "province": "湖南"
+  },
+  {
+    "schId": "10558",
+    "name": "中山大学",
+    "type": "985",
+    "province": "广东"
+  },
+  {
+    "schId": "10559",
+    "name": "暨南大学",
+    "type": "211",
+    "province": "广东"
+  },
+  {
+    "schId": "10560",
+    "name": "汕头大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10561",
+    "name": "华南理工大学",
+    "type": "985",
+    "province": "广东"
+  },
+  {
+    "schId": "10562",
+    "name": "华南农业大学",
+    "type": "双一流",
+    "province": "广东"
+  },
+  {
+    "schId": "10563",
+    "name": "广东海洋大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10564",
+    "name": "华南农业大学",
+    "type": "双一流",
+    "province": "广东"
+  },
+  {
+    "schId": "10565",
+    "name": "广州医科大学",
+    "type": "双一流",
+    "province": "广东"
+  },
+  {
+    "schId": "10566",
+    "name": "广东医科大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10567",
+    "name": "广州中医药大学",
+    "type": "双一流",
+    "province": "广东"
+  },
+  {
+    "schId": "10568",
+    "name": "广东药科大学",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10569",
+    "name": "华南师范大学",
+    "type": "211",
+    "province": "广东"
+  },
+  {
+    "schId": "10570",
+    "name": "韶关学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10571",
+    "name": "惠州学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10572",
+    "name": "韩山师范学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10573",
+    "name": "岭南师范学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10574",
+    "name": "肇庆学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10575",
+    "name": "嘉应学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10576",
+    "name": "广州体育学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10577",
+    "name": "广州美术学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10578",
+    "name": "星海音乐学院",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10579",
+    "name": "广东技术师范大学",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10580",
+    "name": "深圳大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10581",
+    "name": "广东财经大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10582",
+    "name": "广州大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10583",
+    "name": "五邑大学",
+    "type": "普通本科",
+    "province": "广东"
+  },
+  {
+    "schId": "10584",
+    "name": "广东工业大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10585",
+    "name": "广东外语外贸大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10586",
+    "name": "南方医科大学",
+    "type": "省属重点",
+    "province": "广东"
+  },
+  {
+    "schId": "10587",
+    "name": "南方科技大学",
+    "type": "双一流",
+    "province": "广东"
+  },
+  {
+    "schId": "10593",
+    "name": "广西大学",
+    "type": "211",
+    "province": "广西"
+  },
+  {
+    "schId": "10594",
+    "name": "广西科技大学",
+    "type": "普通本科",
+    "province": "广西"
+  },
+  {
+    "schId": "10595",
+    "name": "桂林电子科技大学",
+    "type": "省属重点",
+    "province": "广西"
+  },
+  {
+    "schId": "10596",
+    "name": "桂林理工大学",
+    "type": "普通本科",
+    "province": "广西"
+  },
+  {
+    "schId": "10597",
+    "name": "广西医科大学",
+    "type": "省属重点",
+    "province": "广西"
+  },
+  {
+    "schId": "10598",
+    "name": "广西师范大学",
+    "type": "省属重点",
+    "province": "广西"
+  },
+  {
+    "schId": "10599",
+    "name": "广西民族大学",
+    "type": "省属重点",
+    "province": "广西"
+  },
+  {
+    "schId": "10589",
+    "name": "海南大学",
+    "type": "211",
+    "province": "海南"
+  },
+  {
+    "schId": "10590",
+    "name": "海南师范大学",
+    "type": "省属重点",
+    "province": "海南"
+  },
+  {
+    "schId": "10591",
+    "name": "海南医科大学",
+    "type": "普通本科",
+    "province": "海南"
+  },
+  {
+    "schId": "10610",
+    "name": "四川大学",
+    "type": "985",
+    "province": "四川"
+  },
+  {
+    "schId": "10611",
+    "name": "重庆大学",
+    "type": "985",
+    "province": "重庆"
+  },
+  {
+    "schId": "10612",
+    "name": "重庆邮电大学",
+    "type": "省属重点",
+    "province": "重庆"
+  },
+  {
+    "schId": "10613",
+    "name": "重庆交通大学",
+    "type": "省属重点",
+    "province": "重庆"
+  },
+  {
+    "schId": "10614",
+    "name": "重庆医科大学",
+    "type": "省属重点",
+    "province": "重庆"
+  },
+  {
+    "schId": "10615",
+    "name": "西南大学",
+    "type": "211",
+    "province": "重庆"
+  },
+  {
+    "schId": "10616",
+    "name": "重庆师范大学",
+    "type": "省属重点",
+    "province": "重庆"
+  },
+  {
+    "schId": "10617",
+    "name": "四川外国语大学",
+    "type": "普通本科",
+    "province": "重庆"
+  },
+  {
+    "schId": "10618",
+    "name": "西南政法大学",
+    "type": "省属重点",
+    "province": "重庆"
+  },
+  {
+    "schId": "10619",
+    "name": "重庆理工大学",
+    "type": "省属重点",
+    "province": "重庆"
+  },
+  {
+    "schId": "10620",
+    "name": "重庆工商大学",
+    "type": "普通本科",
+    "province": "重庆"
+  },
+  {
+    "schId": "10621",
+    "name": "西南交通大学",
+    "type": "211",
+    "province": "四川"
+  },
+  {
+    "schId": "10622",
+    "name": "电子科技大学",
+    "type": "985",
+    "province": "四川"
+  },
+  {
+    "schId": "10623",
+    "name": "西南石油大学",
+    "type": "双一流",
+    "province": "四川"
+  },
+  {
+    "schId": "10624",
+    "name": "成都理工大学",
+    "type": "双一流",
+    "province": "四川"
+  },
+  {
+    "schId": "10625",
+    "name": "西南科技大学",
+    "type": "省属重点",
+    "province": "四川"
+  },
+  {
+    "schId": "10626",
+    "name": "成都信息工程大学",
+    "type": "普通本科",
+    "province": "四川"
+  },
+  {
+    "schId": "10627",
+    "name": "西华大学",
+    "type": "省属重点",
+    "province": "四川"
+  },
+  {
+    "schId": "10628",
+    "name": "四川农业大学",
+    "type": "211",
+    "province": "四川"
+  },
+  {
+    "schId": "10629",
+    "name": "西南医科大学",
+    "type": "省属重点",
+    "province": "四川"
+  },
+  {
+    "schId": "10630",
+    "name": "成都中医药大学",
+    "type": "双一流",
+    "province": "四川"
+  },
+  {
+    "schId": "10631",
+    "name": "四川师范大学",
+    "type": "省属重点",
+    "province": "四川"
+  },
+  {
+    "schId": "10632",
+    "name": "西南财经大学",
+    "type": "211",
+    "province": "四川"
+  },
+  {
+    "schId": "10633",
+    "name": "成都体育学院",
+    "type": "普通本科",
+    "province": "四川"
+  },
+  {
+    "schId": "10634",
+    "name": "四川音乐学院",
+    "type": "普通本科",
+    "province": "四川"
+  },
+  {
+    "schId": "10635",
+    "name": "西南民族大学",
+    "type": "省属重点",
+    "province": "四川"
+  },
+  {
+    "schId": "10656",
+    "name": "贵州大学",
+    "type": "211",
+    "province": "贵州"
+  },
+  {
+    "schId": "10657",
+    "name": "贵州医科大学",
+    "type": "省属重点",
+    "province": "贵州"
+  },
+  {
+    "schId": "10658",
+    "name": "贵州师范大学",
+    "type": "省属重点",
+    "province": "贵州"
+  },
+  {
+    "schId": "10659",
+    "name": "贵州财经大学",
+    "type": "普通本科",
+    "province": "贵州"
+  },
+  {
+    "schId": "10673",
+    "name": "云南大学",
+    "type": "211",
+    "province": "云南"
+  },
+  {
+    "schId": "10674",
+    "name": "昆明理工大学",
+    "type": "省属重点",
+    "province": "云南"
+  },
+  {
+    "schId": "10675",
+    "name": "云南农业大学",
+    "type": "省属重点",
+    "province": "云南"
+  },
+  {
+    "schId": "10676",
+    "name": "西南林业大学",
+    "type": "普通本科",
+    "province": "云南"
+  },
+  {
+    "schId": "10677",
+    "name": "昆明医科大学",
+    "type": "省属重点",
+    "province": "云南"
+  },
+  {
+    "schId": "10678",
+    "name": "云南师范大学",
+    "type": "省属重点",
+    "province": "云南"
+  },
+  {
+    "schId": "10679",
+    "name": "云南财经大学",
+    "type": "普通本科",
+    "province": "云南"
+  },
+  {
+    "schId": "10693",
+    "name": "西藏大学",
+    "type": "211",
+    "province": "西藏"
+  },
+  {
+    "schId": "10697",
+    "name": "西北大学",
+    "type": "211",
+    "province": "陕西"
+  },
+  {
+    "schId": "10698",
+    "name": "西安交通大学",
+    "type": "985",
+    "province": "陕西"
+  },
+  {
+    "schId": "10699",
+    "name": "西北工业大学",
+    "type": "985",
+    "province": "陕西"
+  },
+  {
+    "schId": "10700",
+    "name": "西安理工大学",
+    "type": "省属重点",
+    "province": "陕西"
+  },
+  {
+    "schId": "10701",
+    "name": "西安电子科技大学",
+    "type": "211",
+    "province": "陕西"
+  },
+  {
+    "schId": "10702",
+    "name": "西安建筑科技大学",
+    "type": "省属重点",
+    "province": "陕西"
+  },
+  {
+    "schId": "10703",
+    "name": "西安科技大学",
+    "type": "省属重点",
+    "province": "陕西"
+  },
+  {
+    "schId": "10704",
+    "name": "西安石油大学",
+    "type": "普通本科",
+    "province": "陕西"
+  },
+  {
+    "schId": "10705",
+    "name": "陕西科技大学",
+    "type": "省属重点",
+    "province": "陕西"
+  },
+  {
+    "schId": "10706",
+    "name": "长安大学",
+    "type": "211",
+    "province": "陕西"
+  },
+  {
+    "schId": "10707",
+    "name": "西北农林科技大学",
+    "type": "985",
+    "province": "陕西"
+  },
+  {
+    "schId": "10708",
+    "name": "陕西师范大学",
+    "type": "211",
+    "province": "陕西"
+  },
+  {
+    "schId": "10709",
+    "name": "西安外国语大学",
+    "type": "普通本科",
+    "province": "陕西"
+  },
+  {
+    "schId": "10710",
+    "name": "西北政法大学",
+    "type": "省属重点",
+    "province": "陕西"
+  },
+  {
+    "schId": "10730",
+    "name": "兰州大学",
+    "type": "985",
+    "province": "甘肃"
+  },
+  {
+    "schId": "10731",
+    "name": "兰州理工大学",
+    "type": "省属重点",
+    "province": "甘肃"
+  },
+  {
+    "schId": "10732",
+    "name": "兰州交通大学",
+    "type": "省属重点",
+    "province": "甘肃"
+  },
+  {
+    "schId": "10733",
+    "name": "甘肃农业大学",
+    "type": "省属重点",
+    "province": "甘肃"
+  },
+  {
+    "schId": "10734",
+    "name": "西北师范大学",
+    "type": "省属重点",
+    "province": "甘肃"
+  },
+  {
+    "schId": "10742",
+    "name": "青海大学",
+    "type": "211",
+    "province": "青海"
+  },
+  {
+    "schId": "10743",
+    "name": "青海师范大学",
+    "type": "普通本科",
+    "province": "青海"
+  },
+  {
+    "schId": "10748",
+    "name": "宁夏大学",
+    "type": "211",
+    "province": "宁夏"
+  },
+  {
+    "schId": "10749",
+    "name": "宁夏医科大学",
+    "type": "省属重点",
+    "province": "宁夏"
+  },
+  {
+    "schId": "10755",
+    "name": "新疆大学",
+    "type": "211",
+    "province": "新疆"
+  },
+  {
+    "schId": "10756",
+    "name": "石河子大学",
+    "type": "211",
+    "province": "新疆"
+  },
+  {
+    "schId": "10757",
+    "name": "新疆农业大学",
+    "type": "省属重点",
+    "province": "新疆"
+  },
+  {
+    "schId": "10758",
+    "name": "新疆医科大学",
+    "type": "省属重点",
+    "province": "新疆"
+  },
+  {
+    "schId": "10759",
+    "name": "新疆师范大学",
+    "type": "普通本科",
+    "province": "新疆"
+  },
+  {
+    "schId": "16401",
+    "name": "香港中文大学（深圳）",
+    "type": "中外合作",
+    "province": "广东"
+  },
+  {
+    "schId": "16402",
+    "name": "香港科技大学（广州）",
+    "type": "中外合作",
+    "province": "广东"
+  },
+  {
+    "schId": "16403",
+    "name": "宁波诺丁汉大学",
+    "type": "中外合作",
+    "province": "浙江"
+  },
+  {
+    "schId": "16404",
+    "name": "西交利物浦大学",
+    "type": "中外合作",
+    "province": "江苏"
+  },
+  {
+    "schId": "16405",
+    "name": "上海纽约大学",
+    "type": "中外合作",
+    "province": "上海"
+  },
+  {
+    "schId": "16406",
+    "name": "昆山杜克大学",
+    "type": "中外合作",
+    "province": "江苏"
+  },
+  {
+    "schId": "16407",
+    "name": "温州肯恩大学",
+    "type": "中外合作",
+    "province": "浙江"
+  },
+  {
+    "schId": "16408",
+    "name": "广东以色列理工学院",
+    "type": "中外合作",
+    "province": "广东"
+  },
+  {
+    "schId": "16409",
+    "name": "深圳北理莫斯科大学",
+    "type": "中外合作",
+    "province": "广东"
+  },
+  {
+    "schId": "16410",
+    "name": "北京师范大学-香港浸会大学联合国际学院",
+    "type": "中外合作",
+    "province": "广东"
+  }
+]
