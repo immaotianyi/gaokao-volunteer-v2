@@ -167,30 +167,43 @@ def run_gate_check(data_type: str, df: pd.DataFrame) -> tuple[bool, list[str]]:
             if dup_keys > 0:
                 reports.append(f"  [{master_name}] ⚠ unique_key 重复 {dup_keys} 行（已去重， informational）")
 
-    # 每省行数阈值检查
-    prov_counts = df.groupby("province").size()
-    all_pass = True
-    for prov, cnt in prov_counts.items():
-        # 对 yifenyiduan/plans，阈值是每省每科类，所以总数应 >= 阈值 * 2（2科类）
-        # 对 admission_history，阈值是每省每年每科类，总数应 >= 阈值 * 6（3年*2科类）
-        # 对 control_line，阈值是每省每年
-        if data_type.startswith("yifenyiduan"):
-            expected_min = threshold * 2  # 2 科类
-        elif data_type.startswith("plans"):
-            expected_min = threshold * 2  # 2 科类
-        elif data_type == "admission_history":
-            expected_min = threshold * 6  # 3 年 * 2 科类（放宽到 4 倍允许部分年份缺失）
-        else:
-            expected_min = threshold
+    # 每省每科类行数阈值检查（#20 硬化）
+    # - yifenyiduan: 仅检查 subject_group ∈ {物理类, 历史类}（艺术/体育/校考类天然行数少，跳过）
+    # - plans: 按 (province, subject_group) 分组，每科类 ≥ threshold
+    # - admission_history: 按 (province, subject_group) 分组，每科类 3 年 ≥ threshold*3
+    # - control_line: 按 province 分组（单文件 year 固定，subject_group 含普通类/艺术类/体育类多批次拆分无意义），每省每年 ≥ threshold
+    check_df = df
+    if data_type.startswith("yifenyiduan") and "subject_group" in df.columns:
+        # 仅检查物理类/历史类两大科类（艺术/体育/校考类天然 200-600 行，不纳入闸门）
+        check_df = df[df["subject_group"].isin(["物理类", "历史类"])]
 
+    if data_type.startswith("control_line"):
+        # control_line 按 province 聚合（单文件 year 固定，subject_group 多批次不拆分）
+        group_cols = ["province"]
+        expected_min = threshold  # 每省每年 ≥4
+    else:
+        group_cols = ["province"]
+        if "subject_group" in check_df.columns:
+            group_cols.append("subject_group")
+        if data_type == "admission_history":
+            expected_min = threshold * 3  # 每科类 3 年
+        else:
+            expected_min = threshold  # 每科类/每年
+
+    prov_counts = check_df.groupby(group_cols).size()
+    all_pass = True
+    for key, cnt in prov_counts.items():
+        prov = key[0] if isinstance(key, tuple) else key
         if cnt < expected_min:
             reports.append(f"  [{master_name}] ⚠ {prov}: {cnt} 行 < {expected_min}（{dim_desc}≥{threshold}）")
-            # 标记但不阻塞（数据不完整不应阻止合并，只是警告）
+            # #20 闸门硬化：yifenyiduan/control_line 行数不足视为事故，阻塞合并
+            # plans/history 保留 warning（各省数据差异大/图片源普遍无法 OCR）
+            if data_type.startswith("yifenyiduan") or data_type.startswith("control_line"):
+                all_pass = False
         else:
             reports.append(f"  [{master_name}] ✓ {prov}: {cnt} 行 ≥ {expected_min}")
 
-    # 硬性失败条件：province 空值或缺列（已在上面 return False）
-    # 行数不足只警告不阻塞（避免数据恢复阶段无法重建）
+    # 硬性失败条件：province 空值/缺列/yifenyiduan-control_line 行数不足（#20 硬化）
     return all_pass, reports
 
 

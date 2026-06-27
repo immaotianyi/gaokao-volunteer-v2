@@ -63,8 +63,21 @@ SCHOOL_TIER_MAP = {
     "民办": 6,
 }
 
-# ── 选科组合考生占比估算（广东2026物理类为基准） ─────────────
-# 数据来源：各省考试院选科统计
+# ── 各省物理类考生占比（3+1+2 省份，基于 2024-2025 考试院选科统计） ──
+# 数据来源：各省考试院公开的一分一段表物理类/历史类累计人数推算
+# 用于省份自适应的选科稀缺度计算（物理类占比越高 → 历史类组合越稀缺）
+PROVINCE_PHYSICS_RATIO = {
+    "广东": 0.60, "福建": 0.60, "湖北": 0.62, "湖南": 0.58,
+    "河北": 0.65, "辽宁": 0.63, "重庆": 0.64, "江苏": 0.61,
+    "河南": 0.60, "安徽": 0.59, "四川": 0.56, "陕西": 0.58,
+    "甘肃": 0.57, "江西": 0.55,
+}
+# 默认物理类占比（未收录省份回退）
+DEFAULT_PHYSICS_RATIO = 0.60
+
+# ── 选科组合条件概率（给定首选科目后的组合占比，各省差异小用全国统一值） ──
+# 物理类下：物化生约占 70%，物化地约 30%（物化捆绑后第三科分布）
+# 历史类下：史政地约占 60%，史政生约 20%，史地生约 17%
 SUBJECT_COMBO_RATIO = {
     "物理+化学+生物": 0.42,
     "物理+化学+地理": 0.18,
@@ -217,31 +230,49 @@ def _detect_first_batch(
 def _calc_subject_scarcity(
     subject_requirement: str,
     user_subject_group: str,
+    province: str = "",
 ) -> Optional[float]:
     """
-    计算选科稀缺度（通用版，不依赖特定省份）。
+    计算选科稀缺度（省份自适应版）。
     返回 0-1 之间的小数，代表满足该选科要求的考生占比。
     占比越低 → 竞争越小 → 捡漏价值越高。
 
-    通用算法：
+    省份自适应算法：
     1. 解析选科要求字符串，提取"首选科目"和"再选要求"
-    2. 基于全国通用的选科比例估算（物化捆绑约55%，物化生约42%等）
-    3. 支持模糊匹配、单科要求、不限等场景
+    2. 查 PROVINCE_PHYSICS_RATIO 获取该省物理类考生占比
+    3. 物理类组合按 province_physics_ratio / 0.60 缩放（广东基准）
+       历史类组合按 (1-province_physics_ratio) / 0.40 缩放
+    4. 支持模糊匹配、单科要求、不限等场景
     """
     if not subject_requirement or pd.isna(subject_requirement):
         return None
 
     req = str(subject_requirement).strip()
 
+    # 省份物理类占比（用于自适应缩放）
+    physics_ratio = PROVINCE_PHYSICS_RATIO.get(province, DEFAULT_PHYSICS_RATIO)
+    # 物理类组合缩放因子（广东基准 0.60）
+    physics_scale = physics_ratio / 0.60
+    # 历史类组合缩放因子（广东基准 0.40）
+    history_scale = (1 - physics_ratio) / 0.40
+
+    def _scale(ratio: float, req_str: str) -> float:
+        """按 province 物理类占比缩放组合占比。"""
+        if req_str.startswith("物理"):
+            return min(1.0, ratio * physics_scale)
+        elif req_str.startswith("历史"):
+            return min(1.0, ratio * history_scale)
+        return ratio
+
     # 1. 精确匹配预定义字典
     ratio = SUBJECT_COMBO_RATIO.get(req)
     if ratio is not None:
-        return ratio
+        return _scale(ratio, req)
 
     # 2. 模糊匹配预定义字典
     for key, val in SUBJECT_COMBO_RATIO.items():
         if key in req or req in key:
-            return val
+            return _scale(val, key)
 
     # 3. 通用解析：基于选科要求字符串动态计算
     req_lower = req.lower()
@@ -1137,10 +1168,10 @@ def find_leakage_opportunities(
         axis=1,
     )
 
-    # 10e. 选科稀缺度
+    # 10e. 选科稀缺度（省份自适应）
     if "subject_requirement" in safe_candidates.columns:
         safe_candidates["subject_scarcity"] = safe_candidates["subject_requirement"].apply(
-            lambda x: _calc_subject_scarcity(x, user_subject)
+            lambda x: _calc_subject_scarcity(x, user_subject, user_province)
         )
     else:
         safe_candidates["subject_scarcity"] = None
