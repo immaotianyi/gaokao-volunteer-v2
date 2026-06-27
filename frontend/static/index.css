@@ -1,37 +1,210 @@
 /**
- * 高考志愿狙击手 — 全局基础样式
- * 仅 html/body 重置 + 通用基类
+ * 高考志愿守护 — 全局基础样式
+ * 墨底 + 烛光 + 宣纸 + 水墨 的东方人文基调
+ * 仅 html/body 重置 + 通用基类 + CSS 变量
  * 组件样式在各 .vue scoped 中定义
  */
 
+:root {
+  /* ═══ 暮色主题（深色，默认）═══ */
+  /* 语义变量：组件应优先引用这些，主题切换时自动反转 */
+  --bg-base: #07101c;                  /* 主背景 */
+  --bg-surface: rgba(2, 6, 23, 0.85);  /* header / 浮层背景 */
+  --bg-elevated: rgba(15, 23, 42, 0.92); /* 弹窗 / 抽屉背景 */
+  --bg-glass: rgba(255, 255, 255, 0.04); /* glass-card 底 */
+  --bg-glass-strong: rgba(255, 255, 255, 0.08);
+  --bg-input: rgba(255, 255, 255, 0.05);
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --border-glass: rgba(232, 185, 116, 0.12);
+  --overlay: rgba(2, 6, 23, 0.72);     /* 遮罩 */
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.25);
+
+  --text-primary: #f1e9d6;   /* 米白主文 */
+  --text-secondary: #c4b896; /* 暖灰副文 */
+  --text-muted: #8a7e6a;     /* 暖深灰 */
+  --text-faint: #5a5246;     /* 暖淡灰 */
+
+  --accent: #e8b974;         /* 主烛光 */
+  --accent-strong: #d49a4e;  /* 深烛光 */
+  --accent-contrast: #fff;   /* 烛光按钮上的文字色 */
+
+  /* ── 墨色阶（底色，深色专用色板）── */
+  --ink-900: #07101c;
+  --ink-800: #0f1825;
+  --ink-700: #1a2535;
+  --ink-600: #2a3548;
+
+  /* ── 烛光暖色（点缀色板）── */
+  --candle-200: #fbe9c8;
+  --candle-300: #f4d8a8;
+  --candle-400: #e8b974;
+  --candle-500: #d49a4e;
+  --candle-600: #b87d36;
+
+  /* ── 宣纸色 ── */
+  --paper-100: #f5ecd9;
+  --paper-200: #e8dcc4;
+  --paper-300: #c4b896;
+
+  /* ── 印章红 ── */
+  --seal-300: #e08574;
+  --seal-500: #c44536;
+  --seal-700: #8b2e22;
+
+  /* ── 墨青 ── */
+  --jade-300: #8ab39e;
+  --jade-500: #5e8b7e;
+
+  /* ── 字体栈 ── */
+  --font-brush: "STKaiti", "Kaiti SC", "KaiTi", "STSong", "Songti SC", "SimSun", serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Consolas", monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "PingFang SC", sans-serif;
+
+  /* 星空背景混合模式 */
+  --universe-blend: screen;
+  --universe-opacity: 0.55;
+}
+
+/* ═══ 晨光主题（浅色）═══ */
+[data-theme="light"] {
+  --bg-base: #f5efe3;                  /* 宣纸暖白主背景 */
+  --bg-surface: rgba(245, 239, 227, 0.88);
+  --bg-elevated: rgba(255, 251, 243, 0.96);
+  --bg-glass: rgba(255, 252, 245, 0.55);
+  --bg-glass-strong: rgba(255, 248, 235, 0.78);
+  --bg-input: rgba(60, 40, 20, 0.04);
+  --border-soft: rgba(60, 40, 20, 0.08);
+  --border-glass: rgba(180, 125, 54, 0.22);
+  --overlay: rgba(245, 239, 227, 0.72);
+  --shadow-card: 0 8px 24px rgba(60, 40, 20, 0.1);
+
+  --text-primary: #1f1a14;   /* 墨色主文 */
+  --text-secondary: #5c5346; /* 深褐副文 */
+  --text-muted: #8a7f6e;     /* 中灰 */
+  --text-faint: #b0a594;     /* 淡灰 */
+
+  --accent: #b8862f;         /* 浅底下用更深的琥珀保证对比度 */
+  --accent-strong: #9c6f1f;
+  --accent-contrast: #fff;
+
+  --universe-blend: multiply;
+  --universe-opacity: 0.32;
+}
+
 html, body {
-  background-color: #020617;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", sans-serif;
+  background-color: var(--bg-base);
+  font-family: var(--font-sans);
   font-size: 14px;
-  color: #e2e8f0;
+  color: var(--text-primary);
   line-height: 1.6;
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+/* ═══ 浅色模式：硬编码容器覆盖 ═══ */
+/* 处理组件中尚未变量化的硬编码背景/边框，保证浅色下可用 */
+[data-theme="light"] .app-shell,
+[data-theme="light"] .landing-shell { background: var(--bg-base) !important; }
+[data-theme="light"] .app-header,
+[data-theme="light"] .nav-bar.scrolled { background: var(--bg-surface) !important; border-color: var(--border-soft) !important; }
+[data-theme="light"] .nav-bar { background: transparent !important; }
+[data-theme="light"] .glass-card {
+  background: var(--bg-glass) !important;
+  border-color: var(--border-glass) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+[data-theme="light"] .guide-overlay,
+[data-theme="light"] .disclaimer-overlay { background: var(--overlay) !important; backdrop-filter: blur(16px) !important; }
+[data-theme="light"] .guide-panel,
+[data-theme="light"] .disclaimer-panel { background: var(--bg-elevated) !important; border-color: var(--border-glass) !important; }
+[data-theme="light"] .orb { opacity: 0.16 !important; }
+[data-theme="light"] .grid-overlay { opacity: 0.5 !important; }
+/* 浅色下星空用 multiply 混合，暖星点叠在宣纸上更自然 */
+[data-theme="light"] .data-universe-canvas { opacity: var(--universe-opacity) !important; mix-blend-mode: var(--universe-blend) !important; }
+/* 烛光发光元素在浅色下减弱 */
+[data-theme="light"] .logo-mark,
+[data-theme="light"] .guide-icon,
+[data-theme="light"] .disclaimer-icon { box-shadow: 0 0 16px rgba(184, 134, 47, 0.25) !important; }
+/* 浅色下仪式遮罩变宣纸色沉浸，进度卡变浅 */
+[data-theme="light"] .scan-overlay { background: rgba(245, 239, 227, 0.96) !important; }
+[data-theme="light"] .fake-terminal { background: rgba(255, 251, 243, 0.7) !important; border-color: rgba(180, 125, 54, 0.2) !important; box-shadow: inset 0 0 24px rgba(180, 125, 54, 0.06) !important; }
+[data-theme="light"] .ritual-scanlines { background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(180, 125, 54, 0.03) 3px, rgba(180, 125, 54, 0.03) 4px) !important; }
+
+/* ── 玻璃卡片：暖光柔化版（保留深色玻璃质感，加暖色边光）── */
 .glass-card {
-  background: rgba(255, 255, 255, 0.04);
+  background: linear-gradient(135deg, rgba(232, 185, 116, 0.03) 0%, rgba(255, 255, 255, 0.025) 50%, rgba(94, 139, 126, 0.02) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(232, 185, 116, 0.08);
+  border-top: 1px solid rgba(244, 216, 168, 0.14);
+  border-left: 1px solid rgba(232, 185, 116, 0.1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(244, 216, 168, 0.08);
   border-radius: 12px;
 }
 
+/* ── 毛笔字类（用于标题/诗句点缀）── */
+.font-brush {
+  font-family: var(--font-brush);
+  letter-spacing: 0.08em;
+}
+
+/* ── 宣纸纹理（CSS 生成，无外部依赖）── */
+.paper-texture {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(232, 220, 196, 0.025) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(232, 185, 116, 0.02) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 100%);
+}
+
+/* ── 水墨分隔线（替代硬边框）── */
+.ink-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(232, 185, 116, 0.25) 50%, transparent 100%);
+  border: none;
+}
+
+/* ── 印章样式（用于徽章/落款）── */
+.ink-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--seal-500);
+  color: var(--paper-100);
+  font-family: var(--font-brush);
+  font-weight: 700;
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 0 1px rgba(196, 69, 54, 0.3), inset 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ── 隐藏滚动条 ── */
 .custom-scrollbar::-webkit-scrollbar { display: none; }
 .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* ── 通用动画 keyframes（保留兼容）── */
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.8); opacity: 0.5; } }
 @keyframes pulse-glow { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.95; } }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes qr-scan { 0% { transform: translateY(-4px); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(150px); opacity: 0; } }
+
+/* ── 烛光呼吸（替代冷色脉冲）── */
+@keyframes candle-breath {
+  0%, 100% { opacity: 0.85; box-shadow: 0 0 8px rgba(232, 185, 116, 0.3); }
+  50% { opacity: 1; box-shadow: 0 0 16px rgba(232, 185, 116, 0.55); }
+}
+
+/* ── 水墨晕染入场（替代 glitch）── */
+@keyframes ink-spread {
+  0% { opacity: 0; filter: blur(4px); transform: scale(0.96); }
+  100% { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
+/* ── 卷轴展开（用于进度感）── */
+@keyframes scroll-unroll {
+  0% { transform: scaleX(0); transform-origin: left; }
+  100% { transform: scaleX(1); transform-origin: left; }
+}

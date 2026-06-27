@@ -6,7 +6,7 @@
  *   - 开发: 不设或设为 http://localhost:8000
  *   - 生产: 设为空字符串 "" → 走相对路径，由 nginx 反代 /api 到 backend
  */
-import type { LeakageResult } from "../stores/leakage";
+import type { LeakageResult, LeakageOpportunity } from "../stores/leakage";
 import type { RiskResult, RiskTarget } from "../stores/risk";
 import type { UserProfile } from "../stores/profile";
 
@@ -27,7 +27,10 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
     let detail = "请求失败";
     try {
       const body = await res.json();
-      if (body?.detail) detail = body.detail;
+      if (body?.detail) {
+        // detail 可能是字符串或对象，统一转成字符串避免 [object Object]
+        detail = typeof body.detail === "string" ? body.detail : JSON.stringify(body.detail);
+      }
     } catch { /* ignore */ }
     throw new Error(detail);
   }
@@ -81,7 +84,7 @@ export interface SSECallbacks {
 /** V3 SSE 流式探雷 GET /api/check-risk/stream */
 export function startRiskStream(
   profile: Record<string, any>,
-  targets: Record<string, string>[],
+  targets: RiskTarget[],
   callbacks: SSECallbacks,
 ): EventSource {
   const url = buildSSEUrl("/api/check-risk/stream", {
@@ -99,7 +102,7 @@ export interface AgentSSECallbacks extends SSECallbacks {}
 /** V4 Agent SSE 流式探雷 GET /api/check-risk/agent/stream */
 export function startAgentStream(
   profile: Record<string, any>,
-  targets: Record<string, string>[],
+  targets: RiskTarget[],
   callbacks: AgentSSECallbacks,
   options?: { provider?: string; prompt_mode?: string },
 ): EventSource {
@@ -119,10 +122,11 @@ export function startAgentStream(
 export interface LiveCheckResult {
   university: string;
   major: string;
-  status: string;
-  reason: string;
-  matched_clause: string;
-  source: string;
+  source: string;             // "local" | "live"
+  rules: Record<string, any>; // 嵌套对象，前端不要直接渲染为字符串（会显示 [object Object]）
+  rules_text: string;         // ✅ 可读文本，前端用这个渲染
+  message?: string;           // 辅助提示
+  error?: string;             // 联网检索失败时的错误信息
 }
 
 /** POST /api/check-risk/live — 联网检索非核心高校章程 */
@@ -156,6 +160,60 @@ export function runLeakageRadar(params: LeakageRadarParams): Promise<LeakageResu
 
 export function refreshRadarCache(): Promise<{ status: string; deleted_keys: number }> {
   return request("/api/leakage-radar/refresh-cache", { method: "POST" });
+}
+
+// ── 定制化捡漏雷达（结合志愿草表） ─────────────────────────────
+
+export interface CustomLeakageTarget {
+  university: string;
+  major: string;
+}
+
+export interface CustomLeakagePayload {
+  profile: Omit<UserProfile, "user_id">;
+  subject_group: string;
+  targets: CustomLeakageTarget[];
+  score_tolerance?: number;
+}
+
+export interface TargetLeakageSummary {
+  university: string;
+  major: string;
+  opportunity_count: number;
+  best_score: number | null;
+  best_type: string | null;
+}
+
+export interface CustomLeakageResult {
+  total: number;
+  preview: LeakageOpportunity[];
+  locked: boolean;
+  locked_count: number;
+  request_id: string | null;
+  prompt_text: string;
+  target_summary: TargetLeakageSummary[];
+}
+
+export interface CustomUnlockResult {
+  unlocked: boolean;
+  total: number;
+  opportunities: LeakageOpportunity[];
+}
+
+/** POST /api/leakage-radar/customize — 基于志愿草表的定制化捡漏 */
+export function customizeLeakageRadar(payload: CustomLeakagePayload): Promise<CustomLeakageResult> {
+  return request("/api/leakage-radar/customize", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+/** POST /api/leakage-radar/customize/unlock — 解锁完整定制化报告（比赛期间跳过支付校验） */
+export function unlockCustomLeakage(requestId: string, userId: string): Promise<CustomUnlockResult> {
+  return request("/api/leakage-radar/customize/unlock", {
+    method: "POST",
+    body: JSON.stringify({ request_id: requestId, user_id: userId }),
+  });
 }
 
 // ── AI 顾问 ─────────────────────────────────────────────────────

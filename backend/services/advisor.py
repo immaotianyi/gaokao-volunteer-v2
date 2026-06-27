@@ -258,7 +258,7 @@ async def maybe_live_search(query: str) -> str:
 
     try:
         from .live_search import tavily_search
-        result = tavily_search(query + " 高考志愿 2026", max_results=3)
+        result = await asyncio.to_thread(tavily_search, query + " 高考志愿 2026", 3)
         if result and result.get("answer"):
             urls = result.get("urls", [])
             sources_str = " | ".join(urls[:3]) if urls else ""

@@ -324,7 +324,7 @@ const disclaimerAccepted = ref(false)
 .profile-shell {
   min-height: 100vh;
   background: #020617;
-  color: #e2e8f0;
+  color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", sans-serif;
   position: relative;
   padding-bottom: 40px;
@@ -361,24 +361,24 @@ const disclaimerAccepted = ref(false)
   padding: 30px 20px 16px;
 }
 .header-left-group { display: flex; align-items: center; gap: 16px; }
-.back-btn { display: flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.back-btn:hover { background: rgba(255, 255, 255, 0.08); color: #e2e8f0; border-color: rgba(255, 255, 255, 0.15); }
-.back-btn:active { background: rgba(255, 255, 255, 0.1); color: #e2e8f0; transform: scale(0.96); }
+.back-btn { display: flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.back-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); border-color: rgba(255, 255, 255, 0.15); }
+.back-btn:active { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); transform: scale(0.96); }
 .profile-title {
-  font-size: 28px; font-weight: 900; color: #f1f5f9; letter-spacing: -1px;
+  font-size: 28px; font-weight: 900; color: var(--text-primary); letter-spacing: -1px;
 }
 .sync-badge {
   display: flex; align-items: center; gap: 4px;
   padding: 5px 12px; border-radius: 10px;
   font-size: 11px; font-weight: 600;
-  background: rgba(255, 255, 255, 0.04); color: #64748b;
+  background: rgba(255, 255, 255, 0.04); color: var(--text-muted);
 }
 .sync-badge.synced { color: #86efac; }
 .sync-badge.syncing { color: #7dd3fc; }
 .sync-badge.error { color: #fda4af; }
 .sync-dot {
   width: 5px; height: 5px; border-radius: 50%;
-  background: #64748b;
+  background: var(--text-muted);
 }
 .sync-badge.synced .sync-dot { background: #22c55e; }
 .sync-badge.syncing .sync-dot { background: #38bdf8; animation: pulse 1s infinite; }
@@ -399,7 +399,7 @@ const disclaimerAccepted = ref(false)
   margin-bottom: 14px;
 }
 .section-label {
-  font-size: 11px; font-weight: 700; color: #64748b;
+  font-size: 11px; font-weight: 700; color: var(--text-muted);
   text-transform: uppercase; letter-spacing: 2px;
 }
 .edit-toggle {
@@ -416,30 +416,30 @@ const disclaimerAccepted = ref(false)
   margin-bottom: 18px;
 }
 .score-value {
-  font-size: 48px; font-weight: 200; color: #f1f5f9;
+  font-size: 48px; font-weight: 200; color: var(--text-primary);
   line-height: 1; letter-spacing: -3px;
 }
 .score-unit {
-  font-size: 16px; color: #64748b; margin-left: 4px;
+  font-size: 16px; color: var(--text-muted); margin-left: 4px;
 }
 
 /* ── 编辑模式 ── */
 .edit-score { margin-bottom: 12px; }
-.edit-label { font-size: 13px; color: #64748b; display: block; margin-bottom: 6px; }
+.edit-label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px; }
 .required { color: #fb7185; }
 .score-input { font-size: 32px !important; font-weight: 200; }
 .edit-input {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 7px; padding: 6px 10px;
-  font-size: 13px; color: #f1f5f9; text-align: right;
+  font-size: 13px; color: var(--text-primary); text-align: right;
 }
 .edit-input:focus { border-color: rgba(56, 189, 248, 0.4); }
 .edit-picker {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 7px; padding: 6px 10px;
-  font-size: 13px; color: #94a3b8; text-align: right;
+  font-size: 13px; color: var(--text-secondary); text-align: right;
 }
 
 /* ── Info Grid ── */
@@ -450,15 +450,15 @@ const disclaimerAccepted = ref(false)
   display: flex; justify-content: space-between; align-items: center;
   padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
-.info-label { font-size: 13px; color: #64748b; display: flex; align-items: center; }
-.info-value { font-size: 13px; color: #e2e8f0; font-weight: 600; }
+.info-label { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; }
+.info-value { font-size: 13px; color: var(--text-primary); font-weight: 600; }
 
 /* ── Vision Toggle ── */
 .vision-toggle { display: flex; gap: 4px; }
 .vision-opt {
   padding: 5px 10px; border-radius: 7px;
   font-size: 12px; font-weight: 600;
-  background: rgba(255, 255, 255, 0.04); color: #94a3b8;
+  background: rgba(255, 255, 255, 0.04); color: var(--text-secondary);
 }
 .vision-opt.active {
   background: rgba(56, 189, 248, 0.15); color: #38bdf8;
@@ -469,28 +469,28 @@ const disclaimerAccepted = ref(false)
 .edit-actions { margin-top: 14px; }
 .cancel-btn {
   padding: 8px 0; text-align: center; border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04); font-size: 13px; color: #94a3b8;
+  background: rgba(255, 255, 255, 0.04); font-size: 13px; color: var(--text-secondary);
 }
 
 /* ═══════════ 数据覆盖说明 ═══════════ */
 .coverage-content { padding: 4px 0; }
 .coverage-stats { display: flex; gap: 12px; margin-bottom: 16px; }
 .coverage-stat { flex: 1; text-align: center; padding: 16px 8px; background: rgba(255, 255, 255, 0.03); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05); }
-.coverage-value { font-size: 28px; font-weight: 900; color: #f1f5f9; font-family: "SF Mono", monospace; display: block; line-height: 1; }
+.coverage-value { font-size: 28px; font-weight: 900; color: var(--text-primary); font-family: "SF Mono", monospace; display: block; line-height: 1; }
 .coverage-unit { font-size: 12px; color: #38bdf8; font-weight: 600; }
-.coverage-desc { font-size: 11px; color: #64748b; display: block; margin-top: 6px; }
+.coverage-desc { font-size: 11px; color: var(--text-muted); display: block; margin-top: 6px; }
 .coverage-provinces { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-.province-label { font-size: 12px; color: #64748b; }
+.province-label { font-size: 12px; color: var(--text-muted); }
 .province-tags { display: flex; gap: 6px; flex-wrap: wrap; }
 .province-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.15); border-radius: 12px; color: #7dd3fc; }
-.coverage-note { font-size: 12px; color: #64748b; line-height: 1.7; margin: 0; }
+.coverage-note { font-size: 12px; color: var(--text-muted); line-height: 1.7; margin: 0; }
 
 /* ═══════════ 免责声明 ═══════════ */
 .disclaimer-content {
   padding: 4px 0;
 }
 .disclaimer-body {
-  font-size: 12px; color: #64748b; line-height: 1.8;
+  font-size: 12px; color: var(--text-muted); line-height: 1.8;
   display: block; margin-bottom: 12px;
 }
 .disclaimer-agree {
@@ -502,14 +502,14 @@ const disclaimerAccepted = ref(false)
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .agree-box.checked { background: #38bdf8; border-color: #38bdf8; }
-.agree-label { font-size: 12px; color: #94a3b8; }
+.agree-label { font-size: 12px; color: var(--text-secondary); }
 
 /* ═══════════ 订单记录 ═══════════ */
 .order-empty {
   text-align: center; padding: 24px 0;
 }
 .order-empty-text {
-  font-size: 14px; color: #94a3b8; display: block; margin-bottom: 4px;
+  font-size: 14px; color: var(--text-secondary); display: block; margin-bottom: 4px;
 }
 .order-empty-hint {
   font-size: 11px; color: #475569;
@@ -524,7 +524,7 @@ const disclaimerAccepted = ref(false)
 .footer-copy { font-size: 10px; color: #334155; margin-top: 3px; display: block; }
 
 /* ── 位次自动推算 ── */
-.rank-auto-toggle { font-size: 10px; font-weight: 400; color: #64748b; cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.03); }
+.rank-auto-toggle { font-size: 10px; font-weight: 400; color: var(--text-muted); cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.03); }
 .rank-auto-toggle:hover { color: #38bdf8; }
 .auto-dot { width: 6px; height: 6px; border-radius: 50%; background: #475569; transition: all 0.2s; }
 .auto-dot.active { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5); }

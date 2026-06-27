@@ -16,6 +16,7 @@ from typing import AsyncGenerator
 
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 from services.risk_checker import batch_check_risks, check_admission_risk
 from services.enrollment_kb import get_knowledge_base
@@ -62,6 +63,27 @@ async def _sse_event_generator(
     for i, t in enumerate(targets):
         univ = t.get("university", "未知大学")
         major = t.get("major", "未知专业")
+
+        # ── 输入合法性校验：拒绝明显无效的大学名/专业名 ──
+        is_invalid = False
+        invalid_reason = ""
+        if not univ or len(univ.strip()) < 2:
+            is_invalid = True
+            invalid_reason = f"大学名称「{univ}」过短，请输入完整校名（如「中山大学」）"
+        elif "大学" not in univ and "学院" not in univ and len(univ) < 3:
+            is_invalid = True
+            invalid_reason = f"「{univ}」不像有效的大学名称，请输入完整校名"
+        if not major or len(major.strip()) < 2:
+            is_invalid = True
+            invalid_reason = f"专业名称「{major}」过短，请输入完整专业名"
+
+        if is_invalid:
+            ts = int(time.time())
+            yield _sse_line({"type": "log", "text": f">>> [{i+1}/{len(targets)}] ⚠ 输入无效: {invalid_reason}", "ts": ts})
+            await asyncio.sleep(0.2)
+            yield _sse_line({"type": "log", "text": f"   → ⚠ 无法审查: 请修正后重新提交", "ts": ts})
+            results.append({**t, "status": "WARNING", "reason": invalid_reason, "matched_clause": ""})
+            continue
 
         ts = int(time.time())
         yield _sse_line({"type": "log", "text": f">>> [{i+1}/{len(targets)}] 审查: 【{univ}】{major}", "ts": ts})
@@ -220,21 +242,148 @@ async def check_risk_live(target: RiskTarget):
     from services.live_search import search_university_rules
     from services.enrollment_kb import get_knowledge_base
 
-    # 先检查是否在本地数据库中
+    # 先检查是否在本地数据库中（kb.query 返回 found/source/条款等字段）
     kb = get_knowledge_base()
-    local_rules = kb.search_rules(target.university, target.major)
-    if local_rules:
+    local_rules = kb.query(target.university, target.major)
+    # source 含"通用默认规则"说明本地未收录该大学 → 需联网
+    in_local = (
+        local_rules.get("found")
+        and "通用默认规则" not in local_rules.get("source", "")
+    )
+    if in_local:
         return {
             "university": target.university,
             "major": target.major,
             "source": "local",
             "rules": local_rules,
+            "rules_text": kb.get_rule_summary(target.university, target.major),
             "message": "该高校已在本地数据库中，无需联网搜索",
         }
 
     # 本地没有，联网搜索
     result = await search_university_rules(target.university)
 
-    # 追加专业信息
+    # 追加专业信息 + 可读文本（避免前端把嵌套 dict 当字符串渲染为 [object Object]）
     result["major"] = target.major
+    if isinstance(result.get("rules"), dict):
+        majors = result["rules"].get("majors", [])
+        if majors:
+            notes_list = [m.get("notes", "") for m in majors if m.get("notes")]
+            result["rules_text"] = "\n".join(notes_list) or result["rules"].get("summary", "")
+        else:
+            result["rules_text"] = result["rules"].get("summary", "")
+    elif result.get("error"):
+        result["rules_text"] = result["error"]
+    else:
+        result["rules_text"] = ""
     return result
+
+
+# ── 批量联网搜索接口 ─────────────────────────────────────────
+
+class _LiveBatchItem(BaseModel):
+    """批量检索的单条请求项"""
+    university: str
+    major: str = ""
+
+
+class LiveBatchRequest(BaseModel):
+    """批量联网检索请求"""
+    items: list[_LiveBatchItem]
+
+
+@router.post("/live/batch")
+async def check_risk_live_batch(payload: LiveBatchRequest):
+    """
+    批量联网检索多所高校的招生章程。
+
+    - 并发执行（asyncio.gather + to_thread），逐条返回结果
+    - 单次最多 20 条，避免 API 配额耗尽
+    - 失败的条目返回 error 字段，不影响其他条目
+    - 用于志愿草表批量录入后一次性检索所有院校
+    """
+    if not payload.items:
+        raise HTTPException(status_code=400, detail="检索列表不能为空")
+    if len(payload.items) > 20:
+        raise HTTPException(status_code=400, detail="单次最多检索 20 所高校")
+
+    from services.live_search import search_university_rules
+    from services.enrollment_kb import get_knowledge_base
+
+    kb = get_knowledge_base()
+
+    async def _check_one(item: _LiveBatchItem) -> dict:
+        """单条检索：先查本地，命中则直接返回；未命中走联网。"""
+        univ = item.university
+        major = item.major
+
+        # 输入校验
+        if not univ or len(univ.strip()) < 2:
+            return {
+                "university": univ,
+                "major": major,
+                "source": "invalid",
+                "rules": None,
+                "rules_text": f"大学名称「{univ}」过短，请输入完整校名",
+                "error": "invalid_input",
+            }
+
+        # 本地优先
+        try:
+            local_rules = kb.query(univ, major)
+            in_local = (
+                local_rules.get("found")
+                and "通用默认规则" not in local_rules.get("source", "")
+            )
+            if in_local:
+                return {
+                    "university": univ,
+                    "major": major,
+                    "source": "local",
+                    "rules": local_rules,
+                    "rules_text": kb.get_rule_summary(univ, major),
+                    "message": "本地数据库已收录",
+                }
+        except Exception:
+            pass
+
+        # 联网检索
+        try:
+            result = await search_university_rules(univ)
+            result["major"] = major
+            # 统一 rules_text
+            if isinstance(result.get("rules"), dict):
+                majors = result["rules"].get("majors", [])
+                if majors:
+                    notes_list = [m.get("notes", "") for m in majors if m.get("notes")]
+                    result["rules_text"] = "\n".join(notes_list) or result["rules"].get("summary", "")
+                else:
+                    result["rules_text"] = result["rules"].get("summary", "")
+            elif result.get("error"):
+                result["rules_text"] = result["error"]
+            else:
+                result["rules_text"] = ""
+            return result
+        except Exception as e:
+            return {
+                "university": univ,
+                "major": major,
+                "source": "live",
+                "rules": None,
+                "rules_text": f"联网检索失败: {str(e)[:100]}",
+                "error": str(e)[:200],
+            }
+
+    # 并发执行
+    tasks = [_check_one(item) for item in payload.items]
+    results = await asyncio.gather(*tasks, return_exceptions=False)
+
+    success_count = sum(1 for r in results if r.get("source") in ("local", "live") and not r.get("error"))
+    fail_count = len(results) - success_count
+
+    return {
+        "total": len(results),
+        "success": success_count,
+        "failed": fail_count,
+        "results": results,
+    }

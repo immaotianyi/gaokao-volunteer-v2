@@ -319,6 +319,8 @@ async def wechat_notify(request: Request):
         resource = wechat_pay.parse_notify(headers, raw_str)
     except ValueError as e:
         print(f"[PAY] 回调验签失败: {e}")
+        if wechat_pay._signature_strict():
+            raise HTTPException(status_code=403, detail="签名验证失败")
         return {"code": "FAIL", "message": "签名验证失败"}
     except Exception as e:
         print(f"[PAY] 回调解密失败: {e}")

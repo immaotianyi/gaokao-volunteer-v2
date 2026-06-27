@@ -195,24 +195,23 @@ def _detect_first_batch(
     prev_df: pd.DataFrame,
 ) -> bool:
     """
-    检测首招批次变更：某大学的某个专业组今年首次在本科批招生。
-    对比 2025 年的 (university_code, group_code, batch) 组合。
+    检测首招批次变更：某大学今年首次在本科批招生。
+    用 (university_name, batch) 匹配（兼容不同年份 group_code 编码体系差异）。
     """
     if prev_df is None or prev_df.empty:
         return True
-    uni_code = str(cur_row.get("university_code", ""))
-    group_code = str(cur_row.get("group_code", ""))
+    uni_name = str(cur_row.get("university_name", "")).strip()
     batch = str(cur_row.get("batch", ""))
 
-    if not uni_code or not group_code:
+    if not uni_name:
         return False
 
-    # 检查上年是否有同样的 (university_code, group_code) 在任何批次出现过
-    same_group = prev_df[
-        (prev_df["university_code"].astype(str) == uni_code)
-        & (prev_df["group_code"].astype(str) == group_code)
+    # 检查上年是否有同一大学在同一批次招生
+    same_uni_batch = prev_df[
+        (prev_df["university_name"].astype(str).str.strip() == uni_name)
+        & (prev_df["batch"].astype(str) == batch)
     ]
-    return same_group.empty
+    return same_uni_batch.empty
 
 
 def _calc_subject_scarcity(
@@ -220,27 +219,88 @@ def _calc_subject_scarcity(
     user_subject_group: str,
 ) -> Optional[float]:
     """
-    计算选科稀缺度。
+    计算选科稀缺度（通用版，不依赖特定省份）。
     返回 0-1 之间的小数，代表满足该选科要求的考生占比。
     占比越低 → 竞争越小 → 捡漏价值越高。
+
+    通用算法：
+    1. 解析选科要求字符串，提取"首选科目"和"再选要求"
+    2. 基于全国通用的选科比例估算（物化捆绑约55%，物化生约42%等）
+    3. 支持模糊匹配、单科要求、不限等场景
     """
     if not subject_requirement or pd.isna(subject_requirement):
         return None
 
     req = str(subject_requirement).strip()
-    # 标准化匹配
+
+    # 1. 精确匹配预定义字典
     ratio = SUBJECT_COMBO_RATIO.get(req)
-    if ratio is None:
-        # 模糊匹配
-        for key, val in SUBJECT_COMBO_RATIO.items():
-            if key in req or req in key:
-                return val
-        # 默认：如果是物理类要求，用物化捆绑占比
-        if user_subject_group == "物理类":
-            return 0.55
-        else:
-            return 0.35
-    return ratio
+    if ratio is not None:
+        return ratio
+
+    # 2. 模糊匹配预定义字典
+    for key, val in SUBJECT_COMBO_RATIO.items():
+        if key in req or req in key:
+            return val
+
+    # 3. 通用解析：基于选科要求字符串动态计算
+    req_lower = req.lower()
+
+    # 检测"不限"场景
+    if "不限" in req or "任意" in req or req == "":
+        return 1.0
+
+    # 检测首选科目
+    has_physics = "物理" in req
+    has_history = "历史" in req
+    has_either = "物理或历史" in req or "首选不限" in req or "物理/历史" in req
+
+    # 检测再选科目
+    has_chemistry = "化学" in req
+    has_biology = "生物" in req
+    has_politics = "政治" in req
+    has_geography = "地理" in req
+    has_technology = "技术" in req
+
+    # 计算再选要求数量（每增加一个硬性要求，稀缺度提升）
+    reselect_required = sum([has_chemistry, has_biology, has_politics, has_geography, has_technology])
+
+    # 基础占比：根据首选科目
+    if has_either or (has_physics and has_history):
+        base = 0.95  # 首选不限，几乎所有考生可报
+    elif has_physics:
+        base = 0.60  # 物理类约占60%
+    elif has_history:
+        base = 0.40  # 历史类约占40%
+    else:
+        # 未明确首选，根据用户科类推断
+        base = 0.55 if user_subject_group == "物理类" else 0.35
+
+    # 物化捆绑是关键门槛：要求化学的，物理类中约55%满足
+    if has_physics and has_chemistry:
+        base = min(base, 0.55)  # 物化捆绑约55%
+
+    # 再选科目稀缺度系数（每增加一个硬性再选要求，占比乘以0.7）
+    if reselect_required > 0:
+        # 物理+化学+生物 ≈ 42%, 物理+化学+政治 ≈ 5%
+        if has_chemistry and has_politics:
+            base = min(base, 0.08)  # 物化政极稀缺
+        elif has_chemistry and has_biology:
+            base = min(base, 0.45)  # 物化生
+        elif has_chemistry and has_geography:
+            base = min(base, 0.20)  # 物化地
+        elif has_chemistry:
+            base = min(base, 0.55)  # 仅物化
+        elif has_politics and has_history:
+            base = min(base, 0.30)  # 史政
+        elif has_politics:
+            base = min(base, 0.25)
+        elif has_biology:
+            base = min(base, 0.50)
+        elif has_geography:
+            base = min(base, 0.35)
+
+    return max(0.02, min(1.0, base))
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -530,6 +590,11 @@ def calculate_leakage_score(
                 score += 12
                 reasons.append(f"显著扩招 +{abs_growth}人")
 
+    # ── 维度2.5：分数匹配 (权重 10，基础分，后续维度6会叠加分数匹配度) ──
+    if opportunity_type == "分数匹配":
+        score += 10
+        reasons.append("分数匹配可达（用户分数在历史录取线范围内）")
+
     # ── 维度3：新校区折价 (权重 20) ──
     campus = _match_new_campus(candidate.get("university_name", ""), new_campuses)
     if campus:
@@ -660,7 +725,7 @@ def calculate_leakage_score(
         reasons.append("今年首次在本科批招生（往年仅在提前批/专项计划）")
 
     return {
-        "leakage_score": min(score, 100),
+        "leakage_score": max(0, min(score, 100)),
         "score_breakdown": reasons,
     }
 
@@ -694,6 +759,8 @@ def _filter_pure_groups_v2(
     has_high_series = major_col.str.contains(high_pattern, regex=True, na=False)
 
     # 按 (university_code, group_code) 聚类画像
+    # 注意: group_size 用 "size" 而非 "count"，因为 count 不计 NaN，
+    # 当 major_code 全为 NaN 时会得到 0，导致 group_size==1 放行规则失效
     group_stats = (
         cur_df.assign(
             _has_risk=has_risk_series,
@@ -701,7 +768,7 @@ def _filter_pure_groups_v2(
         )
         .groupby(["university_code", "group_code"], as_index=False)
         .agg(
-            group_size=("major_code", "count"),
+            group_size=("major_code", "size"),
             risk_count=("_has_risk", "sum"),
             has_high_pref=("_has_high", "any"),
         )
@@ -846,33 +913,39 @@ def find_leakage_opportunities(
 
     # ── 4.5 用户分数适配层：基于历史分预估用户能否上 ──
     # 对有历史分的专业，如果历史分远高于用户分 → 直接排除
-    if user_score is not None and df_history is not None and not df_history.empty:
-        # 建立学校名 → 最近一年最低分的映射
-        # （兼容外部数据源：code 可能不存在，统一用 university_name 匹配）
-        recent_year = df_history["year"].max() if "year" in df_history.columns else None
-        if recent_year is not None:
-            df_hist_recent = df_history[df_history["year"] == recent_year]
-        else:
-            df_hist_recent = df_history
+    if user_score is not None:
+        # 建立学校名 → 最近一年最低分的映射（来自 admission_history）
         hist_score_map = {}
-        for _, hrow in df_hist_recent.iterrows():
-            uni_name = str(hrow.get("university_name", "")).strip()
-            score_val = hrow.get("lowest_score", None)
-            if uni_name and score_val is not None and not pd.isna(score_val):
-                # 同一学校多个专业取最低分（最容易上的）
-                prev_val = hist_score_map.get(uni_name)
-                if prev_val is None or float(score_val) < float(prev_val):
-                    hist_score_map[uni_name] = float(score_val)
+        if df_history is not None and not df_history.empty:
+            recent_year = df_history["year"].max() if "year" in df_history.columns else None
+            if recent_year is not None:
+                df_hist_recent = df_history[df_history["year"] == recent_year]
+            else:
+                df_hist_recent = df_history
+            for _, hrow in df_hist_recent.iterrows():
+                uni_name = str(hrow.get("university_name", "")).strip()
+                score_val = hrow.get("lowest_score", None)
+                if uni_name and score_val is not None and not pd.isna(score_val):
+                    prev_val = hist_score_map.get(uni_name)
+                    if prev_val is None or float(score_val) < float(prev_val):
+                        hist_score_map[uni_name] = float(score_val)
 
         def _user_can_reach(row):
-            """预估用户是否能上这个学校（基于历史分+波动）"""
+            """预估用户是否能上这个专业组（双重检查：专业组级 + 学校级）"""
+            # 检查1：plans_2026 自身的专业组级分数（最精确）
+            plan_score = row.get("lowest_score_2025", None)
+            if plan_score is not None and not pd.isna(plan_score):
+                optimistic = float(plan_score) - score_tolerance  # 用 score_tolerance 替代硬编码
+                if optimistic > user_score:
+                    return False  # 专业组历史分太高，用户够不到
+            # 检查2：admission_history 的学校级最低分（补充）
             uni_name = str(row.get("university_name", "")).strip()
             hist_score = hist_score_map.get(uni_name)
-            if hist_score is None or pd.isna(hist_score):
-                return True  # 无历史分 → 新增专业 → 保留（可能捡漏）
-            # 历史分 + 乐观波动(15分) ≤ 用户分 → 用户有可能上
-            optimistic = float(hist_score) - 15  # 假设今年降15分
-            return optimistic <= user_score
+            if hist_score is not None and not pd.isna(hist_score):
+                optimistic = float(hist_score) - score_tolerance
+                if optimistic > user_score:
+                    return False
+            return True  # 保留（无历史分 → 新增专业 → 可能捡漏）
 
         reachable_mask = cur.apply(_user_can_reach, axis=1)
         cur = cur[reachable_mask].copy()
@@ -881,10 +954,12 @@ def find_leakage_opportunities(
         return []
 
     # ── 5. 构建联合主键 ──
+    # 注意: fillna("") 避免 major_code 为 NaN 时 astype(str) 产生 "nan"/NaN
+    # 导致所有行的 unique_key 相同，进而 merge 时产生笛卡尔积
     for col in ["university_code", "group_code", "major_code"]:
-        cur[col] = cur[col].astype(str)
+        cur[col] = cur[col].fillna("").astype(str)
         if not prev.empty:
-            prev[col] = prev[col].astype(str)
+            prev[col] = prev[col].fillna("").astype(str)
 
     cur["unique_key"] = (
         cur["university_code"] + "_" + cur["group_code"] + "_" + cur["major_code"]
@@ -964,6 +1039,38 @@ def find_leakage_opportunities(
         subset=["unique_key"]
     )
 
+    # ── 8.5 分数匹配机会：用户分数可达范围内的院校（第7种捡漏策略） ──
+    # 逻辑：当用户提供分数时，额外纳入分数在 [user_score - score_tolerance, user_score + 15] 
+    # 范围内的专业。这些是用户"踮脚能够到"或"稳过线"的院校，
+    # 后续评分中会通过纯净组/选科稀缺/中外合作等维度筛选真正有捡漏价值的。
+    if user_score is not None and "lowest_score_2025" in cur.columns:
+        score_lower = user_score - score_tolerance
+        score_upper = user_score + 15
+        score_match = cur[
+            cur["lowest_score_2025"].notna()
+            & (cur["lowest_score_2025"] >= score_lower)
+            & (cur["lowest_score_2025"] <= score_upper)
+        ].copy()
+        if not score_match.empty:
+            # 排除已在 candidates 中的
+            existing_keys = set(candidates["unique_key"].tolist())
+            score_match = score_match[~score_match["unique_key"].isin(existing_keys)].copy()
+            if not score_match.empty:
+                score_match["opportunity_type"] = "分数匹配"
+                score_match["reason"] = score_match.apply(
+                    lambda row: f"历史分{int(row['lowest_score_2025'])}，用户{user_score}分，分数匹配可达",
+                    axis=1,
+                )
+                # 确保 plan_count_prev 列存在（Step 6 可能将其重命名为 plan_count_prev_fixed）
+                if "plan_count_prev" not in score_match.columns:
+                    if "plan_count_prev_fixed" in score_match.columns:
+                        score_match["plan_count_prev"] = score_match["plan_count_prev_fixed"]
+                    else:
+                        score_match["plan_count_prev"] = None
+                candidates = pd.concat(
+                    [candidates, score_match], ignore_index=True
+                ).drop_duplicates(subset=["unique_key"])
+
     if candidates.empty:
         return []
 
@@ -994,12 +1101,17 @@ def find_leakage_opportunities(
                 sino_new["opportunity_type"] = "中外合作"
                 sino_new["reason"] = "中外合作/高收费专业，报考人数少，分数线可能低"
                 sino_new["plan_count_prev"] = None
+                sino_new["is_sino_foreign"] = True  # 防止 concat 后 NaN→False
                 # 纯净组过滤
                 sino_safe = _filter_pure_groups_v2(sino_new, cur, risk_keywords)
                 if not sino_safe.empty:
                     safe_candidates = pd.concat(
                         [safe_candidates, sino_safe], ignore_index=True
                     ).drop_duplicates(subset=["unique_key"])
+                    # concat 后重新校准 is_sino_foreign（防止 NaN）
+                    safe_candidates["is_sino_foreign"] = safe_candidates["major_name"].apply(
+                        lambda x: _detect_sino_foreign(str(x))
+                    )
     else:
         safe_candidates["is_sino_foreign"] = False
 
@@ -1033,7 +1145,7 @@ def find_leakage_opportunities(
     else:
         safe_candidates["subject_scarcity"] = None
 
-    # ── 11. 估值模型：为新增专业预估分数 ──
+    # ── 11. 估值模型：为无历史分的候选预估分数 ──
     if df_history is not None and not df_history.empty:
         safe_candidates["_estimation"] = safe_candidates.apply(
             lambda row: estimate_score_for_new_major(
@@ -1043,7 +1155,7 @@ def find_leakage_opportunities(
                 school_type=str(row.get("school_type", "")),
                 df_history=df_history,
                 new_campuses=new_campuses,
-            ) if row.get("opportunity_type") == "新增专业" else None,
+            ) if pd.isna(row.get("lowest_score_2025")) else None,
             axis=1,
         )
         safe_candidates["estimated_score"] = safe_candidates["_estimation"].apply(

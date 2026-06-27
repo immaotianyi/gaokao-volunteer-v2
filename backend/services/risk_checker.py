@@ -337,6 +337,8 @@ async def _call_deepseek(user_profile: dict, university: str, major: str) -> dic
             "status": result.get("status", "UNKNOWN").upper(),
             "reason": result.get("reason", "未获取到审查结论"),
             "matched_clause": result.get("matched_clause", ""),
+            "career_risk": result.get("career_risk"),
+            "ai_risk": result.get("ai_risk"),
         }
     except json.JSONDecodeError:
         return {
@@ -427,7 +429,22 @@ async def batch_check_risks(
     """并发批量审查。"""
     semaphore = asyncio.Semaphore(max_concurrency)
 
+    def _validate(item: dict) -> dict | None:
+        """输入合法性校验，返回 None 表示通过，返回 dict 表示无效结果。"""
+        univ = item.get("university", "")
+        major = item.get("major", "")
+        if not univ or len(univ.strip()) < 2:
+            return {**item, "status": "WARNING", "reason": f"大学名称「{univ}」过短，请输入完整校名", "matched_clause": ""}
+        if "大学" not in univ and "学院" not in univ and len(univ) < 3:
+            return {**item, "status": "WARNING", "reason": f"「{univ}」不像有效的大学名称，请输入完整校名", "matched_clause": ""}
+        if not major or len(major.strip()) < 2:
+            return {**item, "status": "WARNING", "reason": f"专业名称「{major}」过短，请输入完整专业名", "matched_clause": ""}
+        return None
+
     async def _checked(item: dict) -> dict:
+        invalid = _validate(item)
+        if invalid:
+            return invalid
         async with semaphore:
             result = await check_admission_risk(
                 user_profile=user_profile,

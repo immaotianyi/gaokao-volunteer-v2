@@ -35,6 +35,8 @@ export const useRiskStore = defineStore("risk", () => {
   const error = ref("");
   const checked = ref(false);
   const terminalLogs = ref<TerminalEntry[]>([]);
+  // 最近一次提交的志愿草表（供 RadarBoard 判断是否可做定制化捡漏）
+  const lastTargets = ref<RiskTarget[]>([]);
 
   function log(text: string, type: TerminalEntry["type"] = "info") {
     terminalLogs.value.push({ text, type, ts: Date.now() });
@@ -75,6 +77,10 @@ export const useRiskStore = defineStore("risk", () => {
     checked.value = true;
   };
 
+  const setLastTargets = (targets: RiskTarget[]) => {
+    lastTargets.value = targets;
+  };
+
   const clear = () => {
     results.value = [];
     checked.value = false;
@@ -84,8 +90,8 @@ export const useRiskStore = defineStore("risk", () => {
   };
 
   return {
-    results, loading, error, checked, terminalLogs,
-    log, resetTerminal, runTerminalAnimation, setResults, clear,
+    results, loading, error, checked, terminalLogs, lastTargets,
+    log, resetTerminal, runTerminalAnimation, setResults, setLastTargets, clear,
   };
 });
 

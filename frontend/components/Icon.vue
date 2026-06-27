@@ -43,6 +43,27 @@ const ICONS: Record<string, string> = {
   coin: `<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><text x="12" y="16" text-anchor="middle" font-size="9" fill="currentColor" stroke="none" font-weight="bold">¥</text>`,
   // 关闭
   close: `<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>`,
+
+  // ── 东方人文风图标 ──
+  // 卷轴（研卷/章程）
+  scroll: `<ellipse cx="12" cy="4" rx="5" ry="1.5"/><path d="M7 4v16"/><path d="M17 4v16"/><ellipse cx="12" cy="20" rx="5" ry="1.5"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="13" y2="15"/>`,
+  // 印章（落款/认证）
+  seal: `<rect x="6" y="8" width="12" height="12" rx="1"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="14" x2="15" y2="14"/><line x1="9" y1="17" x2="15" y2="17"/><path d="M10 8V5h4v3"/>`,
+  // 烛灯（陪伴/秉烛）
+  candle: `<path d="M12 3c-1.2 1.5-1.8 2.5-1.8 3.5a1.8 1.8 0 0 0 3.6 0c0-1-0.6-2-1.8-3.5z"/><line x1="12" y1="7" x2="12" y2="9"/><path d="M9 9h6v9a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z"/><line x1="8" y1="19" x2="16" y2="19"/>`,
+  // 毛笔（书写/研判）
+  brush: `<path d="M4 20c2-1 4-3 5-5"/><path d="M9 15l8-8"/><path d="M17 7l3-3"/><line x1="9" y1="15" x2="11" y2="17"/>`,
+  // 远山（意境/陪衬）
+  mountain: `<path d="M3 19l5-9 4 5 3-6 6 10z"/><path d="M3 19h18"/><circle cx="17" cy="6" r="1.5"/>`,
+  // 灯笼（暖光/指引）
+  lantern: `<line x1="12" y1="2" x2="12" y2="4"/><path d="M8 4h8"/><path d="M8 4c-2 2-2 10 0 12"/><path d="M16 4c2 2 2 10 0 12"/><path d="M8 16h8"/><line x1="12" y1="16" x2="12" y2="20"/><path d="M10 20h4"/>`,
+  // 书签（标记/收藏）
+  bookmark: `<path d="M6 3h12v18l-6-4-6 4z"/>`,
+  // 卷宗/书册（档案）
+  book: `<path d="M4 4h7a2 2 0 0 1 2 2v14a1 1 0 0 0-1-1H4z"/><path d="M20 4h-7a2 2 0 0 0-2 2v14a1 1 0 0 1 1-1h8z"/>`,
+  // 太阳/晨光（希望/新开始）
+  sun: `<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="5" y1="5" x2="6.5" y2="6.5"/><line x1="17.5" y1="17.5" x2="19" y2="19"/><line x1="5" y1="19" x2="6.5" y2="17.5"/><line x1="17.5" y1="6.5" x2="19" y2="5"/>`,
+  moon: `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`,
 }
 </script>
 

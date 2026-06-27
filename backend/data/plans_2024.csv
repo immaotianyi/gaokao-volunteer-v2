@@ -1,4 +1,4 @@
-province,subject_group,batch,university_code,university_name,group_code,major_code,major_name,plan_count,tuition,lowest_score_2024,lowest_rank_2024,school_type
+﻿province,subject_group,batch,university_code,university_name,group_code,major_code,major_name,plan_count,tuition,lowest_score_2024,lowest_rank_2024,school_type
 广东,物理类,本科批,10001,北京大学,203,203_001,北京大学组203,24,6000,689.0,85.0,985
 广东,物理类,本科批,10002,中国人民大学,202,202_001,中国人民大学组202,28,6000,663.0,1215.0,985
 广东,物理类,本科批,10002,中国人民大学,203,203_001,中国人民大学组203,21,6000,667.0,831.0,985

@@ -24,21 +24,22 @@ router = APIRouter(prefix="/api/score-rank", tags=["score-rank"])
 async def convert_score_to_rank_get(
     score: int = Query(..., ge=0, le=750, description="高考分数"),
     subject_group: str = Query("物理类", description="科类（物理类/历史类）"),
-    year: int = Query(2025, description="年份"),
+    year: int = Query(2026, description="年份"),
+    province: str = Query("广东", min_length=2, max_length=20, description="省份"),
 ):
     """GET 方式：分数 → 位次 转换"""
-    return _do_convert(score, subject_group, year)
+    return _do_convert(score, subject_group, year, province)
 
 
 @router.post("/convert", response_model=ScoreRankResponse)
 async def convert_score_to_rank_post(payload: ScoreRankRequest):
     """POST 方式：分数 → 位次 转换"""
-    return _do_convert(payload.score, payload.subject_group, payload.year)
+    return _do_convert(payload.score, payload.subject_group, payload.year, payload.province)
 
 
-def _do_convert(score: int, subject_group: str, year: int) -> ScoreRankResponse:
+def _do_convert(score: int, subject_group: str, year: int, province: str = "广东") -> ScoreRankResponse:
     try:
-        rank = score_to_rank(score, year, subject_group)
+        rank = score_to_rank(score, year, subject_group, province)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except ValueError as e:
@@ -49,7 +50,7 @@ def _do_convert(score: int, subject_group: str, year: int) -> ScoreRankResponse:
         rank=rank,
         subject_group=subject_group,
         year=year,
-        province="广东",
+        province=province,
     )
 
 
@@ -58,11 +59,12 @@ async def get_rank_range(
     score: int = Query(..., ge=0, le=750, description="高考分数"),
     subject_group: str = Query("物理类", description="科类"),
     tolerance: int = Query(5, ge=1, le=50, description="分数容差"),
-    year: int = Query(2025, description="年份"),
+    year: int = Query(2026, description="年份"),
+    province: str = Query("广东", min_length=2, max_length=20, description="省份"),
 ):
     """获取分数对应的位次区间"""
     try:
-        data = get_score_range(score, tolerance, year, subject_group)
+        data = get_score_range(score, tolerance, year, subject_group, province)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except ValueError as e:
@@ -78,7 +80,7 @@ async def get_rank_range(
         tolerance=data["tolerance"],
         subject_group=subject_group,
         year=year,
-        province="广东",
+        province=province,
     )
 
 
@@ -86,11 +88,12 @@ async def get_rank_range(
 async def reverse_lookup(
     rank: int = Query(..., ge=1, description="全省排位"),
     subject_group: str = Query("物理类", description="科类"),
-    year: int = Query(2025, description="年份"),
+    year: int = Query(2026, description="年份"),
+    province: str = Query("广东", min_length=2, max_length=20, description="省份"),
 ):
     """位次 → 分数 反查"""
     try:
-        score = rank_to_score(rank, year, subject_group)
+        score = rank_to_score(rank, year, subject_group, province)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except ValueError as e:
@@ -101,11 +104,11 @@ async def reverse_lookup(
         rank=rank,
         subject_group=subject_group,
         year=year,
-        province="广东",
+        province=province,
     )
 
 
 @router.get("/years")
 async def list_years():
     """获取可用的一分一段表年份"""
-    return {"years": get_available_years(), "default": 2025}
+    return {"years": get_available_years(), "default": 2026}

@@ -64,6 +64,7 @@ def main():
     )
 
     # 策略C：跨省同校同专业（用其他省份的真实专业名数据）
+    # 注意：不能只 dropna(lowest_score)，山东等省只有 rank 无 score
     hist_2025_cross = hist_2025.copy()
     hist_2025_cross["match_key_c"] = (
         hist_2025_cross["university_name"] + "|" +
@@ -74,7 +75,7 @@ def main():
         df26["major_name"]
     )
     cross_map = (
-        hist_2025_cross.dropna(subset=["lowest_score"])
+        hist_2025_cross
         .groupby("match_key_c")
         .agg(cross_score=("lowest_score", "mean"), cross_rank=("lowest_rank", "mean"))
         .reset_index()
@@ -86,35 +87,47 @@ def main():
     cross_filled = 0
 
     for idx, row in df26.iterrows():
-        # 策略A：精确匹配
+        # 策略A：精确匹配（score 或 rank 任一非空即可）
         key_a = row["match_key_a"]
         match_a = hist_2025[hist_2025["match_key_a"] == key_a]
-        if len(match_a) > 0 and pd.notna(match_a.iloc[0]["lowest_score"]):
-            df26.at[idx, "lowest_score_2025"] = match_a.iloc[0]["lowest_score"]
-            df26.at[idx, "lowest_rank_2025"] = match_a.iloc[0]["lowest_rank"]
-            filled_count += 1
-            continue
+        if len(match_a) > 0:
+            a_row = match_a.iloc[0]
+            has_a_score = pd.notna(a_row["lowest_score"])
+            has_a_rank = pd.notna(a_row["lowest_rank"])
+            if has_a_score or has_a_rank:
+                df26.at[idx, "lowest_score_2025"] = a_row["lowest_score"] if has_a_score else np.nan
+                df26.at[idx, "lowest_rank_2025"] = a_row["lowest_rank"] if has_a_rank else np.nan
+                filled_count += 1
+                continue
 
-        # 策略B：同省同校取最低分
+        # 策略B：同省同校取最低（score 或 rank 任一非空即可）
         prov = row["province"]
         uni = row["university_name"]
         match_b = hist_2025_by_school[
             (hist_2025_by_school["province"] == prov) &
             (hist_2025_by_school["university_name"] == uni)
         ]
-        if len(match_b) > 0 and pd.notna(match_b.iloc[0]["school_min_score"]):
-            df26.at[idx, "lowest_score_2025"] = match_b.iloc[0]["school_min_score"]
-            df26.at[idx, "lowest_rank_2025"] = match_b.iloc[0]["school_min_rank"]
-            school_filled += 1
-            continue
+        if len(match_b) > 0:
+            b_row = match_b.iloc[0]
+            has_b_score = pd.notna(b_row["school_min_score"])
+            has_b_rank = pd.notna(b_row["school_min_rank"])
+            if has_b_score or has_b_rank:
+                df26.at[idx, "lowest_score_2025"] = b_row["school_min_score"] if has_b_score else np.nan
+                df26.at[idx, "lowest_rank_2025"] = b_row["school_min_rank"] if has_b_rank else np.nan
+                school_filled += 1
+                continue
 
-        # 策略C：跨省同校同专业
+        # 策略C：跨省同校同专业（score 或 rank 任一非空即可）
         key_c = row["match_key_c"]
         match_c = cross_map[cross_map["match_key_c"] == key_c]
-        if len(match_c) > 0 and pd.notna(match_c.iloc[0]["cross_score"]):
-            df26.at[idx, "lowest_score_2025"] = round(match_c.iloc[0]["cross_score"])
-            df26.at[idx, "lowest_rank_2025"] = round(match_c.iloc[0]["cross_rank"]) if pd.notna(match_c.iloc[0]["cross_rank"]) else np.nan
-            cross_filled += 1
+        if len(match_c) > 0:
+            c_row = match_c.iloc[0]
+            has_c_score = pd.notna(c_row["cross_score"])
+            has_c_rank = pd.notna(c_row["cross_rank"])
+            if has_c_score or has_c_rank:
+                df26.at[idx, "lowest_score_2025"] = round(c_row["cross_score"]) if has_c_score else np.nan
+                df26.at[idx, "lowest_rank_2025"] = round(c_row["cross_rank"]) if has_c_rank else np.nan
+                cross_filled += 1
 
     total_filled = filled_count + school_filled + cross_filled
     print(f"  策略A(同省同校同专业): {filled_count} 行")
@@ -156,10 +169,11 @@ def main():
     print("\n--- 修复3：添加 plan_count_prev ---")
 
     # 从 plans_2025 按校名匹配取计划数（广东数据）
+    # 用 min 而非 sum：取同校最小计划数作为保守估计，避免扩招误判
     df25 = pd.read_csv(DATA_DIR / "plans_2025.csv")
     school_plan_25 = (
         df25.groupby(["province", "university_name"])
-        .agg(plan_count_prev=("plan_count", "sum"))
+        .agg(plan_count_prev=("plan_count", "min"))
         .reset_index()
     )
 

@@ -213,7 +213,7 @@ async def run_risk_check_agent(
 
     # 如果选 openai/deepseek 但 API Key 为空，自动回退 mock
     actual_provider = provider
-    if provider in ("openai", "deepseek") and not _os.getenv("LLM_API_KEY"):
+    if provider in ("openai", "deepseek") and not (_os.getenv("LLM_API_KEY") or _os.getenv("DEEPSEEK_API_KEY")):
         actual_provider = "mock"
 
     agent = create_risk_agent(provider=actual_provider, prompt_mode=prompt_mode)
@@ -268,7 +268,7 @@ async def run_risk_check_agent_stream(
     # 如果选 openai/deepseek 但 API Key 为空，自动回退 mock
     import os as _os
     actual_provider = provider
-    if provider in ("openai", "deepseek") and not _os.getenv("LLM_API_KEY"):
+    if provider in ("openai", "deepseek") and not (_os.getenv("LLM_API_KEY") or _os.getenv("DEEPSEEK_API_KEY")):
         actual_provider = "mock"
 
     return StreamingResponse(

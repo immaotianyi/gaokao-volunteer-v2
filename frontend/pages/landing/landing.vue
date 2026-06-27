@@ -7,6 +7,7 @@ import { ref, onMounted, onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 import { useProfileStore } from "../../stores/profile"
 import Icon from "../../components/Icon.vue"
+import ThemeToggle from "../../components/ThemeToggle.vue"
 
 const router = useRouter()
 const profileStore = useProfileStore()
@@ -92,34 +93,34 @@ const features = [
     icon: "shield",
     title: "志愿探雷器",
     tag: "核心功能",
-    desc: "粘贴你的志愿草表，AI 逐条审查每所大学的招生章程——体检限制、单科门槛、语种要求、选科匹配，四维交叉比对，在提交前拦截每一处退档风险。",
-    highlights: ["135 所大学真实章程", "体检/单科/语种/选科 四维审查", "DANGER / WARNING / PASS 三级定级", "V3 规则引擎 + V4 Agent 双模式"],
+    desc: "把你的志愿草表贴进来，我们逐所核对 135 所大学的招生章程——体检限制、单科门槛、语种要求、选科匹配，每一处都帮你看到，在你提交之前。",
+    highlights: ["135 所大学真实章程", "体检/单科/语种/选科 四维核对", "三级风险标注，逐条给出条款出处", "联网检索最新章程，不留盲区"],
     color: "blue",
   },
   {
     icon: "radar",
     title: "捡漏雷达",
     tag: "独家算法",
-    desc: "全网扫描新增专业、扩招计划、纯净专业组，六维评分系统锁定绝佳捡漏机遇。数字老虎机滚动 + 狙击锁定入场，每一个机会都不容错过。",
-    highlights: ["新增专业 / 扩招专业 / 纯净组识别", "六维评分 + 估分线 + 分差", "联网动态信息（分数线/就业/新闻）", "S 级捡漏预警 + 数据可信度标注"],
+    desc: "扫描新增专业、扩招计划、纯净专业组，六维评分帮你筛出值得关注的院校。每一个机会，都附上数据出处和可信度，让你心里有底。",
+    highlights: ["新增专业 / 扩招专业 / 纯净组识别", "六维评分 + 估分线 + 分差", "联网动态信息（分数线/就业/新闻）", "重点推荐标注 + 数据可信度分级"],
     color: "purple",
   },
   {
     icon: "bolt",
     title: "AI 志愿顾问",
     tag: "多轮对话",
-    desc: "基于章程知识库 + 雪峰志愿方法论 + 联网搜索，多轮对话深度答疑。你的分数、位次、体检标记全部注入上下文，回答精准可落地。",
-    highlights: ["RAG 知识检索 + 联网搜索", "多轮记忆 + 建议追问", "数据可信度 T1-T4 分级", "流式输出，实时反馈"],
+    desc: "把你的困惑问出来。基于章程知识库与联网搜索，多轮对话深度答疑。你的分数、位次、体检情况都记在上下文里，回答具体可落地。",
+    highlights: ["章程知识库 + 联网搜索", "多轮记忆，越聊越懂你", "数据可信度分级，告诉你哪些可参考", "流式输出，边答边看"],
     color: "amber",
   },
 ]
 
 // ── 使用流程 ──
 const flowSteps = [
-  { num: "01", title: "设置档案", desc: "输入分数、位次、选科、单科成绩、体检视力", icon: "user" },
-  { num: "02", title: "粘贴草表", desc: "从考试院系统复制志愿草表，粘贴到探雷器", icon: "database" },
-  { num: "03", title: "AI 推演", desc: "七幕仪式序列：唤醒→锁定→抽取→检索→推理→揭晓", icon: "bolt" },
-  { num: "04", title: "查看报告", desc: "三色霓虹卡片展示每条志愿的风险等级与条款", icon: "shield" },
+  { num: "01", title: "填写档案", desc: "输入分数、位次、选科、单科成绩、体检视力", icon: "user" },
+  { num: "02", title: "粘贴草表", desc: "从考试院系统复制志愿草表，贴到探雷器", icon: "scroll" },
+  { num: "03", title: "逐所核对", desc: "研墨→展卷→列目→查典→研判→成文，逐条对照章程", icon: "candle" },
+  { num: "04", title: "查看报告", desc: "每一所都标注风险等级与具体条款，可溯源", icon: "shield" },
 ]
 
 // ── 真实案例 ──
@@ -128,22 +129,22 @@ const cases = [
     scenario: "色弱考生填报临床医学",
     profile: "广东 · 565分 · 物理类 · 色弱",
     result: "DANGER",
-    resultText: "极高退档风险",
-    detail: "南方医科大学章程明确规定「除法学/管理/外语类外，其他专业不招色盲色弱考生」。探雷器命中该条款，标记 DANGER，避免退档。",
+    resultText: "务必重视",
+    detail: "南方医科大学章程明确规定「除法学/管理/外语类外，其他专业不招色盲色弱考生」。我们核到了这条，标注「务必重视」，避免你提交后被退档。",
   },
   {
     scenario: "数学 86 分报考数据科学",
     profile: "河南 · 555分 · 物理类 · 数学86",
     result: "WARNING",
-    resultText: "需注意",
-    detail: "华南理工大学数据科学专业建议数学≥100分。考生 86 分低于门槛，探雷器标记 WARNING 并提示单科风险。",
+    resultText: "需要留意",
+    detail: "华南理工大学数据科学专业建议数学≥100分。你 86 分低于门槛，我们标为「需要留意」，并附上章程原文供你判断。",
   },
   {
-    scenario: "捡漏新增专业机会",
+    scenario: "发现值得重点关注的院校",
     profile: "山东 · 580分 · 物理类",
     result: "PASS",
-    resultText: "S 级捡漏",
-    detail: "雷达扫描到某 985 大学新增「人工智能」专业，计划 30 人，无历史分数线参考。评分 85 分（S 级），分差 +18，触发 S 级捡漏预警。",
+    resultText: "重点推荐",
+    detail: "雷达扫到某 985 大学新增「人工智能」专业，计划 30 人，无历史分数线参考。评分 85 分，分差 +18，标为「重点推荐」，附上数据出处。",
   },
 ]
 
@@ -174,7 +175,7 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
       <div class="nav-inner">
         <div class="brand" @click="router.push('/')">
           <div class="brand-mark"><Icon name="shield" :size="16" /></div>
-          <span class="brand-text">GAOKAO<span class="brand-accent">·</span>SNIPER</span>
+          <span class="brand-text">志愿守护</span>
         </div>
         <div class="nav-links">
           <span @click="scrollToSection('features')" class="nav-link">功能</span>
@@ -182,9 +183,12 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
           <span @click="scrollToSection('cases')" class="nav-link">真实案例</span>
           <span @click="scrollToSection('faq')" class="nav-link">常见问题</span>
         </div>
-        <div class="nav-cta" @click="goToWorkbench">
-          <span>立即使用</span>
-          <Icon name="arrowRight" :size="14" />
+        <div class="nav-right">
+          <ThemeToggle />
+          <div class="nav-cta" @click="goToWorkbench">
+            <span>立即使用</span>
+            <Icon name="arrowRight" :size="14" />
+          </div>
         </div>
       </div>
     </nav>
@@ -195,34 +199,41 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
         <Transition name="hero-fade" appear>
           <div class="hero-badge">
             <span class="badge-dot" />
-            <span>2026 高考志愿审查引擎 · 已就绪</span>
+            <span>2026 招生章程已收录 · 我们在这里</span>
           </div>
         </Transition>
 
         <Transition name="hero-fade" appear>
           <h1 class="hero-title">
-            <span class="title-line">别让一分之差</span>
-            <span class="title-line title-accent">毁掉十二年寒窗</span>
+            <span class="title-line">十二年寒窗</span>
+            <span class="title-line title-accent">值得一份安心的志愿表</span>
           </h1>
         </Transition>
 
         <Transition name="hero-fade" appear>
           <p class="hero-desc">
-            每年超过 <strong>30%</strong> 的退档因体检限制、单科不达标、语种不符而起。<br/>
-            GAOKAO·SNIPER 基于 135 所大学真实招生章程，AI 逐条审查你的志愿草表，<br/>
-            在你点击「提交」之前，拦截每一处致命风险。
+            每年都有考生，因为漏看了章程里的体检限制、单科门槛，<br/>
+            填完才发现报不了。我们逐所核对你草表里的每一所大学，<br/>
+            在你点「提交」之前，把需要留意的地方告诉你。
           </p>
+        </Transition>
+
+        <Transition name="hero-fade" appear>
+          <div class="hero-poetry">
+            <span class="poetry-line font-brush">长风破浪会有时</span>
+            <span class="poetry-sub">— 李白·行路难</span>
+          </div>
         </Transition>
 
         <Transition name="hero-fade" appear>
           <div class="hero-actions">
             <div class="cta-primary" @click="goToWorkbench">
-              <Icon name="bolt" :size="18" />
-              <span>{{ profileStore.isProfileComplete ? '免费开始推演' : '开始使用' }}</span>
+              <Icon name="candle" :size="18" />
+              <span>{{ profileStore.isProfileComplete ? '免费开始核对' : '开始使用' }}</span>
             </div>
             <div class="cta-secondary" @click="router.push('/pages/profile/profile')">
               <Icon name="user" :size="16" />
-              <span>{{ profileStore.isProfileComplete ? '查看我的档案' : '先设置我的档案' }}</span>
+              <span>{{ profileStore.isProfileComplete ? '查看我的档案' : '先填我的档案' }}</span>
             </div>
           </div>
         </Transition>
@@ -251,9 +262,9 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
     <!-- ═══ 功能详解 ═══ -->
     <section id="features" class="features-section">
       <div class="section-header">
-        <span class="section-kicker">三大核心引擎</span>
-        <h2 class="section-title">从排雷到捡漏，再到 AI 答疑</h2>
-        <p class="section-sub">每一个功能都基于真实数据，每一次审查都可溯源到具体章程条款</p>
+        <span class="section-kicker">三大功能</span>
+        <h2 class="section-title">从核对到发现，再到答疑解惑</h2>
+        <p class="section-sub">每一个功能都基于真实章程，每一条结论都可溯源到具体条款</p>
       </div>
 
       <div class="features-list">
@@ -280,7 +291,7 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
     <section id="how" class="flow-section">
       <div class="section-header">
         <span class="section-kicker">四步完成</span>
-        <h2 class="section-title">从草表到报告，只需 30 秒</h2>
+        <h2 class="section-title">从草表到报告，逐所核对</h2>
       </div>
       <div class="flow-grid">
         <div v-for="(step, i) in flowSteps" :key="step.num" class="flow-card">
@@ -299,8 +310,8 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
     <section id="cases" class="cases-section">
       <div class="section-header">
         <span class="section-kicker">真实场景</span>
-        <h2 class="section-title">这些退档风险，你能自己发现吗？</h2>
-        <p class="section-sub">以下案例均基于真实招生章程条款，探雷器全部命中</p>
+        <h2 class="section-title">这些藏在章程里的细节，我们帮你看到</h2>
+        <p class="section-sub">以下案例均基于真实招生章程条款，全部命中</p>
       </div>
       <div class="cases-grid">
         <div v-for="c in cases" :key="c.scenario" class="case-card glass-card">
@@ -338,11 +349,11 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
     <!-- ═══ 最终 CTA ═══ -->
     <section class="final-cta">
       <div class="cta-box glass-card">
-        <h2 class="cta-title">你的志愿表，经得起推演吗？</h2>
-        <p class="cta-desc">粘贴草表，30 秒内获得完整风险报告。免费、无需注册。</p>
+        <h2 class="cta-title">你的志愿表，我们陪你核对一遍</h2>
+        <p class="cta-desc">贴上草表，逐所核对每一处风险。免费、无需注册。</p>
         <div class="cta-btn-large" @click="goToWorkbench">
-          <Icon name="bolt" :size="20" />
-          <span>开始推演计算</span>
+          <Icon name="candle" :size="20" />
+          <span>开始核对志愿</span>
         </div>
       </div>
     </section>
@@ -352,98 +363,103 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
       <div class="footer-inner">
         <div class="footer-brand">
           <div class="brand-mark small"><Icon name="shield" :size="12" /></div>
-          <span>GAOKAO·SNIPER</span>
+          <span>志愿守护</span>
         </div>
+        <span class="footer-wish font-brush">愿你心之所向，皆能如愿。</span>
         <span class="footer-disclaimer">本工具数据来源于各省考试院与公开招生章程，受限于数据更新延迟与 AI 理解能力，仅作辅助筛查，不构成填报承诺。考生须最终核对官方《填报指南》与官网章程。</span>
-        <span class="footer-copy">© 2026 GAOKAO SNIPER · v0.7.0 BETA</span>
+        <span class="footer-copy">© 2026 志愿守护 · v0.8.0</span>
       </div>
     </footer>
   </div>
 </template>
 
 <style scoped>
-.landing-shell { min-height: 100vh; background: #020617; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", sans-serif; position: relative; overflow-x: hidden; }
+.landing-shell { min-height: 100vh; background: var(--ink-900); color: var(--text-primary); font-family: var(--font-sans); position: relative; overflow-x: hidden; }
 
 /* ── 背景 ── */
 .bg-ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .orb { position: absolute; border-radius: 50%; filter: blur(120px); }
-.orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, #38bdf8, transparent); top: -200px; left: -100px; opacity: 0.12; }
-.orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, #818cf8, transparent); top: 40%; right: -100px; opacity: 0.1; }
+.orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, #e8b974, transparent); top: -200px; left: -100px; opacity: 0.12; }
+.orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, #d49a4e, transparent); top: 40%; right: -100px; opacity: 0.1; }
 .orb-3 { width: 400px; height: 400px; background: radial-gradient(circle, #facc15, transparent); bottom: -100px; left: 30%; opacity: 0.05; }
-.grid-overlay { position: absolute; inset: 0; background-image: linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px); background-size: 60px 60px; mask: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent); -webkit-mask: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent); }
+.grid-overlay { position: absolute; inset: 0; background-image: linear-gradient(rgba(232, 185, 116, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(232, 185, 116, 0.03) 1px, transparent 1px); background-size: 60px 60px; mask: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent); -webkit-mask: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent); }
 
 /* ── 导航栏 ── */
 .nav-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; transition: all 0.3s ease; }
 .nav-bar.scrolled { background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
 .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
 .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.brand-mark { width: 32px; height: 32px; background: linear-gradient(135deg, #38bdf8, #818cf8); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 0 24px rgba(56, 189, 248, 0.3); }
+.brand-mark { width: 32px; height: 32px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 0 24px rgba(232, 185, 116, 0.3); }
 .brand-mark.small { width: 24px; height: 24px; border-radius: 6px; box-shadow: none; }
-.brand-text { font-size: 18px; font-weight: 900; color: #f1f5f9; letter-spacing: -0.5px; }
-.brand-accent { color: #38bdf8; }
+.brand-text { font-size: 18px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.5px; }
+.brand-accent { color: #e8b974; }
 .nav-links { display: flex; gap: 28px; }
-.nav-link { font-size: 13px; color: #94a3b8; font-weight: 500; transition: color 0.2s; cursor: pointer; }
-.nav-link:hover { color: #38bdf8; }
-.nav-cta { display: flex; align-items: center; gap: 6px; padding: 8px 18px; background: linear-gradient(135deg, #38bdf8, #818cf8); border-radius: 10px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.nav-cta:hover { box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35); transform: translateY(-1px); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-link { font-size: 13px; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; cursor: pointer; }
+.nav-link:hover { color: #e8b974; }
+.nav-cta { display: flex; align-items: center; gap: 6px; padding: 8px 18px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 10px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.nav-cta:hover { box-shadow: 0 6px 20px rgba(232, 185, 116, 0.35); transform: translateY(-1px); }
 
 /* ── Hero ── */
 .hero { position: relative; z-index: 1; min-height: 90vh; display: flex; align-items: center; justify-content: center; padding: 100px 24px 60px; }
 .hero-content { max-width: 760px; text-align: center; }
-.hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 18px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 20px; margin-bottom: 28px; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 18px; background: rgba(232, 185, 116, 0.08); border: 1px solid rgba(232, 185, 116, 0.2); border-radius: 20px; margin-bottom: 28px; }
 .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.6); animation: badge-pulse 2s ease-in-out infinite; }
 @keyframes badge-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-.hero-badge span:last-child { font-size: 13px; color: #7dd3fc; font-weight: 600; letter-spacing: 0.5px; }
+.hero-badge span:last-child { font-size: 13px; color: #f4d8a8; font-weight: 600; letter-spacing: 0.5px; }
 .hero-title { font-size: 56px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; margin: 0 0 24px; display: flex; flex-direction: column; gap: 6px; }
-.title-line { color: #f1f5f9; }
-.title-accent { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.hero-desc { font-size: 15px; color: #94a3b8; font-weight: 300; line-height: 1.9; margin: 0 0 36px; }
-.hero-desc strong { color: #fda4af; font-weight: 600; }
+.title-line { color: var(--text-primary); }
+.title-accent { background: linear-gradient(135deg, #e8b974, #d49a4e); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-desc { font-size: 15px; color: var(--text-secondary); font-weight: 300; line-height: 1.9; margin: 0 0 24px; }
+.hero-desc strong { color: #e8b974; font-weight: 600; }
+.hero-poetry { margin: 0 0 36px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.hero-poetry .poetry-line { font-size: 22px; color: #f4d8a8; letter-spacing: 0.15em; text-shadow: 0 0 20px rgba(232, 185, 116, 0.25); }
+.hero-poetry .poetry-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; }
 .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
-.cta-primary { display: flex; align-items: center; gap: 8px; padding: 15px 36px; background: linear-gradient(135deg, #38bdf8, #818cf8); border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px rgba(56, 189, 248, 0.3); transition: all 0.2s; }
-.cta-primary:hover { box-shadow: 0 12px 40px rgba(56, 189, 248, 0.45); transform: translateY(-2px); }
+.cta-primary { display: flex; align-items: center; gap: 8px; padding: 15px 36px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px rgba(232, 185, 116, 0.3); transition: all 0.2s; }
+.cta-primary:hover { box-shadow: 0 12px 40px rgba(232, 185, 116, 0.45); transform: translateY(-2px); }
 .cta-primary:active { transform: scale(0.97); }
-.cta-secondary { display: flex; align-items: center; gap: 6px; padding: 15px 28px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #94a3b8; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.cta-secondary:hover { background: rgba(255, 255, 255, 0.08); color: #e2e8f0; border-color: rgba(255, 255, 255, 0.2); }
+.cta-secondary { display: flex; align-items: center; gap: 6px; padding: 15px 28px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: var(--text-secondary); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.cta-secondary:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); border-color: rgba(255, 255, 255, 0.2); }
 .hero-trust { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-.trust-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #64748b; }
+.trust-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-muted); }
 .trust-item svg { color: #34d399; }
 
 /* ── 通用 section ── */
 .section-header { text-align: center; max-width: 640px; margin: 0 auto 48px; padding: 0 24px; }
-.section-kicker { display: inline-block; font-size: 11px; font-weight: 700; color: #38bdf8; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
-.section-title { font-size: 36px; font-weight: 900; color: #f1f5f9; letter-spacing: -1px; margin: 0 0 12px; line-height: 1.2; }
-.section-sub { font-size: 14px; color: #64748b; font-weight: 300; line-height: 1.7; margin: 0; }
+.section-kicker { display: inline-block; font-size: 11px; font-weight: 700; color: #e8b974; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+.section-title { font-size: 36px; font-weight: 900; color: var(--text-primary); letter-spacing: -1px; margin: 0 0 12px; line-height: 1.2; }
+.section-sub { font-size: 14px; color: var(--text-muted); font-weight: 300; line-height: 1.7; margin: 0; }
 
 /* ── 统计 ── */
 .stats-section { position: relative; z-index: 1; padding: 0 24px 80px; display: flex; justify-content: center; }
 .stats-bar { display: flex; gap: 0; padding: 28px 40px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; max-width: 800px; width: 100%; box-sizing: border-box; }
 .stat-cell { flex: 1; text-align: center; border-right: 1px solid rgba(255, 255, 255, 0.06); padding: 0 8px; }
 .stat-cell:last-child { border-right: none; }
-.stat-value { font-size: 32px; font-weight: 900; color: #f1f5f9; display: block; font-family: "SF Mono", monospace; letter-spacing: -1px; }
-.stat-suffix { font-size: 18px; color: #38bdf8; }
-.stat-label { font-size: 12px; color: #94a3b8; font-weight: 600; margin-top: 4px; display: block; }
+.stat-value { font-size: 32px; font-weight: 900; color: var(--text-primary); display: block; font-family: "SF Mono", monospace; letter-spacing: -1px; }
+.stat-suffix { font-size: 18px; color: #e8b974; }
+.stat-label { font-size: 12px; color: var(--text-secondary); font-weight: 600; margin-top: 4px; display: block; }
 .stat-desc { font-size: 10px; color: #475569; margin-top: 2px; display: block; }
 
 /* ── 功能详解 ── */
 .features-section { position: relative; z-index: 1; padding: 80px 24px; max-width: 1000px; margin: 0 auto; }
 .features-list { display: flex; flex-direction: column; gap: 20px; }
 .feature-block { display: flex; gap: 24px; padding: 28px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; transition: all 0.3s; }
-.feature-block:hover { border-color: rgba(56, 189, 248, 0.15); background: rgba(255, 255, 255, 0.035); }
-.feature-block.color-blue { border-left: 3px solid #38bdf8; }
-.feature-block.color-purple { border-left: 3px solid #818cf8; }
+.feature-block:hover { border-color: rgba(232, 185, 116, 0.15); background: rgba(255, 255, 255, 0.035); }
+.feature-block.color-blue { border-left: 3px solid #e8b974; }
+.feature-block.color-purple { border-left: 3px solid #d49a4e; }
 .feature-block.color-amber { border-left: 3px solid #fbbf24; }
 .feature-left { display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
 .feature-icon-big { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
-.color-blue .feature-icon-big { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
-.color-purple .feature-icon-big { background: rgba(129, 140, 248, 0.12); color: #818cf8; border: 1px solid rgba(129, 140, 248, 0.2); }
+.color-blue .feature-icon-big { background: rgba(232, 185, 116, 0.12); color: #e8b974; border: 1px solid rgba(232, 185, 116, 0.2); }
+.color-purple .feature-icon-big { background: rgba(212, 154, 78, 0.12); color: #d49a4e; border: 1px solid rgba(212, 154, 78, 0.2); }
 .color-amber .feature-icon-big { background: rgba(251, 191, 36, 0.12); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
-.feature-tag { font-size: 9px; font-weight: 700; color: #64748b; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; }
+.feature-tag { font-size: 9px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; }
 .feature-right { flex: 1; }
-.feature-name { font-size: 20px; font-weight: 800; color: #f1f5f9; margin: 0 0 8px; }
-.feature-desc { font-size: 13px; color: #94a3b8; line-height: 1.7; margin: 0 0 14px; font-weight: 300; }
+.feature-name { font-size: 20px; font-weight: 800; color: var(--text-primary); margin: 0 0 8px; }
+.feature-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 0 0 14px; font-weight: 300; }
 .feature-highlights { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.highlight-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #64748b; }
+.highlight-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
 .highlight-item svg { color: #34d399; flex-shrink: 0; }
 
 /* ── 使用流程 ── */
@@ -451,10 +467,10 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
 .flow-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .flow-card { position: relative; padding: 24px 20px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px; }
 .flow-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.flow-num { font-size: 28px; font-weight: 900; color: #38bdf8; font-family: "SF Mono", monospace; text-shadow: 0 0 12px rgba(56, 189, 248, 0.3); }
-.flow-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; color: #38bdf8; }
-.flow-title { font-size: 15px; font-weight: 700; color: #f1f5f9; margin: 0 0 6px; }
-.flow-desc { font-size: 11px; color: #64748b; line-height: 1.6; margin: 0; }
+.flow-num { font-size: 28px; font-weight: 900; color: #e8b974; font-family: "SF Mono", monospace; text-shadow: 0 0 12px rgba(232, 185, 116, 0.3); }
+.flow-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(232, 185, 116, 0.1); display: flex; align-items: center; justify-content: center; color: #e8b974; }
+.flow-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 0 0 6px; }
+.flow-desc { font-size: 11px; color: var(--text-muted); line-height: 1.6; margin: 0; }
 .flow-arrow { position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: #334155; z-index: 2; }
 
 /* ── 真实案例 ── */
@@ -462,25 +478,25 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
 .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .case-card { padding: 22px; display: flex; flex-direction: column; gap: 10px; }
 .case-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.case-scenario { font-size: 14px; font-weight: 700; color: #f1f5f9; line-height: 1.4; }
+.case-scenario { font-size: 14px; font-weight: 700; color: var(--text-primary); line-height: 1.4; }
 .case-result-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
 .result-danger { background: rgba(251, 113, 133, 0.12); color: #fda4af; border: 1px solid rgba(251, 113, 133, 0.2); }
 .result-warning { background: rgba(251, 191, 36, 0.12); color: #fde68a; border: 1px solid rgba(251, 191, 36, 0.2); }
 .result-pass { background: rgba(52, 211, 153, 0.12); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.2); }
-.case-profile { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #7dd3fc; font-family: "SF Mono", monospace; }
-.case-detail { font-size: 12px; color: #94a3b8; line-height: 1.7; margin: 0; font-weight: 300; }
+.case-profile { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #f4d8a8; font-family: "SF Mono", monospace; }
+.case-detail { font-size: 12px; color: var(--text-secondary); line-height: 1.7; margin: 0; font-weight: 300; }
 
 /* ── FAQ ── */
 .faq-section { position: relative; z-index: 1; padding: 80px 24px; max-width: 720px; margin: 0 auto; }
 .faq-list { display: flex; flex-direction: column; gap: 10px; }
 .faq-item { background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; overflow: hidden; transition: all 0.2s; }
-.faq-item.expanded { border-color: rgba(56, 189, 248, 0.15); background: rgba(56, 189, 248, 0.03); }
+.faq-item.expanded { border-color: rgba(232, 185, 116, 0.15); background: rgba(232, 185, 116, 0.03); }
 .faq-q { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; }
-.faq-q-text { font-size: 14px; font-weight: 600; color: #e2e8f0; }
-.faq-toggle { font-size: 20px; color: #38bdf8; transition: transform 0.3s; }
+.faq-q-text { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.faq-toggle { font-size: 20px; color: #e8b974; transition: transform 0.3s; }
 .faq-toggle.rotated { transform: rotate(45deg); }
 .faq-a { padding: 0 20px 16px; }
-.faq-a p { font-size: 13px; color: #94a3b8; line-height: 1.7; margin: 0; font-weight: 300; }
+.faq-a p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 0; font-weight: 300; }
 .faq-expand-enter-active, .faq-expand-leave-active { transition: all 0.3s ease; }
 .faq-expand-enter-from, .faq-expand-leave-to { opacity: 0; max-height: 0; }
 .faq-expand-enter-to, .faq-expand-leave-from { opacity: 1; max-height: 200px; }
@@ -488,16 +504,17 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
 /* ── 最终 CTA ── */
 .final-cta { position: relative; z-index: 1; padding: 60px 24px 80px; display: flex; justify-content: center; }
 .cta-box { text-align: center; padding: 48px 40px; max-width: 560px; width: 100%; }
-.cta-title { font-size: 28px; font-weight: 900; color: #f1f5f9; margin: 0 0 12px; letter-spacing: -1px; }
-.cta-desc { font-size: 14px; color: #94a3b8; margin: 0 0 28px; font-weight: 300; }
-.cta-btn-large { display: inline-flex; align-items: center; gap: 8px; padding: 16px 40px; background: linear-gradient(135deg, #38bdf8, #818cf8); border-radius: 14px; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px rgba(56, 189, 248, 0.35); transition: all 0.2s; }
-.cta-btn-large:hover { box-shadow: 0 12px 44px rgba(56, 189, 248, 0.5); transform: translateY(-2px); }
+.cta-title { font-size: 28px; font-weight: 900; color: var(--text-primary); margin: 0 0 12px; letter-spacing: -1px; }
+.cta-desc { font-size: 14px; color: var(--text-secondary); margin: 0 0 28px; font-weight: 300; }
+.cta-btn-large { display: inline-flex; align-items: center; gap: 8px; padding: 16px 40px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 14px; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px rgba(232, 185, 116, 0.35); transition: all 0.2s; }
+.cta-btn-large:hover { box-shadow: 0 12px 44px rgba(232, 185, 116, 0.5); transform: translateY(-2px); }
 .cta-btn-large:active { transform: scale(0.97); }
 
 /* ── Footer ── */
 .landing-footer { position: relative; z-index: 1; padding: 40px 24px; border-top: 1px solid rgba(255, 255, 255, 0.04); }
 .footer-inner { max-width: 700px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.footer-brand { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #64748b; }
+.footer-brand { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-muted); }
+.footer-wish { font-size: 16px; color: #f4d8a8; letter-spacing: 0.15em; text-shadow: 0 0 16px rgba(232, 185, 116, 0.2); }
 .footer-disclaimer { font-size: 11px; color: #334155; line-height: 1.7; max-width: 560px; }
 .footer-copy { font-size: 11px; color: #1e293b; font-family: "SF Mono", monospace; }
 

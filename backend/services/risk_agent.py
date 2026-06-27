@@ -49,6 +49,8 @@ class AuditResult:
     status: RiskLevel
     reason: str
     matched_clause: str = ""
+    career_risk: str = ""
+    ai_risk: str = ""
     evidence: list[str] = field(default_factory=list)  # 引用的条款原文
     confidence: float = 1.0  # 置信度 0-1
 

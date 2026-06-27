@@ -19,6 +19,12 @@ class UserProfile(Base):
     english_score = Column(Integer, nullable=True)
     math_score = Column(Integer, nullable=True)
     chinese_score = Column(Integer, nullable=True)
+    physics_score = Column(Integer, nullable=True)
+    chemistry_score = Column(Integer, nullable=True)
+    biology_score = Column(Integer, nullable=True)
+    history_score = Column(Integer, nullable=True)
+    geography_score = Column(Integer, nullable=True)
+    politics_score = Column(Integer, nullable=True)
     vision_status = Column(String(20), default="正常")
 
     def __repr__(self):
@@ -131,3 +137,45 @@ class UserUnlock(Base):
 
     def __repr__(self):
         return f"<UserUnlock({self.user_id} order={self.order_id})>"
+
+
+class Notification(Base):
+    """站内通知表 — 持久化用户通知（替代内存 dict）"""
+    __tablename__ = "notifications"
+
+    id = Column(String(64), primary_key=True)
+    user_id = Column(String(50), nullable=False, index=True)
+    title = Column(String(100), nullable=False)
+    body = Column(Text, nullable=False)
+    category = Column(String(30), default="radar")
+    action_url = Column(String(255), default="")
+    read = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        Index("idx_notif_user_created", "user_id", "created_at"),
+    )
+
+    def __repr__(self):
+        return f"<Notification({self.id} user={self.user_id} read={self.read})>"
+
+
+class UserBehavior(Base):
+    """用户行为日志表 — 记录查看/收藏/解锁行为（用于热度追踪的持久化备份）"""
+    __tablename__ = "user_behaviors"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String(50), nullable=False, index=True)
+    unique_key = Column(String(64), nullable=False, index=True)  # 机会唯一标识
+    event_type = Column(String(20), nullable=False)  # view | fav | unlock | unfav
+    university_name = Column(String(50), default="")
+    major_name = Column(String(100), default="")
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        Index("idx_behavior_user_key", "user_id", "unique_key"),
+        Index("idx_behavior_key_type", "unique_key", "event_type"),
+    )
+
+    def __repr__(self):
+        return f"<UserBehavior({self.user_id} {self.event_type} {self.unique_key})>"

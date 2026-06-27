@@ -40,5 +40,209 @@
         "parent": "中国石油大学",
         "first_year": 2023,
         "discount_ratio": 0.78
+    },
+    {
+        "campus": "清华大学（深圳国际研究生院）",
+        "parent": "清华大学",
+        "first_year": 2019,
+        "discount_ratio": 0.95
+    },
+    {
+        "campus": "浙江大学（海宁国际校区）",
+        "parent": "浙江大学",
+        "first_year": 2016,
+        "discount_ratio": 0.93
+    },
+    {
+        "campus": "中山大学（深圳校区）",
+        "parent": "中山大学",
+        "first_year": 2021,
+        "discount_ratio": 0.93
+    },
+    {
+        "campus": "四川大学（眉山校区）",
+        "parent": "四川大学",
+        "first_year": 2023,
+        "discount_ratio": 0.92
+    },
+    {
+        "campus": "西北工业大学（太仓校区）",
+        "parent": "西北工业大学",
+        "first_year": 2021,
+        "discount_ratio": 0.91
+    },
+    {
+        "campus": "西安交通大学（创新港校区）",
+        "parent": "西安交通大学",
+        "first_year": 2019,
+        "discount_ratio": 0.95
+    },
+    {
+        "campus": "厦门大学（翔安校区）",
+        "parent": "厦门大学",
+        "first_year": 2014,
+        "discount_ratio": 0.94
+    },
+    {
+        "campus": "北京邮电大学（沙河校区）",
+        "parent": "北京邮电大学",
+        "first_year": 2015,
+        "discount_ratio": 0.93
+    },
+    {
+        "campus": "华东师范大学（滴水湖国际软件学院）",
+        "parent": "华东师范大学",
+        "first_year": 2024,
+        "discount_ratio": 0.90
+    },
+    {
+        "campus": "哈尔滨工程大学（青岛校区）",
+        "parent": "哈尔滨工程大学",
+        "first_year": 2021,
+        "discount_ratio": 0.88
+    },
+    {
+        "campus": "大连理工大学（盘锦校区）",
+        "parent": "大连理工大学",
+        "first_year": 2013,
+        "discount_ratio": 0.85
+    },
+    {
+        "campus": "东北大学（秦皇岛分校）",
+        "parent": "东北大学",
+        "first_year": 2020,
+        "discount_ratio": 0.88
+    },
+    {
+        "campus": "电子科技大学（沙河校区）",
+        "parent": "电子科技大学",
+        "first_year": 2020,
+        "discount_ratio": 0.93
+    },
+    {
+        "campus": "广东工业大学（揭阳校区）",
+        "parent": "广东工业大学",
+        "first_year": 2021,
+        "discount_ratio": 0.85
+    },
+    {
+        "campus": "深圳大学（丽湖校区）",
+        "parent": "深圳大学",
+        "first_year": 2021,
+        "discount_ratio": 0.88
+    },
+    {
+        "campus": "汕头大学（东海岸校区）",
+        "parent": "汕头大学",
+        "first_year": 2022,
+        "discount_ratio": 0.86
+    },
+    {
+        "campus": "广东海洋大学（阳江校区）",
+        "parent": "广东海洋大学",
+        "first_year": 2021,
+        "discount_ratio": 0.82
+    },
+    {
+        "campus": "广东金融学院（清远校区）",
+        "parent": "广东金融学院",
+        "first_year": 2021,
+        "discount_ratio": 0.83
+    },
+    {
+        "campus": "广东技术师范大学（河源校区）",
+        "parent": "广东技术师范大学",
+        "first_year": 2020,
+        "discount_ratio": 0.82
+    },
+    {
+        "campus": "广东药科大学（云浮校区）",
+        "parent": "广东药科大学",
+        "first_year": 2018,
+        "discount_ratio": 0.80
+    },
+    {
+        "campus": "广州大学（番禺校区）",
+        "parent": "广州大学",
+        "first_year": 2020,
+        "discount_ratio": 0.86
+    },
+    {
+        "campus": "香港中文大学（深圳）",
+        "parent": "香港中文大学",
+        "first_year": 2014,
+        "discount_ratio": 0.95
+    },
+    {
+        "campus": "上海纽约大学",
+        "parent": "纽约大学",
+        "first_year": 2013,
+        "discount_ratio": 0.95
+    },
+    {
+        "campus": "昆山杜克大学",
+        "parent": "杜克大学",
+        "first_year": 2018,
+        "discount_ratio": 0.93
+    },
+    {
+        "campus": "西交利物浦大学",
+        "parent": "西安交通大学",
+        "first_year": 2006,
+        "discount_ratio": 0.88
+    },
+    {
+        "campus": "宁波诺丁汉大学",
+        "parent": "英国诺丁汉大学",
+        "first_year": 2004,
+        "discount_ratio": 0.88
+    },
+    {
+        "campus": "温州肯恩大学",
+        "parent": "美国肯恩大学",
+        "first_year": 2014,
+        "discount_ratio": 0.85
+    },
+    {
+        "campus": "广东以色列理工学院",
+        "parent": "以色列理工学院",
+        "first_year": 2017,
+        "discount_ratio": 0.88
+    },
+    {
+        "campus": "深圳北理莫斯科大学",
+        "parent": "莫斯科大学",
+        "first_year": 2017,
+        "discount_ratio": 0.85
+    },
+    {
+        "campus": "香港科技大学（广州）",
+        "parent": "香港科技大学",
+        "first_year": 2022,
+        "discount_ratio": 0.95
+    },
+    {
+        "campus": "香港城市大学（东莞）",
+        "parent": "香港城市大学",
+        "first_year": 2024,
+        "discount_ratio": 0.95
+    },
+    {
+        "campus": "深圳技术大学",
+        "parent": "深圳市",
+        "first_year": 2018,
+        "discount_ratio": 0.85
+    },
+    {
+        "campus": "南方科技大学",
+        "parent": "深圳市",
+        "first_year": 2011,
+        "discount_ratio": 0.92
+    },
+    {
+        "campus": "上海科技大学",
+        "parent": "中国科学院",
+        "first_year": 2014,
+        "discount_ratio": 0.93
     }
 ]

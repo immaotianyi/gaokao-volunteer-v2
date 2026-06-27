@@ -58,6 +58,16 @@ def is_configured() -> bool:
     ])
 
 
+def _signature_strict() -> bool:
+    """是否严格验签（生产环境必须验签，开发/mock 模式允许跳过）。"""
+    return os.getenv("ENV", "").lower() == "prod"
+
+
+# 模块加载时检查证书配置
+if is_configured() and not os.getenv("WECHAT_PLATFORM_CERT_PATH", ""):
+    print("[WechatPay] ⚠ 已配置商户但缺少平台证书路径 WECHAT_PLATFORM_CERT_PATH，生产环境将拒绝回调")
+
+
 def get_amount_fen() -> int:
     """返回订单金额（分）。"""
     return PAY_AMOUNT_FEN
@@ -221,7 +231,10 @@ def _verify_signature(timestamp: str, nonce: str, body: str, signature: str,
     """
     platform_cert_path = os.getenv("WECHAT_PLATFORM_CERT_PATH", "")
     if not platform_cert_path:
-        # 未配置平台证书 → 跳过验签（开发模式）
+        if _signature_strict():
+            # 生产环境必须有证书，否则拒绝回调
+            return False
+        # 开发/mock 模式跳过验签
         return True
     from cryptography.hazmat.primitives import hashes
     from cryptography.hazmat.primitives.asymmetric import padding

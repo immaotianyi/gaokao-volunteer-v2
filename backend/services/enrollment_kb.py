@@ -137,6 +137,7 @@ class EnrollmentKnowledgeBase:
             "low_preference": None,
             "notes": "",
             "source": "",
+            "rules_text": "",
         }
 
         # 1. 精确匹配大学名
@@ -147,7 +148,9 @@ class EnrollmentKnowledgeBase:
 
         if rules is None:
             # 大学未收录，使用通用默认规则
-            return self._apply_default_rules(university, major, result)
+            result = self._apply_default_rules(university, major, result)
+            result["rules_text"] = self.get_rule_summary(university, major, _pre_built=result)
+            return result
 
         # 3. 按匹配优先级遍历规则: 专业精确匹配 > 全校通配 .*
         # 关键: 先收集所有命中的规则，然后按"最精确"的一条取字段，
@@ -198,6 +201,8 @@ class EnrollmentKnowledgeBase:
         if not result["found"]:
             result = self._apply_default_rules(university, major, result)
 
+        # 补齐 rules_text（传入 _pre_built 避免 get_rule_summary 内部再次调用 query 形成递归）
+        result["rules_text"] = self.get_rule_summary(university, major, _pre_built=result)
         return result
 
     def _fuzzy_match_university(self, name: str) -> list[dict] | None:
@@ -311,11 +316,15 @@ class EnrollmentKnowledgeBase:
 
         return full_text
 
-    def get_rule_summary(self, university: str, major: str) -> str:
+    def get_rule_summary(self, university: str, major: str, _pre_built: dict | None = None) -> str:
         """
         生成可供 LLM prompt 使用的规则摘要文本
+
+        Args:
+            _pre_built: 已构建好的 query() result dict；传入时直接复用，避免与 query() 互相递归。
+                        外部调用方无需传入（保持原签名兼容）。
         """
-        rule = self.query(university, major)
+        rule = _pre_built if _pre_built is not None else self.query(university, major)
 
         if not rule["found"]:
             # Fallback: 返回全文

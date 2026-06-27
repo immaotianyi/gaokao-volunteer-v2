@@ -3,6 +3,7 @@
  */
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import type { CustomLeakageResult, CustomUnlockResult } from "../api/index";
 
 export interface LeakageOpportunity {
   university_name: string;
@@ -36,6 +37,12 @@ export interface LeakageOpportunity {
   // V4: 数据可信度
   data_trust_level?: string | null;   // T1-T4
   data_trust_desc?: string | null;
+  // V5: 热度字段（后端 heat_tracker 填充，仅 top5 有值）
+  heat_view_count?: number | null;     // 累计查看次数
+  heat_watcher_count?: number | null;  // 关注人数（去重）
+  heat_today_view?: number | null;     // 今日查看次数
+  heat_level?: string | null;          // 'cold' | 'normal' | 'hot' | 'viral'
+  heat_label?: string | null;          // 少人关注/正常关注/热门机会/爆款机会
 }
 
 export interface LeakageResult {
@@ -127,11 +134,43 @@ export const useLeakageStore = defineStore("leakage", () => {
     set: (val: string) => { filterType.value = val; },
   });
 
+  // ── 定制化捡漏状态（结合志愿草表） ──
+  const customResult = ref<CustomLeakageResult | null>(null);
+  const customUnlocked = ref(false);
+  const customRequestId = ref<string | null>(null);
+  const customOpportunities = ref<LeakageOpportunity[]>([]); // 解锁后的完整列表
+  const customLoading = ref(false);
+  const customError = ref("");
+
+  function setCustomResult(data: CustomLeakageResult) {
+    customResult.value = data;
+    customRequestId.value = data.request_id;
+    customUnlocked.value = false;
+    customOpportunities.value = data.preview;
+  }
+
+  function setCustomUnlocked(data: CustomUnlockResult) {
+    customUnlocked.value = true;
+    customOpportunities.value = data.opportunities;
+  }
+
+  function clearCustom() {
+    customResult.value = null;
+    customUnlocked.value = false;
+    customRequestId.value = null;
+    customOpportunities.value = [];
+    customLoading.value = false;
+    customError.value = "";
+  }
+
   return {
     result, loading, error,
     filter, filterType, filterTier, filterBatch, sortBy, scoreMin, scoreMax,
     unlocked, FREE_COUNT,
     visibleItems, freeItems, lockedItems, lockedCount, hasNewToday,
     setResult, clear,
+    // 定制化
+    customResult, customUnlocked, customRequestId, customOpportunities, customLoading, customError,
+    setCustomResult, setCustomUnlocked, clearCustom,
   };
 });

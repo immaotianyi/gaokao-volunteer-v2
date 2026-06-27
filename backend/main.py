@@ -51,6 +51,25 @@ async def lifespan(app: FastAPI):
     # SQLite 建表（同步）
     Base.metadata.create_all(bind=_sync_engine)
 
+    # ── SQLite 已建表的轻量列补丁：为 user_profiles 补 6 个选科成绩列（任务 #8）──
+    # 仅对 SQLite 做 ALTER TABLE，列已存在则忽略；不影响 PostgreSQL 部署
+    try:
+        from sqlalchemy import text
+        _new_columns = [
+            "physics_score", "chemistry_score", "biology_score",
+            "history_score", "geography_score", "politics_score",
+        ]
+        with _sync_engine.connect() as conn:
+            for col in _new_columns:
+                try:
+                    conn.execute(text(f"ALTER TABLE user_profiles ADD COLUMN {col} INTEGER"))
+                except Exception:
+                    # 列已存在或表不存在，忽略
+                    pass
+            conn.commit()
+    except Exception as e:
+        print(f"[MAIN] ⚠ user_profiles 列补丁跳过: {e}")
+
     # 预加载招生计划 CSV
     data_dir = Path(__file__).parent / "data"
     for name in ("plans_2025.csv", "plans_2026.csv"):

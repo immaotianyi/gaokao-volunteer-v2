@@ -81,7 +81,7 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
   <div class="editor-overlay" @click.self="cancel">
     <div class="editor-panel">
       <div class="editor-head">
-        <span class="editor-title">编辑考生档案</span>
+        <span class="editor-title">完善你的档案</span>
         <div class="editor-close" @click="cancel"><Icon name="close" :size="14" /></div>
       </div>
 
@@ -130,7 +130,7 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
             />
             <div v-if="rankLoading" class="rank-spinner"></div>
           </div>
-          <span v-if="rankAutoMode && form.province === '广东'" class="rank-hint">根据2025年一分一段表自动推算</span>
+          <span v-if="rankAutoMode && form.province === '广东'" class="rank-hint">根据 2025 年一分一段表自动估算</span>
           <span v-else-if="rankAutoMode && form.province && form.province !== '广东'" class="rank-hint warn">暂仅支持广东，请手动输入位次</span>
         </div>
 
@@ -190,7 +190,7 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
             <strong>{{ DATA_COVERAGE.provinces.join("、") }}</strong> 共 5 省。
           </p>
           <p class="notice-sub">{{ DATA_COVERAGE.note }}</p>
-          <p class="notice-privacy">你的档案数据仅存储在浏览器本地，不会上传至第三方。后端同步功能即将上线。</p>
+          <p class="notice-privacy">你的档案只存在浏览器本地，不会上传第三方。后端同步功能即将上线。</p>
         </div>
       </div>
 
@@ -208,8 +208,8 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
 @media (min-width: 640px) { .editor-panel { padding: 32px; } }
 
 .editor-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.editor-title { font-size: 18px; font-weight: 700; color: #f1f5f9; }
-.editor-close { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94a3b8; font-size: 14px; transition: all 0.2s; }
+.editor-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.editor-close { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); font-size: 14px; transition: all 0.2s; }
 .editor-close:hover { background: rgba(255,255,255,0.12); }
 .editor-close:active { transform: scale(0.9); }
 
@@ -219,9 +219,9 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
 .field-half { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .field-row-triple { display: flex; gap: 8px; }
 .field-third { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-.field-label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
+.field-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
 .required { color: #fb7185; margin-left: 2px; }
-.field-input { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; font-size: 14px; color: #e2e8f0; outline: none; box-sizing: border-box; width: 100%; transition: border-color 0.2s; }
+.field-input { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; font-size: 14px; color: var(--text-primary); outline: none; box-sizing: border-box; width: 100%; transition: border-color 0.2s; }
 .field-input:focus { border-color: rgba(56,189,248,0.4); }
 .score-input { font-size: 28px; font-weight: 200; text-align: center; padding: 14px; }
 
@@ -231,39 +231,39 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
 .divider-text { font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 2px; }
 
 .vision-row { display: flex; gap: 6px; }
-.vision-opt { flex: 1; text-align: center; padding: 9px 0; border-radius: 8px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.04); color: #94a3b8; cursor: pointer; transition: all 0.2s; }
-.vision-opt:hover { background: rgba(56,189,248,0.08); color: #7dd3fc; }
-.vision-opt.active { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); }
+.vision-opt { flex: 1; text-align: center; padding: 9px 0; border-radius: 8px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.04); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+.vision-opt:hover { background: rgba(56,189,248,0.08); color: #f4d8a8; }
+.vision-opt.active { background: rgba(56,189,248,0.15); color: #e8b974; border: 1px solid rgba(56,189,248,0.3); }
 
 /* ── 位次自动推算 ── */
-.rank-auto-toggle { font-size: 10px; font-weight: 400; text-transform: none; letter-spacing: 0; color: #64748b; cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.03); transition: all 0.2s; }
-.rank-auto-toggle:hover { color: #38bdf8; background: rgba(56,189,248,0.08); }
+.rank-auto-toggle { font-size: 10px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-muted); cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.03); transition: all 0.2s; }
+.rank-auto-toggle:hover { color: #e8b974; background: rgba(56,189,248,0.08); }
 .auto-dot { width: 6px; height: 6px; border-radius: 50%; background: #475569; transition: all 0.2s; }
 .auto-dot.active { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
 .rank-input-row { position: relative; }
 .rank-field { transition: all 0.3s; }
 .rank-field.rank-auto { background: rgba(16,185,129,0.04); border-color: rgba(16,185,129,0.15); color: #6ee7b7; }
 .rank-field.rank-loading { opacity: 0.6; }
-.rank-spinner { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border: 2px solid rgba(56,189,248,0.2); border-top-color: #38bdf8; border-radius: 50%; animation: spin 0.6s linear infinite; }
+.rank-spinner { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border: 2px solid rgba(56,189,248,0.2); border-top-color: #e8b974; border-radius: 50%; animation: spin 0.6s linear infinite; }
 @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
 .rank-hint { font-size: 10px; color: #10b981; margin-top: 2px; }
 .rank-hint.warn { color: #f59e0b; }
 
 /* ── 数据说明 ── */
-.data-notice { margin-top: 4px; padding: 14px; background: rgba(56, 189, 248, 0.04); border: 1px solid rgba(56, 189, 248, 0.1); border-radius: 10px; }
+.data-notice { margin-top: 4px; padding: 14px; background: rgba(232, 185, 116, 0.04); border: 1px solid rgba(232, 185, 116, 0.1); border-radius: 10px; }
 .notice-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-.notice-icon { width: 16px; height: 16px; border-radius: 50%; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-style: italic; }
-.notice-title { font-size: 11px; font-weight: 700; color: #7dd3fc; text-transform: uppercase; letter-spacing: 1px; }
-.notice-body { font-size: 12px; color: #94a3b8; line-height: 1.7; margin: 0 0 6px; }
-.notice-body strong { color: #e2e8f0; font-weight: 700; }
-.notice-sub { font-size: 11px; color: #64748b; line-height: 1.6; margin: 0 0 8px; }
+.notice-icon { width: 16px; height: 16px; border-radius: 50%; background: rgba(232, 185, 116, 0.15); color: #e8b974; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-style: italic; }
+.notice-title { font-size: 11px; font-weight: 700; color: #f4d8a8; text-transform: uppercase; letter-spacing: 1px; }
+.notice-body { font-size: 12px; color: var(--text-secondary); line-height: 1.7; margin: 0 0 6px; }
+.notice-body strong { color: var(--text-primary); font-weight: 700; }
+.notice-sub { font-size: 11px; color: var(--text-muted); line-height: 1.6; margin: 0 0 8px; }
 .notice-privacy { font-size: 10px; color: #475569; line-height: 1.6; margin: 0; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.04); }
 
 .editor-actions { display: flex; gap: 10px; margin-top: 20px; }
-.btn-cancel { flex: 1; text-align: center; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.06); color: #94a3b8; cursor: pointer; transition: all 0.2s; }
-.btn-cancel:hover { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+.btn-cancel { flex: 1; text-align: center; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.06); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+.btn-cancel:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
 .btn-cancel:active { background: rgba(255,255,255,0.12); transform: scale(0.97); }
-.btn-save { flex: 1.5; text-align: center; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, #38bdf8, #818cf8); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(56,189,248,0.3); transition: all 0.2s; }
+.btn-save { flex: 1.5; text-align: center; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(56,189,248,0.3); transition: all 0.2s; }
 .btn-save:hover { box-shadow: 0 12px 32px rgba(56,189,248,0.45); transform: translateY(-1px); }
 .btn-save:active { transform: scale(0.97); }
 .btn-save.disabled { opacity: 0.4; pointer-events: none; }

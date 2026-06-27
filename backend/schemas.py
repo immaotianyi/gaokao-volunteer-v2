@@ -18,6 +18,12 @@ class UserProfileBase(BaseModel):
     english_score: Optional[int] = Field(None, ge=0, le=150, description="英语单科成绩")
     math_score: Optional[int] = Field(None, ge=0, le=150, description="数学单科成绩")
     chinese_score: Optional[int] = Field(None, ge=0, le=150, description="语文单科成绩")
+    physics_score: Optional[int] = Field(None, ge=0, le=100, description="物理成绩")
+    chemistry_score: Optional[int] = Field(None, ge=0, le=100, description="化学成绩")
+    biology_score: Optional[int] = Field(None, ge=0, le=100, description="生物成绩")
+    history_score: Optional[int] = Field(None, ge=0, le=100, description="历史成绩")
+    geography_score: Optional[int] = Field(None, ge=0, le=100, description="地理成绩")
+    politics_score: Optional[int] = Field(None, ge=0, le=100, description="政治成绩")
     vision_status: str = Field("正常", description="视力状况")
 
 
@@ -128,7 +134,7 @@ class LeakageOpportunity(BaseModel):
     university_name: str
     major_name: str
     group_code: str
-    plan_count: int
+    plan_count: Optional[int] = Field(None, description="计划数（部分省份投档线数据无此字段）")
     opportunity_type: str = Field(..., description="新增专业 / 扩招专业 / 中外合作 / 新校区 / 首招批次")
     reason: str
     leakage_score: Optional[int] = Field(None, description="捡漏评分 0-100")
@@ -157,6 +163,12 @@ class LeakageOpportunity(BaseModel):
     # V4 新增：雪峰知识库维度（方案B）
     data_trust_level: Optional[str] = Field(None, description="数据可信度分级 T1-T4")
     data_trust_desc: Optional[str] = Field(None, description="数据可信度说明")
+    # V5 新增：实时热度追踪
+    heat_view_count: Optional[int] = Field(None, description="累计查看次数")
+    heat_watcher_count: Optional[int] = Field(None, description="关注人数（去重）")
+    heat_today_view: Optional[int] = Field(None, description="今日查看次数")
+    heat_level: Optional[str] = Field(None, description="热度等级: cold/normal/hot/viral")
+    heat_label: Optional[str] = Field(None, description="热度中文标签")
 
 
 class LeakageRadarResponse(BaseModel):
@@ -189,11 +201,62 @@ class RiskCheckItem(RiskTarget):
     status: str = Field(..., description="PASS | WARNING | DANGER | UNKNOWN")
     reason: str
     matched_clause: str = ""
+    career_risk: Optional[str] = Field(None, description="就业风险提示")
+    ai_risk: Optional[str] = Field(None, description="AI替代风险提示")
 
 
 class CheckRiskResponse(BaseModel):
     total: int
     results: list[RiskCheckItem]
+
+
+# ── 定制化捡漏雷达（付费功能） ──────────────────────────────────
+
+class CustomLeakageTarget(BaseModel):
+    """志愿草表中的单个目标"""
+    university: str = Field(..., min_length=2, max_length=50, description="大学名称")
+    major: str = Field(..., min_length=2, max_length=100, description="专业名称")
+
+
+class CustomLeakageRequest(BaseModel):
+    """定制化捡漏请求：结合考生档案 + 志愿草表生成针对性捡漏建议"""
+    profile: UserProfileBase = Field(..., description="考生档案")
+    subject_group: str = Field("物理类", max_length=20, description="科类")
+    targets: list[CustomLeakageTarget] = Field(..., min_length=1, max_length=50, description="志愿草表")
+    score_tolerance: int = Field(30, ge=5, le=100, description="分数容差")
+
+
+class TargetLeakageSummary(BaseModel):
+    """单个志愿目标的捡漏机会统计"""
+    university: str
+    major: str
+    opportunity_count: int = Field(0, description="该目标相关捡漏机会数")
+    best_score: Optional[int] = Field(None, description="最高捡漏评分")
+    best_type: Optional[str] = Field(None, description="最佳机会类型")
+
+
+class CustomLeakageResponse(BaseModel):
+    """定制化捡漏响应（免费预览 + 付费解锁）"""
+    total: int = Field(..., description="总捡漏机会数")
+    preview: list[LeakageOpportunity] = Field(default_factory=list, description="免费预览（前3条）")
+    locked: bool = Field(True, description="完整报告是否锁定")
+    locked_count: int = Field(0, description="锁定数量")
+    request_id: Optional[str] = Field(None, description="解锁请求ID")
+    prompt_text: str = Field("", description="引导付费文案")
+    target_summary: list[TargetLeakageSummary] = Field(default_factory=list, description="各志愿目标捡漏统计")
+
+
+class CustomLeakageUnlockRequest(BaseModel):
+    """解锁定制化捡漏报告"""
+    request_id: str = Field(..., description="解锁请求ID")
+    user_id: str = Field(..., description="用户ID")
+
+
+class CustomLeakageUnlockResponse(BaseModel):
+    """解锁后的完整报告"""
+    unlocked: bool = Field(True)
+    total: int
+    opportunities: list[LeakageOpportunity]
 
 
 # ── AI 顾问 (方案C) ────────────────────────────────────────────
@@ -225,7 +288,8 @@ class ScoreRankRequest(BaseModel):
     """分数→位次转换请求"""
     score: int = Field(..., ge=0, le=750, description="高考分数")
     subject_group: str = Field("物理类", description="科类（物理类/历史类）")
-    year: int = Field(2025, ge=2020, le=2026, description="年份")
+    year: int = Field(2026, ge=2020, le=2026, description="年份")
+    province: str = Field("广东", min_length=2, max_length=20, description="省份（多省数据隔离）")
 
 
 class ScoreRankResponse(BaseModel):
