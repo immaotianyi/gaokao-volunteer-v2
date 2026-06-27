@@ -51,6 +51,19 @@ frontend/public/models/armor.glb
 *.bak
 *.tmp
 
+# ── 数据修复过程的备份/快照/中间产物（部署不需要，体积大）──
+backend/data/_backup_*/
+backend/data/_snapshot_*/
+backend/data/backup_*/
+backend/data/intermediate/
+backend/data/*.csv.bak_*
+backend/data/_merge_report_*.txt
+
+# ── 审核员临时调试脚本（已含在初始提交的除外）──
+backend/scripts/_tmp_*.py
+backend/scripts/_peek_*.py
+backend/scripts/_sc_*.py
+
 # ── 产品文档（可选，如需排除请取消注释）──
 # 报名创意方案.html
 # 产品解说.html
