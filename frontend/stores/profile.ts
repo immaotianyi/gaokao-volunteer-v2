@@ -35,6 +35,8 @@ export interface UserProfile {
   politics_score?: number | null;
   // 体检
   vision_status?: string;
+  /** 索引签名：允许通过 string key 访问任意字段（用于动态字段绑定，如选科成绩） */
+  [key: string]: number | string | null | undefined;
 }
 
 /** 创建空档案（所有字段为空，强制用户填写） */

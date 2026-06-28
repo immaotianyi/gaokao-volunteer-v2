@@ -40,6 +40,13 @@ let currentLevel: ComputeLevel = "idle"
 let targetBrightness = SPEED_PROFILE.idle.brightness
 let currentBrightness = SPEED_PROFILE.idle.brightness
 
+// ── 可访问性 + 可见性：切后台暂停 rAF，prefers-reduced-motion 降低旋转 ──
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches
+let isVisible = true
+
 // ── 星芒纹理：中心白核 + 烛光晕染 ──
 function createStarTexture(): THREE.Texture {
   const size = 64
@@ -319,16 +326,19 @@ function initScene() {
 // ── 动画循环 ────────────────────────────────────────────
 function animate() {
   rafId = requestAnimationFrame(animate)
-  if (!points || !geometry || !renderer || !camera || !scene || !material) return
+  // 切到后台时不渲染，节省移动端电量
+  if (!isVisible || !points || !geometry || !renderer || !camera || !scene || !material) return
 
   const t = clock.getElapsedTime()
   const profile = SPEED_PROFILE[currentLevel]
+  // prefers-reduced-motion: 大幅降低旋转速度，避免动效刺激
+  const rotateFactor = prefersReducedMotion ? 0.15 : 1
   targetBrightness = profile.brightness
   currentBrightness += (targetBrightness - currentBrightness) * profile.lerp
 
   // 旋转（双轴，增强立体感）
-  points.rotation.y += profile.rotate
-  points.rotation.x += profile.rotate * 0.35
+  points.rotation.y += profile.rotate * rotateFactor
+  points.rotation.x += profile.rotate * 0.35 * rotateFactor
 
   // 更新 shader uniform
   material.uniforms.uTime.value = t
@@ -342,10 +352,24 @@ function animate() {
     mat.opacity = base * (0.65 + 0.35 * Math.sin(t * 0.7 + phase)) * currentBrightness
     s.position.y = (s.userData.driftBaseY as number) + Math.sin(t * 0.25 + phase) * 6
     // 图标整体也跟随星点缓慢旋转
-    s.rotation.z += profile.rotate * 0.5
+    s.rotation.z += profile.rotate * 0.5 * rotateFactor
   }
 
   renderer.render(scene, camera)
+}
+
+// ── 标签页可见性：hidden 暂停 rAF，visible 恢复 ──
+function handleVisibility() {
+  if (document.hidden) {
+    isVisible = false
+    if (rafId) {
+      cancelAnimationFrame(rafId)
+      rafId = 0
+    }
+  } else if (!isVisible) {
+    isVisible = true
+    if (!rafId) animate()
+  }
 }
 
 // ── 窗口尺寸响应 ────────────────────────────────────────
@@ -370,10 +394,12 @@ onMounted(() => {
   initScene()
   animate()
   window.addEventListener("resize", onResize)
+  document.addEventListener("visibilitychange", handleVisibility)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", onResize)
+  document.removeEventListener("visibilitychange", handleVisibility)
   cancelAnimationFrame(rafId)
 
   if (geometry) {

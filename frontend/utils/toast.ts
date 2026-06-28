@@ -29,12 +29,21 @@ function ensureContainer() {
   document.head.appendChild(style);
 }
 
+/** 最大同时堆叠条数，超过则移除最旧的（#m15） */
+const MAX_TOAST_STACK = 3;
+
 function toastImpl(msg: string, cls = "toast-info") {
   ensureContainer();
   const el = document.createElement("div");
   el.className = `toast-msg ${cls}`;
   el.textContent = msg;
   toastContainer!.appendChild(el);
+  // 堆叠超限：移除最旧的（firstChild 可能是文本节点，循环跳过）
+  while (toastContainer!.childElementCount > MAX_TOAST_STACK) {
+    const first = toastContainer!.firstElementChild;
+    if (!first) break;
+    first.remove();
+  }
   setTimeout(() => el.remove(), 2500);
 }
 

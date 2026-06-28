@@ -60,8 +60,9 @@ async function fetchRadarData() {
       user_score: p.score,
     })
     leakageStore.setResult(res)
-  } catch (e: any) {
-    const msg = typeof e?.message === "string" ? e.message : "雷达连接失败"
+  } catch (e: unknown) {
+    const err = e as { message?: unknown }
+    const msg = typeof err?.message === "string" ? err.message : "雷达连接失败"
     leakageStore.error = msg
     toast(msg)
   } finally {
@@ -102,8 +103,9 @@ async function runCustomLeakage() {
     })
     leakageStore.setCustomResult(res)
     toast.success(`已为你发现 ${res.total} 个定制化捡漏机会`)
-  } catch (e: any) {
-    const msg = typeof e?.message === "string" ? e.message : "定制化扫描失败"
+  } catch (e: unknown) {
+    const err = e as { message?: unknown }
+    const msg = typeof err?.message === "string" ? err.message : "定制化扫描失败"
     leakageStore.customError = msg
     toast.error(msg)
   } finally {
@@ -124,15 +126,15 @@ function openCustomPayment() {
   <div class="radar-layout">
     <div class="radar-toolbar glass-card">
       <div class="filter-row">
-        <div class="filter-chips">
-          <div v-for="opt in [{k:'all',l:'全部'},{k:'new',l:'新增专业'},{k:'expanded',l:'扩招专业'}]" :key="opt.k" class="filter-chip" :class="{ active: leakageStore.filter === opt.k }" @click="leakageStore.filterType = opt.k as any; leakageStore.filter = opt.k as any">{{ opt.l }}</div>
+        <div class="filter-chips" role="tablist" aria-label="机会类型筛选">
+          <button v-for="opt in [{k:'all',l:'全部'},{k:'new',l:'新增专业'},{k:'expanded',l:'扩招专业'}]" :key="opt.k" type="button" class="filter-chip" role="tab" :aria-selected="leakageStore.filterType === opt.k" :class="{ active: leakageStore.filterType === opt.k }" @click="leakageStore.filterType = opt.k">{{ opt.l }}</button>
         </div>
         <div class="toggle-row">
-          <label class="toggle-label" :class="{ on: showPureOnly }" @click="showPureOnly = !showPureOnly">纯净组优先</label>
-          <label class="toggle-label" :class="{ on: hideSinoForeign }" @click="hideSinoForeign = !hideSinoForeign">剔除中外合作</label>
+          <button type="button" class="toggle-label" :class="{ on: showPureOnly }" :aria-pressed="showPureOnly" @click="showPureOnly = !showPureOnly">纯净组优先</button>
+          <button type="button" class="toggle-label" :class="{ on: hideSinoForeign }" :aria-pressed="hideSinoForeign" @click="hideSinoForeign = !hideSinoForeign">剔除中外合作</button>
         </div>
       </div>
-      <div class="radar-refresh" @click="fetchRadarData"><span>开始扫描</span></div>
+      <button type="button" class="radar-refresh" aria-label="开始扫描全省招生计划" @click="fetchRadarData"><span>开始扫描</span></button>
     </div>
 
     <!-- 定制化引导卡片：检测到志愿草表已填写时显示 -->
@@ -147,10 +149,10 @@ function openCustomPayment() {
             从全省数据中筛选出针对你的捡漏机会。
           </div>
         </div>
-        <div class="custom-intro-btn" @click="runCustomLeakage">
+        <button type="button" class="custom-intro-btn" @click="runCustomLeakage">
           <Icon name="candle" :size="14" />
           <span>开始定制化扫描</span>
-        </div>
+        </button>
       </div>
     </Transition>
 
@@ -212,15 +214,15 @@ function openCustomPayment() {
           </div>
           <div class="locked-cta-action">
             <div class="disclaimer-box">
-              <div class="disclaimer-check" @click="disclaimerAgreed = !disclaimerAgreed">
+              <button type="button" class="disclaimer-check" :aria-pressed="disclaimerAgreed" @click="disclaimerAgreed = !disclaimerAgreed">
                 <div class="check-box" :class="{ checked: disclaimerAgreed }"><span v-if="disclaimerAgreed" class="check-mark">✓</span></div>
                 <span class="disclaimer-label">我已阅读并同意《免责声明》</span>
-              </div>
+              </button>
             </div>
-            <div class="locked-cta-btn" :class="{ disabled: !disclaimerAgreed }" @click="openCustomPayment">
+            <button type="button" class="locked-cta-btn" :class="{ disabled: !disclaimerAgreed }" :disabled="!disclaimerAgreed" :aria-label="`支付 ¥9.9 解锁余下 ${leakageStore.customResult.locked_count} 条定制化捡漏机会`" @click="openCustomPayment">
               <span class="cta-price">¥9.9</span>
               <span class="cta-label">解锁完整报告</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -253,7 +255,7 @@ function openCustomPayment() {
           <div class="paywall-card">
             <span class="paywall-title">查看完整清单</span>
             <span class="paywall-desc">还有 {{ lockedCount }} 所院校的捡漏机会，每一所都经过算法筛选</span>
-            <div class="paywall-btn" @click="emit('openPayment')"><span>支付 ¥ 9.9 解锁</span></div>
+            <button type="button" class="paywall-btn" @click="emit('openPayment')"><span>支付 ¥ 9.9 解锁</span></button>
           </div>
         </div>
       </div>
@@ -267,7 +269,7 @@ function openCustomPayment() {
       />
     </div>
 
-    <div v-if="!leakageStore.result && !leakageStore.loading && !leakageStore.customResult" class="empty-state glass-card">
+    <div v-if="!leakageStore.result && !leakageStore.loading && !leakageStore.customResult && !leakageStore.customLoading" class="empty-state glass-card">
       <div class="empty-icon"><Icon name="radar" :size="32" /></div>
       <span class="empty-title">等待开始</span>
       <span class="empty-desc">点击「开始扫描」，从你的分数出发，找出值得关注的院校</span>
@@ -293,14 +295,14 @@ function openCustomPayment() {
 .radar-toolbar { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 .filter-row { display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
-.filter-chip { padding: 7px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); transition: all 0.2s; cursor: pointer; }
-.filter-chip.active { background: rgba(232, 185, 116, 0.15); color: #e8b974; }
+button.filter-chip { padding: 7px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); transition: all 0.2s; cursor: pointer; appearance: none; border: none; font-family: inherit; }
+button.filter-chip.active { background: rgba(232, 185, 116, 0.15); color: #e8b974; }
 .toggle-row { display: flex; gap: 8px; }
-.toggle-label { padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: rgba(255, 255, 255, 0.04); color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
-.toggle-label.on { background: rgba(212, 154, 78, 0.15); color: #d49a4e; border: 1px solid rgba(212, 154, 78, 0.3); }
-.radar-refresh { padding: 7px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; transition: all 0.2s; }
-.radar-refresh:hover { box-shadow: 0 4px 16px rgba(232, 185, 116, 0.35); transform: translateY(-1px); }
-.radar-refresh:active { transform: scale(0.96); }
+button.toggle-label { padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: rgba(255, 255, 255, 0.04); color: var(--text-muted); cursor: pointer; transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.toggle-label.on { background: rgba(212, 154, 78, 0.15); color: #d49a4e; border: 1px solid rgba(212, 154, 78, 0.3); }
+button.radar-refresh { padding: 7px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.radar-refresh:hover { box-shadow: 0 4px 16px rgba(232, 185, 116, 0.35); transform: translateY(-1px); }
+button.radar-refresh:active { transform: scale(0.96); }
 
 /* ── 定制化引导卡片 ── */
 .custom-intro-card { padding: 18px 20px; display: flex; align-items: center; gap: 14px; border: 1px solid rgba(232, 185, 116, 0.2); background: linear-gradient(135deg, rgba(232, 185, 116, 0.06), rgba(212, 154, 78, 0.03)); }
@@ -309,9 +311,9 @@ function openCustomPayment() {
 .custom-intro-title { font-size: 17px; font-weight: 800; color: var(--text-primary); letter-spacing: 2px; margin-bottom: 4px; }
 .custom-intro-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.7; }
 .custom-intro-desc .highlight { color: #e8b974; font-weight: 700; }
-.custom-intro-btn { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 6px 20px rgba(232, 185, 116, 0.3); transition: all 0.2s; flex-shrink: 0; }
-.custom-intro-btn:hover { box-shadow: 0 10px 28px rgba(232, 185, 116, 0.45); transform: translateY(-1px); }
-.custom-intro-btn:active { transform: scale(0.96); }
+button.custom-intro-btn { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 6px 20px rgba(232, 185, 116, 0.3); transition: all 0.2s; flex-shrink: 0; appearance: none; border: none; font-family: inherit; }
+button.custom-intro-btn:hover { box-shadow: 0 10px 28px rgba(232, 185, 116, 0.45); transform: translateY(-1px); }
+button.custom-intro-btn:active { transform: scale(0.96); }
 .custom-intro-enter-active, .custom-intro-leave-active { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .custom-intro-enter-from, .custom-intro-leave-to { opacity: 0; transform: translateY(-12px); }
 
@@ -349,13 +351,13 @@ function openCustomPayment() {
 .locked-cta-title { font-size: 16px; font-weight: 800; color: var(--text-primary); letter-spacing: 1.5px; margin-bottom: 4px; }
 .locked-cta-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.7; }
 .locked-cta-action { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; flex-shrink: 0; }
-.locked-cta-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 22px; border-radius: 12px; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(232, 185, 116, 0.35); transition: all 0.2s; }
-.locked-cta-btn.disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
-.locked-cta-btn:not(.disabled):hover { box-shadow: 0 12px 32px rgba(232, 185, 116, 0.5); transform: translateY(-1px); }
+button.locked-cta-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 22px; border-radius: 12px; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(232, 185, 116, 0.35); transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.locked-cta-btn.disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+button.locked-cta-btn:not(.disabled):hover { box-shadow: 0 12px 32px rgba(232, 185, 116, 0.5); transform: translateY(-1px); }
 .cta-price { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
 .cta-label { font-size: 10px; font-weight: 600; opacity: 0.9; }
 .disclaimer-box { text-align: right; }
-.disclaimer-check { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+button.disclaimer-check { display: flex; align-items: center; gap: 6px; cursor: pointer; appearance: none; background: transparent; border: none; padding: 0; font-family: inherit; }
 .check-box { width: 16px; height: 16px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .check-box.checked { background: #e8b974; border-color: #e8b974; }
 .check-mark { color: #020617; font-size: 10px; font-weight: 700; }
@@ -373,10 +375,10 @@ function openCustomPayment() {
 .paywall-card { background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 28px 24px; text-align: center; max-width: 240px; }
 .paywall-title { font-size: 18px; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px; }
 .paywall-desc { font-size: 13px; color: var(--text-secondary); display: block; margin-bottom: 20px; }
-.paywall-btn { background: var(--text-primary); color: #020617; padding: 12px 0; border-radius: 25px; font-size: 14px; font-weight: 700; cursor: pointer; position: relative; transition: all 0.2s; }
-.paywall-btn:hover { background: var(--text-primary); transform: translateY(-1px); }
-.paywall-btn::after { content: ''; position: absolute; inset: -4px; border-radius: 29px; border: 2px solid rgba(241,245,249,0.3); animation: paywall-pulse 2s ease-out infinite; pointer-events: none; }
-.paywall-btn:active { background: var(--text-secondary); }
+button.paywall-btn { background: var(--text-primary); color: #020617; padding: 12px 0; border-radius: 25px; font-size: 14px; font-weight: 700; cursor: pointer; position: relative; transition: all 0.2s; appearance: none; border: none; font-family: inherit; width: 100%; }
+button.paywall-btn:hover { background: var(--text-primary); transform: translateY(-1px); }
+button.paywall-btn::after { content: ''; position: absolute; inset: -4px; border-radius: 29px; border: 2px solid rgba(241,245,249,0.3); animation: paywall-pulse 2s ease-out infinite; pointer-events: none; }
+button.paywall-btn:active { background: var(--text-secondary); }
 
 .scan-ring { width: 60px; height: 60px; position: relative; margin-bottom: 16px; }
 .ring-arc { position: absolute; inset: 0; border-radius: 50%; border: 3px solid transparent; border-top-color: #e8b974; animation: spin 1.2s linear infinite; }

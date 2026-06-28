@@ -42,10 +42,10 @@ const electiveScores = computed(() => {
 
     <!-- 未完善提示 -->
     <Transition name="extract-hint">
-      <div v-if="!profileStore.isProfileComplete" class="incomplete-hint" @click="emit('openEditor')">
+      <button v-if="!profileStore.isProfileComplete" type="button" class="incomplete-hint" aria-label="打开档案编辑器" @click="emit('openEditor')">
         <Icon name="alert" :size="11" />
         <span>档案未完善 · 点击填写</span>
-      </div>
+      </button>
     </Transition>
 
     <div class="panel-label">考生档案</div>
@@ -91,20 +91,20 @@ const electiveScores = computed(() => {
       <div class="elective-grid">
         <div v-for="subj in electiveScores" :key="subj.key" class="elective-item">
           <span class="elective-name">{{ subj.label }}</span>
-          <span class="elective-score">{{ (profileStore.profile as Record<string, number | null | undefined>)[subj.key] ?? '--' }}</span>
+          <span class="elective-score">{{ profileStore.profile[subj.key as keyof typeof profileStore.profile] ?? '--' }}</span>
         </div>
       </div>
     </div>
 
     <div class="vision-bar" :class="{ 'vision-warning': scanning && profileStore.profile.vision_status && profileStore.profile.vision_status !== '正常' }">
       <span class="row-label">体检视力</span>
-      <div class="vision-options">
-        <div v-for="opt in visionOptions" :key="opt.key" class="vision-chip" :class="{
+      <div class="vision-options" role="group" aria-label="体检视力选择">
+        <button v-for="opt in visionOptions" :key="opt.key" type="button" class="vision-chip" :class="{
           active: profileStore.profile.vision_status === opt.key,
           'chip-alert': scanning && opt.key !== '正常' && profileStore.profile.vision_status === opt.key
-        }" @click="selectVision(opt.key)">
+        }" :aria-pressed="profileStore.profile.vision_status === opt.key" @click="selectVision(opt.key)">
           {{ opt.label }}
-        </div>
+        </button>
       </div>
       <Transition name="vision-warn">
         <div v-if="scanning && profileStore.profile.vision_status && profileStore.profile.vision_status !== '正常'" class="vision-warn-text">
@@ -113,9 +113,9 @@ const electiveScores = computed(() => {
       </Transition>
     </div>
 
-    <div class="profile-edit-hint" @click="emit('openEditor')">
+    <button type="button" class="profile-edit-hint" aria-label="点击编辑档案" @click="emit('openEditor')">
       <span>点击编辑档案</span>
-    </div>
+    </button>
   </div>
 </template>
 
@@ -147,15 +147,15 @@ const electiveScores = computed(() => {
 
 .vision-bar { margin-bottom: 12px; }
 .vision-options { display: flex; gap: 4px; margin-top: 6px; }
-.vision-chip { flex: 1; padding: 7px 0; text-align: center; border-radius: 8px; font-size: 12px; font-weight: 600; background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); transition: all 0.2s; cursor: pointer; }
-.vision-chip:hover { background: rgba(232, 185, 116, 0.08); color: #f4d8a8; }
-.vision-chip.active { background: rgba(232, 185, 116, 0.15); color: #e8b974; border: 1px solid rgba(232, 185, 116, 0.3); }
-.profile-edit-hint { font-size: 10px; color: #475569; text-align: center; cursor: pointer; }
-.profile-edit-hint:hover { color: #e8b974; }
+button.vision-chip { flex: 1; padding: 7px 0; text-align: center; border-radius: 8px; font-size: 12px; font-weight: 600; background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); transition: all 0.2s; cursor: pointer; appearance: none; border: none; font-family: inherit; }
+button.vision-chip:hover { background: rgba(232, 185, 116, 0.08); color: #f4d8a8; }
+button.vision-chip.active { background: rgba(232, 185, 116, 0.15); color: #e8b974; border: 1px solid rgba(232, 185, 116, 0.3); }
+button.profile-edit-hint { font-size: 10px; color: #475569; text-align: center; cursor: pointer; appearance: none; border: none; background: transparent; font-family: inherit; padding: 0; width: 100%; }
+button.profile-edit-hint:hover { color: #e8b974; }
 
 /* ── 未完善提示 ── */
-.incomplete-hint { display: flex; align-items: center; gap: 4px; padding: 5px 10px; margin-bottom: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.2); font-size: 10px; color: #fde68a; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.incomplete-hint:hover { background: rgba(251, 191, 36, 0.15); }
+button.incomplete-hint { display: flex; align-items: center; gap: 4px; padding: 5px 10px; margin-bottom: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.2); font-size: 10px; color: #fde68a; font-weight: 600; cursor: pointer; transition: all 0.2s; appearance: none; font-family: inherit; }
+button.incomplete-hint:hover { background: rgba(251, 191, 36, 0.15); }
 
 /* 扫描时分数/位次数字柔和烛光呼吸 */
 .glitching { animation: candle-glow 1.6s ease-in-out 2; }

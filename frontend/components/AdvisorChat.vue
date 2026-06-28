@@ -19,8 +19,6 @@ let currentES: EventSource | null = null
 
 const suggestions = computed(() => advisorStore.lastSuggestions)
 
-function esc(s: string) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML }
-
 function scrollToBottom() {
   nextTick(() => {
     const el = scrollRef.value
@@ -48,7 +46,7 @@ function sendMessage(message?: string) {
 
   currentES = startAdvisorStream(
     text,
-    advisorStore.history.slice(0, -2),
+    advisorStore.history.slice(0, -1),
     profileStore.profile,
     {
       onKnowledge(k) { advisorStore.updateLastAssistant({ knowledge: k }); scrollToBottom() },
@@ -100,7 +98,7 @@ onBeforeUnmount(() => { currentES?.close() })
       <div v-for="msg in advisorStore.messages" :key="msg.id" class="msg-row" :class="msg.role">
         <!-- 用户消息 -->
         <div v-if="msg.role === 'user'" class="msg-bubble user-bubble">
-          {{ esc(msg.content) }}
+          {{ msg.content }}
         </div>
 
         <!-- AI 消息 -->
@@ -108,16 +106,16 @@ onBeforeUnmount(() => { currentES?.close() })
           <!-- 知识检索前置 -->
           <div v-if="msg.knowledge" class="ai-prelude">
             <span class="prelude-label"><Icon name="database" :size="11" /> 知识检索</span>
-            <span class="prelude-text">{{ esc(msg.knowledge.substring(0, 200)) }}{{ msg.knowledge.length > 200 ? '...' : '' }}</span>
+            <span class="prelude-text">{{ msg.knowledge.substring(0, 200) }}{{ msg.knowledge.length > 200 ? '...' : '' }}</span>
           </div>
           <!-- 联网搜索前置 -->
           <div v-if="msg.live" class="ai-prelude live-prelude">
             <span class="prelude-label"><Icon name="radar" :size="11" /> 联网搜索</span>
-            <span class="prelude-text">{{ esc(msg.live.substring(0, 200)) }}{{ msg.live.length > 200 ? '...' : '' }}</span>
+            <span class="prelude-text">{{ msg.live.substring(0, 200) }}{{ msg.live.length > 200 ? '...' : '' }}</span>
           </div>
 
           <!-- 回复正文 -->
-          <div class="ai-content" v-if="msg.content">{{ esc(msg.content) }}<span v-if="msg.streaming" class="typing-cursor">▋</span></div>
+          <div class="ai-content" v-if="msg.content">{{ msg.content }}<span v-if="msg.streaming" class="typing-cursor">▋</span></div>
           <div v-else-if="msg.streaming" class="ai-thinking">
             <span class="thinking-dot" /><span class="thinking-dot d2" /><span class="thinking-dot d3" />
           </div>

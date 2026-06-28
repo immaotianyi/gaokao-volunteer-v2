@@ -4,9 +4,11 @@
   用法: <Icon name="shield" :size="28" />
 -->
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   name: string
   size?: number
+  /** 无障碍标签：传入则 role="img" + aria-label；不传则 aria-hidden=true（纯装饰图标） */
+  ariaLabel?: string
 }>(), { size: 24 })
 
 // 所有图标统一 viewBox="0 0 24 24", stroke-width=1.5, 无 fill
@@ -77,6 +79,9 @@ const ICONS: Record<string, string> = {
     stroke-width="1.5"
     stroke-linecap="round"
     stroke-linejoin="round"
+    :role="ariaLabel ? 'img' : undefined"
+    :aria-label="ariaLabel"
+    :aria-hidden="ariaLabel ? undefined : 'true'"
     v-html="ICONS[name] || ''"
   />
 </template>

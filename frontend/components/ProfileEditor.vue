@@ -72,9 +72,6 @@ function toggleRankMode() {
   rankAutoMode.value = !rankAutoMode.value
   if (rankAutoMode.value && form.value.score) autoEstimateRank()
 }
-
-/** Typed accessor for dynamic field binding — avoids `as any` in template */
-const scoreFields = computed(() => form.value as Record<string, number | null | undefined>)
 </script>
 
 <template>
@@ -82,7 +79,7 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
     <div class="editor-panel">
       <div class="editor-head">
         <span class="editor-title">完善你的档案</span>
-        <div class="editor-close" @click="cancel"><Icon name="close" :size="14" /></div>
+        <button type="button" class="editor-close" aria-label="关闭档案编辑器" @click="cancel"><Icon name="close" :size="14" /></button>
       </div>
 
       <div class="editor-body">
@@ -114,10 +111,10 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
         <div class="field-row">
           <label class="field-label">
             全省位次
-            <span class="rank-auto-toggle" @click="toggleRankMode" :title="rankAutoMode ? '点击切换为手动输入' : '点击切换为自动推算'">
+            <button type="button" class="rank-auto-toggle" :title="rankAutoMode ? '点击切换为手动输入' : '点击切换为自动推算'" :aria-pressed="rankAutoMode" @click="toggleRankMode">
               <span class="auto-dot" :class="{ active: rankAutoMode }"></span>
               {{ rankAutoMode ? '自动推算' : '手动输入' }}
-            </span>
+            </button>
           </label>
           <div class="rank-input-row">
             <input
@@ -158,10 +155,10 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
           <div class="section-divider">
             <span class="divider-text">选科成绩</span>
           </div>
-          <div class="field-row-triple" :style="{ '--count': electiveFields.length } as any">
+          <div class="field-row-triple" :style="{ '--count': electiveFields.length } as Record<string, number>">
             <div v-for="subj in electiveFields" :key="subj.key" class="field-third">
               <label class="field-label">{{ subj.label }}</label>
-              <input v-model.number="scoreFields[subj.key]" type="number" class="field-input" placeholder="分数" />
+              <input v-model.number="form[subj.key]" type="number" class="field-input" placeholder="分数" />
             </div>
           </div>
         </template>
@@ -172,10 +169,10 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
         </div>
         <div class="field-row">
           <label class="field-label">体检视力</label>
-          <div class="vision-row">
-            <div class="vision-opt" :class="{ active: form.vision_status === '正常' }" @click="form.vision_status = '正常'">正常</div>
-            <div class="vision-opt" :class="{ active: form.vision_status === '色弱' }" @click="form.vision_status = '色弱'">色弱</div>
-            <div class="vision-opt" :class="{ active: form.vision_status === '色盲' }" @click="form.vision_status = '色盲'">色盲</div>
+          <div class="vision-row" role="group" aria-label="体检视力选择">
+            <button type="button" class="vision-opt" :class="{ active: form.vision_status === '正常' }" :aria-pressed="form.vision_status === '正常'" @click="form.vision_status = '正常'">正常</button>
+            <button type="button" class="vision-opt" :class="{ active: form.vision_status === '色弱' }" :aria-pressed="form.vision_status === '色弱'" @click="form.vision_status = '色弱'">色弱</button>
+            <button type="button" class="vision-opt" :class="{ active: form.vision_status === '色盲' }" :aria-pressed="form.vision_status === '色盲'" @click="form.vision_status = '色盲'">色盲</button>
           </div>
         </div>
 
@@ -195,8 +192,8 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
       </div>
 
       <div class="editor-actions">
-        <div class="btn-cancel" @click="cancel">取消</div>
-        <div class="btn-save" :class="{ disabled: !!validationError }" @click="save">保存档案</div>
+        <button type="button" class="btn-cancel" @click="cancel">取消</button>
+        <button type="button" class="btn-save" :class="{ disabled: !!validationError }" :disabled="!!validationError" @click="save">保存档案</button>
       </div>
     </div>
   </div>
@@ -209,7 +206,7 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
 
 .editor-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .editor-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
-.editor-close { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); font-size: 14px; transition: all 0.2s; }
+.editor-close { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); font-size: 14px; transition: all 0.2s; appearance: none; font-family: inherit; padding: 0; }
 .editor-close:hover { background: rgba(255,255,255,0.12); }
 .editor-close:active { transform: scale(0.9); }
 
@@ -231,13 +228,13 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
 .divider-text { font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 2px; }
 
 .vision-row { display: flex; gap: 6px; }
-.vision-opt { flex: 1; text-align: center; padding: 9px 0; border-radius: 8px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.04); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
-.vision-opt:hover { background: rgba(56,189,248,0.08); color: #f4d8a8; }
-.vision-opt.active { background: rgba(56,189,248,0.15); color: #e8b974; border: 1px solid rgba(56,189,248,0.3); }
+button.vision-opt { flex: 1; text-align: center; padding: 9px 0; border-radius: 8px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.04); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.vision-opt:hover { background: rgba(56,189,248,0.08); color: #f4d8a8; }
+button.vision-opt.active { background: rgba(56,189,248,0.15); color: #e8b974; border: 1px solid rgba(56,189,248,0.3); }
 
 /* ── 位次自动推算 ── */
-.rank-auto-toggle { font-size: 10px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-muted); cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.03); transition: all 0.2s; }
-.rank-auto-toggle:hover { color: #e8b974; background: rgba(56,189,248,0.08); }
+button.rank-auto-toggle { font-size: 10px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-muted); cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.03); transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.rank-auto-toggle:hover { color: #e8b974; background: rgba(56,189,248,0.08); }
 .auto-dot { width: 6px; height: 6px; border-radius: 50%; background: #475569; transition: all 0.2s; }
 .auto-dot.active { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
 .rank-input-row { position: relative; }
@@ -260,11 +257,11 @@ const scoreFields = computed(() => form.value as Record<string, number | null | 
 .notice-privacy { font-size: 10px; color: #475569; line-height: 1.6; margin: 0; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.04); }
 
 .editor-actions { display: flex; gap: 10px; margin-top: 20px; }
-.btn-cancel { flex: 1; text-align: center; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.06); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
-.btn-cancel:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
-.btn-cancel:active { background: rgba(255,255,255,0.12); transform: scale(0.97); }
-.btn-save { flex: 1.5; text-align: center; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(56,189,248,0.3); transition: all 0.2s; }
-.btn-save:hover { box-shadow: 0 12px 32px rgba(56,189,248,0.45); transform: translateY(-1px); }
-.btn-save:active { transform: scale(0.97); }
-.btn-save.disabled { opacity: 0.4; pointer-events: none; }
+button.btn-cancel { flex: 1; text-align: center; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.06); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.btn-cancel:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+button.btn-cancel:active { background: rgba(255,255,255,0.12); transform: scale(0.97); }
+button.btn-save { flex: 1.5; text-align: center; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(56,189,248,0.3); transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.btn-save:hover { box-shadow: 0 12px 32px rgba(56,189,248,0.45); transform: translateY(-1px); }
+button.btn-save:active { transform: scale(0.97); }
+button.btn-save.disabled { opacity: 0.4; cursor: not-allowed; }
 </style>

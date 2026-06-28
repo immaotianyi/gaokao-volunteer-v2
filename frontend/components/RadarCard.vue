@@ -14,8 +14,6 @@ const props = defineProps<{
   unlocked?: boolean
 }>()
 
-function esc(s: string) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML }
-
 function scoreTier(s: number) {
   if (s >= 80) return "tier-s"
   if (s >= 60) return "tier-a"
@@ -91,7 +89,7 @@ const heatTitle = computed(() => {
 
     <div class="card-head">
       <div class="card-info">
-        <span class="card-school">{{ esc(item.university_name) }}</span>
+        <span class="card-school">{{ item.university_name }}</span>
         <span class="card-school-type" v-if="item.school_type">{{ item.school_type }}</span>
         <!-- 热度徽章：仅当后端返回 heat_level 时渲染 -->
         <span v-if="heatLevel" class="heat-badge" :class="'heat-' + heatLevel" :title="heatTitle">
@@ -102,7 +100,7 @@ const heatTitle = computed(() => {
       <div class="card-score" :class="tierClass"><Icon name="flame" :size="12" /> {{ item.leakage_score || '--' }}</div>
     </div>
 
-    <span class="card-major">{{ esc(item.major_name) }} · 计划 {{ item.plan_count }} 人</span>
+    <span class="card-major">{{ item.major_name }} · 计划 {{ item.plan_count }} 人</span>
 
     <!-- 数字老虎机：估分 + 分差 -->
     <div v-if="item.estimated_score" class="card-estimate">
@@ -128,15 +126,15 @@ const heatTitle = computed(() => {
     <div v-if="item.live_latest_score || item.live_employment || item.live_news" class="live-info-section">
       <div v-if="item.live_latest_score" class="live-row">
         <span class="live-label">最新分数线</span>
-        <span class="live-text">{{ esc(item.live_latest_score) }}</span>
+        <span class="live-text">{{ item.live_latest_score }}</span>
       </div>
       <div v-if="item.live_employment" class="live-row">
         <span class="live-label">就业前景</span>
-        <span class="live-text">{{ esc(item.live_employment) }}</span>
+        <span class="live-text">{{ item.live_employment }}</span>
       </div>
       <div v-if="item.live_news" class="live-row">
         <span class="live-label">相关动态</span>
-        <span class="live-text">{{ esc(item.live_news) }}</span>
+        <span class="live-text">{{ item.live_news }}</span>
       </div>
       <div v-if="item.live_sources && item.live_sources.length" class="live-sources">
         <span class="source-label">来源:</span>
@@ -145,10 +143,10 @@ const heatTitle = computed(() => {
     </div>
 
     <!-- 数据可信度说明 -->
-    <div v-if="item.data_trust_desc" class="trust-desc">{{ esc(item.data_trust_desc) }}</div>
+    <div v-if="item.data_trust_desc" class="trust-desc">{{ item.data_trust_desc }}</div>
 
     <div class="card-footer">
-      <span class="card-reason">{{ esc(item.reason) }}</span>
+      <span class="card-reason">{{ item.reason }}</span>
     </div>
   </div>
 </template>

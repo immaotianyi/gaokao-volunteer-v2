@@ -65,9 +65,19 @@ async function startPayment() {
   }
 }
 
+// 轮询上限：60 次 × 2s = 120s，超时提示用户
+const MAX_POLL_COUNT = 60
 function startPolling() {
+  let count = 0
   pollTimer = window.setInterval(async () => {
     if (!currentOrderId.value) return
+    if (count >= MAX_POLL_COUNT) {
+      clearInterval(pollTimer); pollTimer = 0
+      toast.warning("支付查询超时，请刷新或联系客服")
+      cleanup()
+      return
+    }
+    count++
     try {
       const status = await pollPaymentStatus(currentOrderId.value)
       payPollCount.value = status.poll_count
@@ -92,8 +102,8 @@ async function onSuccess() {
       )
       leakageStore.setCustomUnlocked(res)
       toast.success("完整定制化报告已解锁")
-    } catch (e: any) {
-      const msg = typeof e?.message === "string" ? e.message : "解锁失败"
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "解锁失败"
       toast.error(msg)
       payStatus.value = ""
       return
@@ -136,7 +146,7 @@ watch(() => props.show, (v) => { if (v) startPayment() })
         @mouseleave="onPanelMouseLeave"
       >
       <div class="drag-bar" />
-      <div class="holo-close" @click="handleClose">✕</div>
+      <button type="button" class="holo-close" aria-label="关闭支付弹窗" @click="handleClose">✕</button>
       <div class="holo-lock-ring"><Icon name="lock" :size="22" /></div>
       <span class="holo-title">查看完整清单</span>
       <span class="holo-desc">还有更多院校的捡漏机会，每一所都经过算法筛选</span>
@@ -150,16 +160,19 @@ watch(() => props.show, (v) => { if (v) startPayment() })
         <div class="holo-qr-base">
           <div class="holo-qr-glow" />
           <div class="holo-qr-white">
-            <img v-if="qrcodeUrl && !isMockMode" :src="qrcodeUrl" class="holo-qr-img" alt="QR" />
-            <div
+            <img v-if="qrcodeUrl && !isMockMode" :src="qrcodeUrl" class="holo-qr-img" alt="微信支付二维码" />
+            <button
               v-else
+              type="button"
               class="holo-qr-placeholder"
               :class="{ mock: isMockMode }"
+              :aria-label="isMockMode ? '演示模式：点击模拟支付' : '二维码生成中'"
+              :disabled="!isMockMode"
               @click="isMockMode ? mockPay() : undefined"
             >
               <span v-if="!isMockMode">生成中...</span>
               <span v-else class="mock-text"><Icon name="coin" :size="20" /> 演示模式<br/>点击模拟支付</span>
-            </div>
+            </button>
             <div class="holo-scan-line" />
           </div>
         </div>
@@ -189,7 +202,7 @@ watch(() => props.show, (v) => { if (v) startPayment() })
 .holo-float-wrap .animate-float-slow { animation: float 6s ease-in-out infinite; }
 .drag-bar { width: 32px; height: 3px; background: rgba(255, 255, 255, 0.12); border-radius: 2px; margin-bottom: 20px; }
 @media (min-width: 640px) { .drag-bar { display: none; } }
-.holo-close { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); font-size: 14px; }
+.holo-close { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); font-size: 14px; appearance: none; font-family: inherit; padding: 0; }
 .holo-close:active { background: rgba(255, 255, 255, 0.12); }
 .holo-lock-ring { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, rgba(232, 185, 116, 0.2), rgba(212, 154, 78, 0.15)); border: 1px solid rgba(232, 185, 116, 0.25); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 48px rgba(232, 185, 116, 0.2); margin-bottom: 14px; font-size: 24px; }
 .holo-title { font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: 2px; margin-bottom: 4px; }
@@ -202,8 +215,9 @@ watch(() => props.show, (v) => { if (v) startPayment() })
 .holo-qr-glow { position: absolute; inset: 0; border-radius: 20px; background: radial-gradient(circle at center, rgba(232, 185, 116, 0.15), transparent 70%); animation: pulse-glow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 .holo-qr-white { position: relative; background: #ffffff; border-radius: 18px; padding: 8px; overflow: hidden; }
 .holo-qr-img { width: 140px; height: 140px; display: block; border-radius: 12px; }
-.holo-qr-placeholder { width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 13px; }
+.holo-qr-placeholder { width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 13px; appearance: none; font-family: inherit; padding: 0; border: none; background: transparent; }
 .holo-qr-placeholder.mock { cursor: pointer; background: var(--text-primary); border-radius: 12px; }
+.holo-qr-placeholder:disabled { cursor: default; }
 .mock-text { font-size: 12px; color: #020617; text-align: center; line-height: 1.5; }
 .holo-scan-line { position: absolute; top: 0; left: 6px; right: 6px; height: 2px; background: linear-gradient(to right, transparent, #e8b974, transparent); box-shadow: 0 0 20px rgba(232, 185, 116, 0.8); animation: qr-scan 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
 .holo-price { font-size: 26px; font-weight: 900; color: var(--text-primary); letter-spacing: -1px; }

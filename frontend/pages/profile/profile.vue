@@ -47,8 +47,20 @@ watch(() => form.value.score, () => {
   debounceTimer = setTimeout(() => autoEstimateRank(), 500)
 })
 
+// ── 编辑保存校验：分数 0-750，省份/选科非空 ──
+const validationError = computed(() => {
+  const p = form.value
+  if (p.score == null || p.score === 0) return "请填写高考总分"
+  if (p.score < 0 || p.score > 750) return "分数应在 0–750 之间"
+  if (!p.province) return "请选择省份"
+  if (!p.subjects) return "请选择选科组合"
+  return ""
+})
+
 function toggleEdit() {
   if (editMode.value) {
+    // 保存前校验，校验失败保持编辑态
+    if (validationError.value) return
     profileStore.updateProfile(form.value)
   } else {
     form.value = { ...profileStore.profile }
@@ -67,8 +79,11 @@ const syncLabel = computed(() => {
   return map[profileStore.syncStatus] ?? "未同步"
 })
 
-// 免责声明
-const disclaimerAccepted = ref(false)
+// 免责声明：从 localStorage 恢复 + 变更时持久化
+const disclaimerAccepted = ref(localStorage.getItem("gaokao_disclaimer_v1") === "1")
+watch(disclaimerAccepted, (v) => {
+  localStorage.setItem("gaokao_disclaimer_v1", v ? "1" : "0")
+})
 </script>
 
 <template>
@@ -82,10 +97,10 @@ const disclaimerAccepted = ref(false)
     <!-- Header -->
     <div class="profile-header">
       <div class="header-left-group">
-        <div class="back-btn" @click="router.push('/workbench')">
+        <button type="button" class="back-btn" aria-label="返回工作台" @click="router.push('/workbench')">
           <Icon name="arrowLeft" :size="16" />
           <span>返回</span>
-        </div>
+        </button>
         <span class="profile-title">我的</span>
       </div>
       <div class="sync-badge" :class="profileStore.syncStatus">
@@ -98,9 +113,9 @@ const disclaimerAccepted = ref(false)
     <div class="section-card glass-card" :class="{ incomplete: !profileStore.isProfileComplete }">
       <div class="section-head">
         <span class="section-label">考生档案</span>
-        <div class="edit-toggle" @click="toggleEdit">
+        <button type="button" class="edit-toggle" :aria-label="editMode ? '保存档案' : '编辑档案'" @click="toggleEdit">
           <span>{{ editMode ? '保存' : '编辑' }}</span>
-        </div>
+        </button>
       </div>
 
       <!-- 分数 Hero -->
@@ -146,10 +161,10 @@ const disclaimerAccepted = ref(false)
         <div class="info-item">
           <span class="info-label">
             省位次
-            <span v-if="editMode" class="rank-auto-toggle" @click="rankAutoMode = !rankAutoMode">
+            <button v-if="editMode" type="button" class="rank-auto-toggle" :aria-pressed="rankAutoMode" @click="rankAutoMode = !rankAutoMode">
               <span class="auto-dot" :class="{ active: rankAutoMode }"></span>
               {{ rankAutoMode ? '自动' : '手动' }}
-            </span>
+            </button>
           </span>
           <input
             v-if="editMode"
@@ -210,44 +225,55 @@ const disclaimerAccepted = ref(false)
             <span class="info-label">{{ subj.label }}</span>
             <input
               v-if="editMode"
-              v-model.number="(form as Record<string, number | null | undefined>)[subj.key]"
+              v-model.number="form[subj.key]"
               type="number"
               class="edit-input"
               placeholder="输入分数"
             />
-            <span v-else class="info-value">{{ (profileStore.profile as Record<string, number | null | undefined>)[subj.key] ?? '未设置' }}</span>
+            <span v-else class="info-value">{{ profileStore.profile[subj.key] ?? '未设置' }}</span>
           </div>
         </template>
 
         <!-- 视力 -->
         <div class="info-item">
           <span class="info-label">视力</span>
-          <div v-if="editMode" class="vision-toggle">
-            <div
+          <div v-if="editMode" class="vision-toggle" role="group" aria-label="体检视力选择">
+            <button
+              type="button"
               class="vision-opt"
               :class="{ active: form.vision_status === '正常' }"
+              :aria-pressed="form.vision_status === '正常'"
               @click="form.vision_status = '正常'"
-            >正常</div>
-            <div
+            >正常</button>
+            <button
+              type="button"
               class="vision-opt"
               :class="{ active: form.vision_status === '色弱' }"
+              :aria-pressed="form.vision_status === '色弱'"
               @click="form.vision_status = '色弱'"
-            >色弱</div>
-            <div
+            >色弱</button>
+            <button
+              type="button"
               class="vision-opt"
               :class="{ active: form.vision_status === '色盲' }"
+              :aria-pressed="form.vision_status === '色盲'"
               @click="form.vision_status = '色盲'"
-            >色盲</div>
+            >色盲</button>
           </div>
           <span v-else class="info-value">{{ profileStore.profile.vision_status || '未设置' }}</span>
         </div>
       </div>
 
+      <!-- 校验提示 -->
+      <div v-if="editMode && validationError" class="validation-tip">
+        <span>{{ validationError }}</span>
+      </div>
+
       <!-- 编辑取消按钮 -->
       <div v-if="editMode" class="edit-actions">
-        <div class="cancel-btn" @click="cancelEdit">
+        <button type="button" class="cancel-btn" @click="cancelEdit">
           <span>取消</span>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -291,12 +317,12 @@ const disclaimerAccepted = ref(false)
       </div>
       <div class="disclaimer-content">
         <span class="disclaimer-body">{{ DISCLAIMER.body }}</span>
-        <div class="disclaimer-agree" @click="disclaimerAccepted = !disclaimerAccepted">
+        <button type="button" class="disclaimer-agree" :aria-pressed="disclaimerAccepted" @click="disclaimerAccepted = !disclaimerAccepted">
           <div class="agree-box" :class="{ checked: disclaimerAccepted }">
             <Icon v-if="disclaimerAccepted" name="check" :size="12" />
           </div>
           <span class="agree-label">我已阅读并理解上述声明</span>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -361,7 +387,7 @@ const disclaimerAccepted = ref(false)
   padding: 30px 20px 16px;
 }
 .header-left-group { display: flex; align-items: center; gap: 16px; }
-.back-btn { display: flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.back-btn { display: flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; appearance: none; font-family: inherit; }
 .back-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); border-color: rgba(255, 255, 255, 0.15); }
 .back-btn:active { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); transform: scale(0.96); }
 .profile-title {
@@ -408,6 +434,7 @@ const disclaimerAccepted = ref(false)
   background: rgba(56, 189, 248, 0.1);
   color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2);
   cursor: pointer; transition: all 0.2s;
+  appearance: none; font-family: inherit;
 }
 .edit-toggle:hover { background: rgba(56, 189, 248, 0.18); border-color: rgba(56, 189, 248, 0.35); }
 
@@ -455,21 +482,35 @@ const disclaimerAccepted = ref(false)
 
 /* ── Vision Toggle ── */
 .vision-toggle { display: flex; gap: 4px; }
-.vision-opt {
+button.vision-opt {
   padding: 5px 10px; border-radius: 7px;
   font-size: 12px; font-weight: 600;
   background: rgba(255, 255, 255, 0.04); color: var(--text-secondary);
+  appearance: none; border: none; font-family: inherit; cursor: pointer;
 }
-.vision-opt.active {
+button.vision-opt.active {
   background: rgba(56, 189, 248, 0.15); color: #38bdf8;
   border: 1px solid rgba(56, 189, 248, 0.3);
 }
 
 /* ── Edit Actions ── */
 .edit-actions { margin-top: 14px; }
-.cancel-btn {
+button.cancel-btn {
   padding: 8px 0; text-align: center; border-radius: 8px;
   background: rgba(255, 255, 255, 0.04); font-size: 13px; color: var(--text-secondary);
+  appearance: none; border: none; font-family: inherit; cursor: pointer; width: 100%;
+}
+
+/* ── 校验提示 ── */
+.validation-tip {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(251, 113, 133, 0.08);
+  border: 1px solid rgba(251, 113, 133, 0.25);
+  font-size: 12px;
+  color: #fda4af;
+  line-height: 1.5;
 }
 
 /* ═══════════ 数据覆盖说明 ═══════════ */
@@ -495,6 +536,7 @@ const disclaimerAccepted = ref(false)
 }
 .disclaimer-agree {
   display: flex; align-items: center; gap: 6px;
+  appearance: none; border: none; background: transparent; font-family: inherit; cursor: pointer; padding: 0;
 }
 .agree-box {
   width: 18px; height: 18px; border-radius: 4px;
@@ -524,8 +566,8 @@ const disclaimerAccepted = ref(false)
 .footer-copy { font-size: 10px; color: #334155; margin-top: 3px; display: block; }
 
 /* ── 位次自动推算 ── */
-.rank-auto-toggle { font-size: 10px; font-weight: 400; color: var(--text-muted); cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.03); }
-.rank-auto-toggle:hover { color: #38bdf8; }
+button.rank-auto-toggle { font-size: 10px; font-weight: 400; color: var(--text-muted); cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.03); appearance: none; border: none; font-family: inherit; }
+button.rank-auto-toggle:hover { color: #38bdf8; }
 .auto-dot { width: 6px; height: 6px; border-radius: 50%; background: #475569; transition: all 0.2s; }
 .auto-dot.active { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
 .rank-auto-input { background: rgba(16,185,129,0.04) !important; border-color: rgba(16,185,129,0.15) !important; color: #6ee7b7 !important; }

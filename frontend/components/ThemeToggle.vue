@@ -10,16 +10,24 @@ const { theme, toggle } = useTheme()
 </script>
 
 <template>
-  <div class="theme-toggle" :title="theme === 'dark' ? '切换到晨光（浅色）' : '切换到暮色（深色）'" @click="toggle">
+  <button
+    type="button"
+    class="theme-toggle"
+    :title="theme === 'dark' ? '切换到晨光（浅色）' : '切换到暮色（深色）'"
+    :aria-label="theme === 'dark' ? '切换到晨光（浅色）' : '切换到暮色（深色）'"
+    @click="toggle"
+  >
     <Transition name="theme-swap" mode="out-in">
       <Icon v-if="theme === 'dark'" key="moon" name="moon" :size="14" />
       <Icon v-else key="sun" name="sun" :size="14" />
     </Transition>
-  </div>
+  </button>
 </template>
 
 <style scoped>
-.theme-toggle {
+button.theme-toggle {
+  appearance: none;
+  font: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,6 +40,7 @@ const { theme, toggle } = useTheme()
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
   flex-shrink: 0;
+  padding: 0;
 }
 .theme-toggle:hover {
   background: rgba(232, 185, 116, 0.12);

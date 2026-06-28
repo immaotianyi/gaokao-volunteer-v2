@@ -258,8 +258,6 @@ const profileVector = computed(() => {
   ]
 })
 
-function esc(s: string) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML }
-
 function statusIcon(s: string) {
   const map: Record<string, string> = {
     DANGER: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
@@ -295,12 +293,12 @@ function sendReport() {
     } catch { /* ignore */ }
     reportSending.value = false
     reportSent.value = true
-    toast("已记录，完整报告稍后发到你的邮箱")
+    toast("演示模式：已记录邮箱，比赛期间不会真实发送邮件")
   }, 700)
 }
 
 // ── 秉烛研卷七阶段时间编排（总约 6.5s 仪式 + SSE）──
-const PHASE_TIMING = {
+const PHASE_TIMING: Record<Exclude<CeremonyPhase, "report" | "done">, number> = {
   prepare:        800,   // 第一阶段：研墨
   read_profile:  1200,   // 第二阶段：展卷（读取档案，每行约 150ms × 7 行）
   parse_list:     600,   // 第三阶段：列目
@@ -319,7 +317,7 @@ function setPhase(p: CeremonyPhase) {
   }
   emit("scanPhase", phaseEmitMap[p])
 
-  const duration = p === "report" ? 1000 : p === "done" ? 600 : (PHASE_TIMING as any)[p] ?? 1000
+  const duration = p === "report" ? 1000 : p === "done" ? 600 : (PHASE_TIMING[p as keyof typeof PHASE_TIMING] ?? 1000)
   const startTs = Date.now()
   clearInterval(progressTimer)
   progressTimer = window.setInterval(() => {
@@ -477,9 +475,10 @@ async function handleLiveSearch() {
     const res = await checkRiskLive({ university, major })
     liveResult.value = res
     toast.success("联网检索完成")
-  } catch (e: any) {
+  } catch (e: unknown) {
     // e.message 可能是对象（后端返回的 detail），统一转字符串避免 [object Object]
-    const msg = typeof e?.message === "string" ? e.message : "联网检索失败"
+    const err = e as { message?: unknown }
+    const msg = typeof err?.message === "string" ? err.message : "联网检索失败"
     toast.error(msg)
   } finally {
     liveSearching.value = false
@@ -505,16 +504,16 @@ onBeforeUnmount(() => { clearAllTimers() })
         <div class="footer-left">
           <span class="draft-count">识别到 <span class="count-num">{{ parsedCount }}</span> 个志愿</span>
           <!-- 引擎切换 -->
-          <div class="engine-switch">
-            <div class="engine-btn" :class="{ active: engineMode === 'v3' }" @click="engineMode = 'v3'">规则核对</div>
-            <div class="engine-btn" :class="{ active: engineMode === 'v4' }" @click="engineMode = 'v4'">智能研判</div>
+          <div class="engine-switch" role="tablist" aria-label="核对引擎切换">
+            <button type="button" class="engine-btn" role="tab" :aria-selected="engineMode === 'v3'" :class="{ active: engineMode === 'v3' }" @click="engineMode = 'v3'">规则核对</button>
+            <button type="button" class="engine-btn" role="tab" :aria-selected="engineMode === 'v4'" :class="{ active: engineMode === 'v4' }" @click="engineMode = 'v4'">智能研判</button>
           </div>
         </div>
-        <div class="scan-btn" :class="{ disabled: isScanning || parsedCount === 0 }" @click="handleScan">
+        <button type="button" class="scan-btn" :class="{ disabled: isScanning || parsedCount === 0 }" :disabled="isScanning || parsedCount === 0" :aria-label="isScanning ? '正在核对' : '开始逐所核对志愿草表'" @click="handleScan">
           <Icon name="candle" :size="14" />
           <span v-if="isScanning" class="btn-text">核对中...</span>
           <span v-else class="btn-text">开始核对</span>
-        </div>
+        </button>
       </div>
       <div class="scan-overlay" :class="{ active: isScanning }">
         <!-- 仪式背景层：单一扫描线（移除重叠的 radial gradient） -->
@@ -644,10 +643,10 @@ onBeforeUnmount(() => { clearAllTimers() })
           <div class="neon-beam beam-emerald" />
           <div class="neon-body">
             <div class="neon-head">
-              <div class="neon-info"><span class="neon-school">{{ esc(item.university) }}</span><span class="neon-major">{{ esc(item.major) }}</span></div>
+              <div class="neon-info"><span class="neon-school">{{ item.university }}</span><span class="neon-major">{{ item.major }}</span></div>
               <div class="neon-badge badge-emerald"><div class="neon-badge-icon" v-html="statusIcon('PASS')"></div><span>可以放心</span></div>
             </div>
-            <div class="neon-reason"><span>>> {{ esc(item.reason) }}</span></div>
+            <div class="neon-reason"><span>>> {{ item.reason }}</span></div>
             <div v-if="item.career_risk || item.ai_risk" class="risk-tags-row">
               <span v-if="item.career_risk" class="risk-tag" :class="'risk-' + item.career_risk">就业 {{ item.career_risk === 'high' ? '高风险' : item.career_risk === 'medium' ? '中等' : '低风险' }}</span>
               <span v-if="item.ai_risk" class="risk-tag" :class="'risk-' + item.ai_risk">AI替代 {{ item.ai_risk === 'high' ? '高风险' : item.ai_risk === 'medium' ? '中等' : '低风险' }}</span>
@@ -658,10 +657,10 @@ onBeforeUnmount(() => { clearAllTimers() })
           <div class="neon-beam beam-amber" />
           <div class="neon-body">
             <div class="neon-head">
-              <div class="neon-info"><span class="neon-school">{{ esc(item.university) }}</span><span class="neon-major">{{ esc(item.major) }}</span></div>
+              <div class="neon-info"><span class="neon-school">{{ item.university }}</span><span class="neon-major">{{ item.major }}</span></div>
               <div class="neon-badge badge-amber"><div class="neon-badge-icon" v-html="statusIcon('WARNING')"></div><span>需要留意</span></div>
             </div>
-            <div class="neon-reason warn-text"><span>>> {{ esc(item.reason) }}</span></div>
+            <div class="neon-reason warn-text"><span>>> {{ item.reason }}</span></div>
             <div v-if="item.career_risk || item.ai_risk" class="risk-tags-row">
               <span v-if="item.career_risk" class="risk-tag" :class="'risk-' + item.career_risk">就业 {{ item.career_risk === 'high' ? '高风险' : item.career_risk === 'medium' ? '中等' : '低风险' }}</span>
               <span v-if="item.ai_risk" class="risk-tag" :class="'risk-' + item.ai_risk">AI替代 {{ item.ai_risk === 'high' ? '高风险' : item.ai_risk === 'medium' ? '中等' : '低风险' }}</span>
@@ -672,11 +671,11 @@ onBeforeUnmount(() => { clearAllTimers() })
           <div class="neon-beam beam-rose animate-pulse-slow" />
           <div class="neon-body">
             <div class="neon-head">
-              <div class="neon-info"><span class="neon-school">{{ esc(item.university) }}</span><span class="neon-major">{{ esc(item.major) }}</span></div>
+              <div class="neon-info"><span class="neon-school">{{ item.university }}</span><span class="neon-major">{{ item.major }}</span></div>
               <div class="neon-badge badge-rose"><div class="neon-badge-icon" v-html="statusIcon('DANGER')"></div><span>务必重视</span></div>
             </div>
-            <div class="neon-alert"><div class="alert-icon" v-html="statusIcon('WARNING')"></div><span class="alert-text">{{ esc(item.reason) }}</span></div>
-            <div v-if="item.matched_clause" class="neon-clause danger-clause">{{ esc(item.matched_clause) }}</div>
+            <div class="neon-alert"><div class="alert-icon" v-html="statusIcon('WARNING')"></div><span class="alert-text">{{ item.reason }}</span></div>
+            <div v-if="item.matched_clause" class="neon-clause danger-clause">{{ item.matched_clause }}</div>
             <div v-if="item.career_risk || item.ai_risk" class="risk-tags-row">
               <span v-if="item.career_risk" class="risk-tag" :class="'risk-' + item.career_risk">就业 {{ item.career_risk === 'high' ? '高风险' : item.career_risk === 'medium' ? '中等' : '低风险' }}</span>
               <span v-if="item.ai_risk" class="risk-tag" :class="'risk-' + item.ai_risk">AI替代 {{ item.ai_risk === 'high' ? '高风险' : item.ai_risk === 'medium' ? '中等' : '低风险' }}</span>
@@ -691,20 +690,20 @@ onBeforeUnmount(() => { clearAllTimers() })
       <div v-if="riskStore.checked && riskStore.results.length && !isScanning" class="report-signup glass-card">
         <div v-if="!reportSent" class="signup-row">
           <div class="signup-text">
-            <span class="signup-title">想把这份报告留一份？</span>
-            <span class="signup-desc">留下邮箱，我们发一份完整版给你。只用于发送报告，不会用作他用。</span>
+            <span class="signup-title">想把这份报告留一份？<span class="signup-demo-tag">演示模式</span></span>
+            <span class="signup-desc">留下邮箱，比赛结束后我们发一份完整版给你。只用于发送报告，不会用作他用。</span>
           </div>
           <div class="signup-form">
             <input v-model="reportEmail" type="email" class="signup-input" placeholder="你的邮箱（可选）" :disabled="reportSending" @keydown.enter="sendReport" />
-            <div class="signup-btn" :class="{ disabled: reportSending }" @click="sendReport">
+            <button type="button" class="signup-btn" :class="{ disabled: reportSending }" :disabled="reportSending" aria-label="提交邮箱接收完整报告" @click="sendReport">
               <span v-if="reportSending">发送中</span>
               <span v-else>发送给我</span>
-            </div>
+            </button>
           </div>
         </div>
         <div v-else class="signup-done">
           <Icon name="check" :size="14" />
-          <span>已记录，完整报告稍后发到 {{ reportEmail }}</span>
+          <span>演示模式：已记录邮箱 {{ reportEmail }}，比赛期间不会真实发送邮件</span>
         </div>
       </div>
     </Transition>
@@ -723,17 +722,17 @@ onBeforeUnmount(() => { clearAllTimers() })
       </div>
       <div class="live-input-row">
         <input v-model="liveSearchText" type="text" class="live-input" placeholder="输入大学名和专业，如：东莞理工学院 土木工程" :disabled="liveSearching" @keydown.enter="handleLiveSearch" />
-        <div class="live-btn" :class="{ disabled: !liveSearchText.trim() || liveSearching }" @click="handleLiveSearch">
+        <button type="button" class="live-btn" :class="{ disabled: !liveSearchText.trim() || liveSearching }" :disabled="!liveSearchText.trim() || liveSearching" aria-label="联网检索招生章程" @click="handleLiveSearch">
           <span v-if="liveSearching" class="live-btn-text">检索中...</span>
           <span v-else class="live-btn-text">联网检索</span>
-        </div>
+        </button>
       </div>
       <!-- 联网检索结果 -->
       <Transition name="live-result">
         <div v-if="liveResult" class="live-result-card" :class="'live-' + (liveResult.source || 'unknown')">
           <div class="live-result-head">
-            <span class="live-result-school">{{ esc(liveResult.university) }}</span>
-            <span class="live-result-major">{{ esc(liveResult.major) }}</span>
+            <span class="live-result-school">{{ liveResult.university }}</span>
+            <span class="live-result-major">{{ liveResult.major }}</span>
             <span class="live-source-tag"><Icon name="radar" :size="10" /> {{ liveResult.source === 'local' ? '本地数据库' : '联网检索' }}</span>
           </div>
           <div class="live-result-text">{{ liveResult.rules_text || liveResult.message || liveResult.error || '未获取到章程条款' }}</div>
@@ -760,15 +759,15 @@ onBeforeUnmount(() => { clearAllTimers() })
 
 /* ── 引擎切换 ── */
 .engine-switch { display: flex; gap: 2px; background: rgba(255, 255, 255, 0.04); border-radius: 8px; padding: 2px; }
-.engine-btn { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-family: "SF Mono", monospace; }
-.engine-btn:hover { color: var(--text-secondary); background: rgba(255, 255, 255, 0.04); }
-.engine-btn.active { background: rgba(232, 185, 116, 0.15); color: #e8b974; }
-.engine-btn.active:hover { color: #e8b974; }
+button.engine-btn { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-family: "SF Mono", monospace; appearance: none; background: transparent; border: none; }
+button.engine-btn:hover { color: var(--text-secondary); background: rgba(255, 255, 255, 0.04); }
+button.engine-btn.active { background: rgba(232, 185, 116, 0.15); color: #e8b974; }
+button.engine-btn.active:hover { color: #e8b974; }
 
-.scan-btn { display: flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #e8b974, #d49a4e); padding: 12px 24px; border-radius: 10px; box-shadow: 0 8px 32px rgba(232, 185, 116, 0.25); cursor: pointer; transition: all 0.2s; }
-.scan-btn:hover:not(.disabled) { box-shadow: 0 12px 36px rgba(232, 185, 116, 0.4); transform: translateY(-1px); }
-.scan-btn:active { transform: scale(0.97); }
-.scan-btn.disabled { opacity: 0.4; pointer-events: none; }
+button.scan-btn { display: flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #e8b974, #d49a4e); padding: 12px 24px; border-radius: 10px; box-shadow: 0 8px 32px rgba(232, 185, 116, 0.25); cursor: pointer; transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.scan-btn:hover:not(.disabled) { box-shadow: 0 12px 36px rgba(232, 185, 116, 0.4); transform: translateY(-1px); }
+button.scan-btn:active { transform: scale(0.97); }
+button.scan-btn.disabled { opacity: 0.4; pointer-events: none; }
 .btn-text { font-size: 14px; font-weight: 700; color: #fff; }
 
 .scan-overlay { position: absolute; inset: 0; z-index: 20; background: rgba(2, 6, 23, 0.94); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; padding: 18px; box-sizing: border-box; }
@@ -979,10 +978,10 @@ onBeforeUnmount(() => { clearAllTimers() })
 .live-input { flex: 1; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 154, 78, 0.15); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--text-primary); outline: none; box-sizing: border-box; }
 .live-input:focus { border-color: rgba(212, 154, 78, 0.4); }
 .live-input::placeholder { color: #475569; }
-.live-btn { padding: 10px 18px; background: rgba(212, 154, 78, 0.15); border: 1px solid rgba(212, 154, 78, 0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
-.live-btn:hover:not(.disabled) { background: rgba(212, 154, 78, 0.22); border-color: rgba(212, 154, 78, 0.5); }
-.live-btn:active { transform: scale(0.96); }
-.live-btn.disabled { opacity: 0.3; pointer-events: none; }
+button.live-btn { padding: 10px 18px; background: rgba(212, 154, 78, 0.15); border: 1px solid rgba(212, 154, 78, 0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; appearance: none; font-family: inherit; }
+button.live-btn:hover:not(.disabled) { background: rgba(212, 154, 78, 0.22); border-color: rgba(212, 154, 78, 0.5); }
+button.live-btn:active { transform: scale(0.96); }
+button.live-btn.disabled { opacity: 0.3; pointer-events: none; }
 .live-btn-text { font-size: 12px; font-weight: 700; color: #d49a4e; white-space: nowrap; }
 
 /* 联网结果卡片 */
@@ -1006,14 +1005,15 @@ onBeforeUnmount(() => { clearAllTimers() })
 .signup-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .signup-text { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 2px; }
 .signup-title { font-size: 13px; font-weight: 700; color: #f4d8a8; }
+.signup-demo-tag { display: inline-block; margin-left: 6px; padding: 1px 6px; font-size: 9px; font-weight: 600; color: #94a3b8; background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 4px; vertical-align: middle; letter-spacing: 0.5px; }
 .signup-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
 .signup-form { display: flex; gap: 8px; align-items: center; }
 .signup-input { width: 200px; padding: 8px 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(232, 185, 116, 0.2); border-radius: 8px; font-size: 12px; color: var(--text-primary); outline: none; transition: border-color 0.2s; font-family: inherit; }
 .signup-input::placeholder { color: #475569; }
 .signup-input:focus { border-color: rgba(232, 185, 116, 0.5); }
-.signup-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-.signup-btn:hover:not(.disabled) { box-shadow: 0 4px 16px rgba(232, 185, 116, 0.4); transform: translateY(-1px); }
-.signup-btn.disabled { opacity: 0.5; pointer-events: none; }
+button.signup-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; transition: all 0.2s; white-space: nowrap; appearance: none; border: none; font-family: inherit; }
+button.signup-btn:hover:not(.disabled) { box-shadow: 0 4px 16px rgba(232, 185, 116, 0.4); transform: translateY(-1px); }
+button.signup-btn.disabled { opacity: 0.5; pointer-events: none; }
 .signup-done { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; color: #6ee7b7; }
 .signup-done svg { color: #6ee7b7; }
 

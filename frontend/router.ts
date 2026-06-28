@@ -1,8 +1,8 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
-  // 使用 hash 模式，避免 nginx 未配置 SPA fallback 时刷新 404 / 主页消失
-  history: createWebHashHistory(),
+  // history 模式：nginx 已配置 try_files $uri $uri/ /index.html; SPA fallback
+  history: createWebHistory(),
   routes: [
     {
       path: "/",
@@ -17,8 +17,17 @@ const router = createRouter({
       redirect: "/workbench",
     },
     {
+      path: "/profile",
+      redirect: "/pages/profile/profile",
+    },
+    {
       path: "/pages/profile/profile",
       component: () => import("./pages/profile/profile.vue"),
+    },
+    // 404 兜底：未匹配路径重定向到首页
+    {
+      path: "/:pathMatch(.*)*",
+      redirect: "/",
     },
   ],
 });

@@ -26,7 +26,13 @@ function scrollToSection(id: string) {
 // ── 滚动监听（导航栏背景变化）──
 const scrolled = ref(false)
 function onScroll() { scrolled.value = window.scrollY > 40 }
-onMounted(() => window.addEventListener("scroll", onScroll))
+onMounted(() => {
+  // 合并 scroll 监听，避免重复注册（#m11）
+  window.addEventListener("scroll", onScroll)
+  window.addEventListener("scroll", onScrollForStats)
+  // 如果首屏可见，延迟触发
+  setTimeout(() => onScrollForStats(), 1000)
+})
 onBeforeUnmount(() => {
   window.removeEventListener("scroll", onScroll)
   window.removeEventListener("scroll", onScrollForStats)
@@ -79,13 +85,6 @@ function onScrollForStats() {
     }
   }
 }
-
-onMounted(() => {
-  window.addEventListener("scroll", onScroll)
-  window.addEventListener("scroll", onScrollForStats)
-  // 如果首屏可见，延迟触发
-  setTimeout(() => onScrollForStats(), 1000)
-})
 
 // ── 功能列表 ──
 const features = [
@@ -173,22 +172,22 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
     <!-- ═══ 导航栏 ═══ -->
     <nav class="nav-bar" :class="{ scrolled }">
       <div class="nav-inner">
-        <div class="brand" @click="router.push('/')">
+        <button type="button" class="brand" aria-label="返回首页" @click="router.push('/')">
           <div class="brand-mark"><Icon name="shield" :size="16" /></div>
           <span class="brand-text">志愿守护</span>
-        </div>
+        </button>
         <div class="nav-links">
-          <span @click="scrollToSection('features')" class="nav-link">功能</span>
-          <span @click="scrollToSection('how')" class="nav-link">使用流程</span>
-          <span @click="scrollToSection('cases')" class="nav-link">真实案例</span>
-          <span @click="scrollToSection('faq')" class="nav-link">常见问题</span>
+          <button type="button" @click="scrollToSection('features')" class="nav-link">功能</button>
+          <button type="button" @click="scrollToSection('how')" class="nav-link">使用流程</button>
+          <button type="button" @click="scrollToSection('cases')" class="nav-link">真实案例</button>
+          <button type="button" @click="scrollToSection('faq')" class="nav-link">常见问题</button>
         </div>
         <div class="nav-right">
           <ThemeToggle />
-          <div class="nav-cta" @click="goToWorkbench">
+          <button type="button" class="nav-cta" @click="goToWorkbench">
             <span>立即使用</span>
             <Icon name="arrowRight" :size="14" />
-          </div>
+          </button>
         </div>
       </div>
     </nav>
@@ -227,14 +226,14 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
 
         <Transition name="hero-fade" appear>
           <div class="hero-actions">
-            <div class="cta-primary" @click="goToWorkbench">
+            <button type="button" class="cta-primary" @click="goToWorkbench">
               <Icon name="candle" :size="18" />
               <span>{{ profileStore.isProfileComplete ? '免费开始核对' : '开始使用' }}</span>
-            </div>
-            <div class="cta-secondary" @click="router.push('/pages/profile/profile')">
+            </button>
+            <button type="button" class="cta-secondary" @click="router.push('/pages/profile/profile')">
               <Icon name="user" :size="16" />
               <span>{{ profileStore.isProfileComplete ? '查看我的档案' : '先填我的档案' }}</span>
-            </div>
+            </button>
           </div>
         </Transition>
 
@@ -333,10 +332,10 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
       </div>
       <div class="faq-list">
         <div v-for="(f, i) in faqs" :key="i" class="faq-item" :class="{ expanded: expandedFaq === i }">
-          <div class="faq-q" @click="toggleFaq(i)">
+          <button type="button" class="faq-q" :aria-expanded="expandedFaq === i" :aria-label="`展开常见问题：${f.q}`" @click="toggleFaq(i)">
             <span class="faq-q-text">{{ f.q }}</span>
-            <span class="faq-toggle" :class="{ rotated: expandedFaq === i }">+</span>
-          </div>
+            <span class="faq-toggle" :class="{ rotated: expandedFaq === i }" aria-hidden="true">+</span>
+          </button>
           <Transition name="faq-expand">
             <div v-if="expandedFaq === i" class="faq-a">
               <p>{{ f.a }}</p>
@@ -351,10 +350,10 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
       <div class="cta-box glass-card">
         <h2 class="cta-title">你的志愿表，我们陪你核对一遍</h2>
         <p class="cta-desc">贴上草表，逐所核对每一处风险。免费、无需注册。</p>
-        <div class="cta-btn-large" @click="goToWorkbench">
+        <button type="button" class="cta-btn-large" @click="goToWorkbench">
           <Icon name="candle" :size="20" />
           <span>开始核对志愿</span>
-        </div>
+        </button>
       </div>
     </section>
 
@@ -388,17 +387,17 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
 .nav-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; transition: all 0.3s ease; }
 .nav-bar.scrolled { background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
 .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
-.brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+button.brand { display: flex; align-items: center; gap: 10px; cursor: pointer; appearance: none; background: transparent; border: none; padding: 0; font-family: inherit; }
 .brand-mark { width: 32px; height: 32px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 0 24px rgba(232, 185, 116, 0.3); }
 .brand-mark.small { width: 24px; height: 24px; border-radius: 6px; box-shadow: none; }
 .brand-text { font-size: 18px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.5px; }
 .brand-accent { color: #e8b974; }
 .nav-links { display: flex; gap: 28px; }
 .nav-right { display: flex; align-items: center; gap: 12px; }
-.nav-link { font-size: 13px; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; cursor: pointer; }
-.nav-link:hover { color: #e8b974; }
-.nav-cta { display: flex; align-items: center; gap: 6px; padding: 8px 18px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 10px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.nav-cta:hover { box-shadow: 0 6px 20px rgba(232, 185, 116, 0.35); transform: translateY(-1px); }
+button.nav-link { font-size: 13px; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; cursor: pointer; appearance: none; background: transparent; border: none; padding: 0; font-family: inherit; }
+button.nav-link:hover { color: #e8b974; }
+button.nav-cta { display: flex; align-items: center; gap: 6px; padding: 8px 18px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 10px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.nav-cta:hover { box-shadow: 0 6px 20px rgba(232, 185, 116, 0.35); transform: translateY(-1px); }
 
 /* ── Hero ── */
 .hero { position: relative; z-index: 1; min-height: 90vh; display: flex; align-items: center; justify-content: center; padding: 100px 24px 60px; }
@@ -416,11 +415,11 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
 .hero-poetry .poetry-line { font-size: 22px; color: #f4d8a8; letter-spacing: 0.15em; text-shadow: 0 0 20px rgba(232, 185, 116, 0.25); }
 .hero-poetry .poetry-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; }
 .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
-.cta-primary { display: flex; align-items: center; gap: 8px; padding: 15px 36px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px rgba(232, 185, 116, 0.3); transition: all 0.2s; }
-.cta-primary:hover { box-shadow: 0 12px 40px rgba(232, 185, 116, 0.45); transform: translateY(-2px); }
-.cta-primary:active { transform: scale(0.97); }
-.cta-secondary { display: flex; align-items: center; gap: 6px; padding: 15px 28px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: var(--text-secondary); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.cta-secondary:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); border-color: rgba(255, 255, 255, 0.2); }
+button.cta-primary { display: flex; align-items: center; gap: 8px; padding: 15px 36px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px rgba(232, 185, 116, 0.3); transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.cta-primary:hover { box-shadow: 0 12px 40px rgba(232, 185, 116, 0.45); transform: translateY(-2px); }
+button.cta-primary:active { transform: scale(0.97); }
+button.cta-secondary { display: flex; align-items: center; gap: 6px; padding: 15px 28px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: var(--text-secondary); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; appearance: none; font-family: inherit; }
+button.cta-secondary:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); border-color: rgba(255, 255, 255, 0.2); }
 .hero-trust { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
 .trust-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-muted); }
 .trust-item svg { color: #34d399; }
@@ -491,7 +490,7 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
 .faq-list { display: flex; flex-direction: column; gap: 10px; }
 .faq-item { background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; overflow: hidden; transition: all 0.2s; }
 .faq-item.expanded { border-color: rgba(232, 185, 116, 0.15); background: rgba(232, 185, 116, 0.03); }
-.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px 20px; cursor: pointer; appearance: none; background: transparent; border: none; font-family: inherit; text-align: left; }
 .faq-q-text { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .faq-toggle { font-size: 20px; color: #e8b974; transition: transform 0.3s; }
 .faq-toggle.rotated { transform: rotate(45deg); }
@@ -506,9 +505,9 @@ function toggleFaq(i: number) { expandedFaq.value = expandedFaq.value === i ? nu
 .cta-box { text-align: center; padding: 48px 40px; max-width: 560px; width: 100%; }
 .cta-title { font-size: 28px; font-weight: 900; color: var(--text-primary); margin: 0 0 12px; letter-spacing: -1px; }
 .cta-desc { font-size: 14px; color: var(--text-secondary); margin: 0 0 28px; font-weight: 300; }
-.cta-btn-large { display: inline-flex; align-items: center; gap: 8px; padding: 16px 40px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 14px; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px rgba(232, 185, 116, 0.35); transition: all 0.2s; }
-.cta-btn-large:hover { box-shadow: 0 12px 44px rgba(232, 185, 116, 0.5); transform: translateY(-2px); }
-.cta-btn-large:active { transform: scale(0.97); }
+button.cta-btn-large { display: inline-flex; align-items: center; gap: 8px; padding: 16px 40px; background: linear-gradient(135deg, #e8b974, #d49a4e); border-radius: 14px; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px rgba(232, 185, 116, 0.35); transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.cta-btn-large:hover { box-shadow: 0 12px 44px rgba(232, 185, 116, 0.5); transform: translateY(-2px); }
+button.cta-btn-large:active { transform: scale(0.97); }
 
 /* ── Footer ── */
 .landing-footer { position: relative; z-index: 1; padding: 40px 24px; border-top: 1px solid rgba(255, 255, 255, 0.04); }

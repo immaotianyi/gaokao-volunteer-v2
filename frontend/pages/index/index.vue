@@ -90,14 +90,14 @@ function handleScanEnd() {
         <div class="logo-mark"><Icon name="shield" :size="14" /></div>
         <span class="logo-text">志愿守护</span>
       </div>
-      <div class="segment-nav">
-        <div class="segment-btn" :class="{ active: activeTab === 'risk' }" @click="activeTab = 'risk'"><Icon name="shield" :size="13" /><span>探雷器</span></div>
-        <div class="segment-btn" :class="{ active: activeTab === 'radar' }" @click="activeTab = 'radar'"><Icon name="radar" :size="13" /><span>捡漏雷达</span></div>
-        <div class="segment-btn" :class="{ active: activeTab === 'advisor' }" @click="activeTab = 'advisor'"><Icon name="bolt" :size="13" /><span>AI 顾问</span></div>
+      <div class="segment-nav" role="tablist" aria-label="功能切换">
+        <button type="button" role="tab" class="segment-btn" :class="{ active: activeTab === 'risk' }" :aria-selected="activeTab === 'risk'" @click="activeTab = 'risk'"><Icon name="shield" :size="13" /><span>探雷器</span></button>
+        <button type="button" role="tab" class="segment-btn" :class="{ active: activeTab === 'radar' }" :aria-selected="activeTab === 'radar'" @click="activeTab = 'radar'"><Icon name="radar" :size="13" /><span>捡漏雷达</span></button>
+        <button type="button" role="tab" class="segment-btn" :class="{ active: activeTab === 'advisor' }" :aria-selected="activeTab === 'advisor'" @click="activeTab = 'advisor'"><Icon name="bolt" :size="13" /><span>AI 顾问</span></button>
       </div>
       <div class="header-right">
         <ThemeToggle />
-        <div class="profile-nav-btn" @click="router.push('/pages/profile/profile')"><Icon name="user" :size="13" /><span>我的</span></div>
+        <button type="button" class="profile-nav-btn" aria-label="进入我的档案页" @click="router.push('/pages/profile/profile')"><Icon name="user" :size="13" /><span>我的</span></button>
         <div class="header-status"><div class="status-dot" /><span class="status-text">服务在线</span></div>
       </div>
     </div>
@@ -106,9 +106,9 @@ function handleScanEnd() {
     <div class="app-main">
       <ProfilePanel :scanning="isScanning" @open-editor="showProfileEditor = true" />
       <div class="content-area">
-        <RiskScanner v-if="activeTab === 'risk'" @scan-start="handleScanStart" @scan-end="handleScanEnd" @scan-phase="handleScanPhase" />
-        <RadarBoard v-if="activeTab === 'radar'" @open-payment="showPayModal = true" />
-        <AdvisorChat v-if="activeTab === 'advisor'" />
+        <RiskScanner v-show="activeTab === 'risk'" @scan-start="handleScanStart" @scan-end="handleScanEnd" @scan-phase="handleScanPhase" />
+        <RadarBoard v-show="activeTab === 'radar'" @open-payment="showPayModal = true" />
+        <AdvisorChat v-show="activeTab === 'advisor'" />
       </div>
     </div>
 
@@ -129,11 +129,11 @@ function handleScanEnd() {
             </div>
           </div>
           <div class="guide-actions">
-            <div class="guide-btn-secondary" @click="showProfileGuide = false">稍后再说</div>
-            <div class="guide-btn-primary" @click="showProfileGuide = false; showProfileEditor = true">
+            <button type="button" class="guide-btn-secondary" @click="showProfileGuide = false">稍后再说</button>
+            <button type="button" class="guide-btn-primary" @click="showProfileGuide = false; showProfileEditor = true">
               <Icon name="arrowRight" :size="14" />
               <span>立即填写</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -154,10 +154,10 @@ function handleScanEnd() {
             <p>你的档案只存在浏览器里，不会上传给第三方。本工具不构成填报建议，因使用产生的任何后果由你自行承担。</p>
           </div>
           <div class="disclaimer-actions">
-            <div class="disclaimer-btn" @click="acceptDisclaimer">
+            <button type="button" class="disclaimer-btn" @click="acceptDisclaimer">
               <Icon name="check" :size="14" />
               <span>我已阅读并理解</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -180,10 +180,10 @@ function handleScanEnd() {
 .logo-text { font-size: 18px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.5px; }
 .logo-accent { color: #e8b974; }
 .segment-nav { display: flex; gap: 2px; background: rgba(255, 255, 255, 0.06); border-radius: 50px; padding: 2px; border: 1px solid rgba(255, 255, 255, 0.04); box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); }
-.segment-btn { display: flex; align-items: center; gap: 5px; padding: 8px 18px; border-radius: 50px; font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
-.segment-btn.active { background: rgba(255, 255, 255, 0.12); color: var(--text-primary); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
+button.segment-btn { display: flex; align-items: center; gap: 5px; padding: 8px 18px; border-radius: 50px; font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1); appearance: none; border: none; font-family: inherit; }
+button.segment-btn.active { background: rgba(255, 255, 255, 0.12); color: var(--text-primary); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
 .header-right { display: flex; align-items: center; gap: 10px; }
-.profile-nav-btn { display: flex; align-items: center; gap: 4px; padding: 5px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; background: rgba(255, 255, 255, 0.06); color: var(--text-secondary); border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; transition: all 0.2s; }
+button.profile-nav-btn { display: flex; align-items: center; gap: 4px; padding: 5px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; background: rgba(255, 255, 255, 0.06); color: var(--text-secondary); border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; transition: all 0.2s; appearance: none; font-family: inherit; }
 .profile-nav-btn:active { background: rgba(255, 255, 255, 0.12); color: var(--text-primary); }
 .header-status { display: flex; align-items: center; gap: 6px; }
 .status-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px rgba(34, 197, 94, 0.5); }
@@ -215,10 +215,10 @@ function handleScanEnd() {
 .guide-stat-value { font-size: 28px; font-weight: 900; color: #e8b974; font-family: "SF Mono", monospace; }
 .guide-stat-label { font-size: 11px; color: var(--text-muted); }
 .guide-actions { display: flex; gap: 10px; }
-.guide-btn-secondary { flex: 1; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 600; background: rgba(255, 255, 255, 0.06); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
-.guide-btn-secondary:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
-.guide-btn-primary { flex: 1.5; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(232, 185, 116, 0.3); transition: all 0.2s; }
-.guide-btn-primary:hover { box-shadow: 0 12px 32px rgba(232, 185, 116, 0.45); transform: translateY(-1px); }
+button.guide-btn-secondary { flex: 1; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 600; background: rgba(255, 255, 255, 0.06); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.guide-btn-secondary:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
+button.guide-btn-primary { flex: 1.5; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 0; border-radius: 10px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(232, 185, 116, 0.3); transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
+button.guide-btn-primary:hover { box-shadow: 0 12px 32px rgba(232, 185, 116, 0.45); transform: translateY(-1px); }
 .guide-fade-enter-active, .guide-fade-leave-active { transition: all 0.3s ease; }
 .guide-fade-enter-from, .guide-fade-leave-to { opacity: 0; }
 .guide-fade-enter-active .guide-panel, .guide-fade-leave-active .guide-panel { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
@@ -234,7 +234,7 @@ function handleScanEnd() {
 .disclaimer-body p:last-child { margin-bottom: 0; }
 .disclaimer-body .em { color: #f4d8a8; font-weight: 600; }
 .disclaimer-actions { display: flex; justify-content: center; }
-.disclaimer-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(232, 185, 116, 0.35); transition: all 0.2s; }
+button.disclaimer-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, #e8b974, #d49a4e); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(232, 185, 116, 0.35); transition: all 0.2s; appearance: none; border: none; font-family: inherit; }
 .disclaimer-btn:hover { box-shadow: 0 12px 32px rgba(232, 185, 116, 0.5); transform: translateY(-1px); }
 .disclaimer-btn:active { transform: translateY(0); }
 </style>
